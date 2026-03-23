@@ -34,9 +34,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
+    if (process.env.NEXT_PUBLIC_USE_MOCKS === "true") {
+      const { MOCK_USERS } = await import("./mocks")
+      const mockUser = MOCK_USERS.find(u => u.email === email && u.password === password)
+
+      if (mockUser) {
+        const loggedInUser: User = {
+          id: mockUser.id,
+          userName: mockUser.userName,
+          email: mockUser.email,
+          role: mockUser.role as any
+        }
+        setUser(loggedInUser)
+        localStorage.setItem("user", JSON.stringify(loggedInUser))
+        return { success: true }
+      } else {
+        return { success: false, error: "Invalid credentials (Mock Mode)" }
+      }
+    }
+
     try {
       const response = await fetch(`${API_BASE_URL}/api/user/email/${encodeURIComponent(email)}`)
-      
+
       if (!response.ok) {
         if (response.status === 404) {
           return { success: false, error: "User not found" }
@@ -45,7 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       const userData = await response.json()
-      
+
       // Note: In production, password verification should be done server-side
       // For now, we trust the backend to handle this properly
       const loggedInUser: User = {
@@ -84,7 +103,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       const userData = await response.json()
-      
+
       const newUser: User = {
         id: userData.id,
         userName: userData.userName,
