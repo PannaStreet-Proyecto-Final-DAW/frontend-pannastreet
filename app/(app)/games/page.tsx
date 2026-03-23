@@ -1,0 +1,53 @@
+import { GameCard } from "@/components/game-card"
+
+const games = [
+  {
+    id: "wordle",
+    title: "Futbol Wordle",
+    description: "Guess the mystery football player in 6 tries. Get clues about nationality, team, position and more.",
+    icon: "wordle",
+    color: "from-emerald-500/20 to-emerald-600/10",
+    href: "/games/wordle"
+  },
+  {
+    id: "11clubs",
+    title: "11 Clubs",
+    description: "Build a starting 11 using players from 11 different clubs. Complete the lineup to win.",
+    icon: "lineup",
+    color: "from-blue-500/20 to-blue-600/10",
+    href: "/games/11clubs"
+  },
+  {
+    id: "trivia",
+    title: "Football Trivia",
+    description: "Test your football knowledge with daily trivia questions about players, teams and history.",
+    icon: "trivia",
+    color: "from-amber-500/20 to-amber-600/10",
+    href: "/games/trivia"
+  }
+]
+
+export default function GamesPage() {
+  return (
+    <div className="max-w-4xl mx-auto">
+      <div className="text-center mb-10">
+        <h1 className="text-3xl font-bold text-foreground mb-2">Daily Football Games</h1>
+        <p className="text-muted-foreground">
+          Select a game to play and test your football knowledge
+        </p>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {games.map((game) => (
+          <GameCard key={game.id} game={game} />
+        ))}
+      </div>
+
+      <div className="mt-12 text-center">
+        <p className="text-sm text-muted-foreground">
+          New challenges every day at midnight
+        </p>
+      </div>
+    </div>
+  )
+}
