@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import Image from "next/image"
 import { useAuth } from "@/lib/auth-context"
 import { Button } from "@/components/ui/button"
 import {
@@ -32,19 +33,15 @@ export function Navbar() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Logo */}
         <Link href="/games" className="flex items-center gap-2">
-          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10">
-            <svg
-              className="w-4 h-4 text-primary"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <circle cx="12" cy="12" r="10" strokeWidth="2" />
-              <path
-                strokeWidth="2"
-                d="M12 2C12 2 14.5 5.5 14.5 8.5C14.5 11.5 12 14 12 14C12 14 9.5 11.5 9.5 8.5C9.5 5.5 12 2 12 2Z"
-              />
-            </svg>
+          <div className="flex items-center justify-center">
+            <Image 
+              src="/icon.jpg" 
+              alt="PannaMaster Logo" 
+              width={36} 
+              height={36} 
+              className="rounded-full"
+              priority
+            />
           </div>
           <span className="font-bold text-foreground hidden sm:inline">PannaMaster</span>
         </Link>

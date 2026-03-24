@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import Image from "next/image"
 import { useAuth } from "@/lib/auth-context"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -67,22 +68,15 @@ export default function AuthPage() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
-            <svg
-              className="w-8 h-8 text-primary"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <circle cx="12" cy="12" r="10" strokeWidth="2" />
-              <path
-                strokeWidth="2"
-                d="M12 2C12 2 14.5 5.5 14.5 8.5C14.5 11.5 12 14 12 14C12 14 9.5 11.5 9.5 8.5C9.5 5.5 12 2 12 2Z"
-              />
-              <path strokeWidth="2" d="M2.5 9.5L7 12L2.5 14.5" />
-              <path strokeWidth="2" d="M21.5 9.5L17 12L21.5 14.5" />
-              <path strokeWidth="2" d="M7 19L12 15L17 19" />
-            </svg>
+          <div className="inline-flex items-center justify-center mb-4">
+            <Image 
+              src="/icon.jpg" 
+              alt="PannaMaster Logo" 
+              width={80} 
+              height={80} 
+              className="rounded-full shadow-lg"
+              priority
+            />
           </div>
           <h1 className="text-3xl font-bold text-foreground">PannaMaster</h1>
           <p className="text-muted-foreground mt-1">Daily Football Games</p>
