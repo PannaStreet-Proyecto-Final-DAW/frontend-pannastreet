@@ -31,7 +31,7 @@ interface Guess {
   }
 }
 
-export default function WordlePage() {
+export default function GuessThePlayerPage() {
   const [targetPlayer, setTargetPlayer] = useState(PLAYERS[0])
   const [guesses, setGuesses] = useState<Guess[]>([])
   const [currentGuess, setCurrentGuess] = useState("")
@@ -121,7 +121,7 @@ export default function WordlePage() {
       </div>
 
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Futbol Wordle</h1>
+        <h1 className="text-3xl font-bold text-foreground mb-2">Guess the Player</h1>
         <p className="text-muted-foreground">
           Guess the mystery player in 6 tries
         </p>
