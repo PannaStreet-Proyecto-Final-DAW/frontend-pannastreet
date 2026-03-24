@@ -4,17 +4,17 @@ import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
-interface Game {
+export interface Game {
   id: string
   title: string
   description: string
-  icon: "wordle" | "lineup" | "trivia"
+  icon: "guess-the-player" | "lineup" | "trivia"
   color: string
   href: string
 }
 
 const icons = {
-  wordle: (
+  "guess-the-player": (
     <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <rect x="3" y="3" width="5" height="5" rx="1" className="fill-primary/30" />
       <rect x="9.5" y="3" width="5" height="5" rx="1" />
