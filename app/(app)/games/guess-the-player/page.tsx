@@ -125,7 +125,7 @@ export default function GuessThePlayerPage() {
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-foreground mb-2">Guess the Player</h1>
         <p className="text-muted-foreground">
-          Guess the mystery player in 6 tries
+          Test your football intuition by identifying the mystery player from daily clues.
         </p>
       </div>
 
@@ -137,9 +137,9 @@ export default function GuessThePlayerPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
             </div>
-            <h2 className="text-xl font-bold text-card-foreground mb-2">Ready to Play?</h2>
-            <p className="text-muted-foreground mb-6">
-              Guess the mystery football player by their team, nationality, position, and age. You have 6 attempts!
+            <h2 className="text-xl font-bold text-card-foreground mb-3">Will You Solve Today's Mystery?</h2>
+            <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
+              You have <strong>6 attempts</strong> to uncover the hidden football star of the day. After each guess, you'll receive dynamic feedback based on the player's current team, nationality, position, and age. The tiles will change color to show how close you are: <strong>Green</strong> indicates a perfect match, and <strong>Grey</strong> means no match. Use these strategic hints to narrow down your options!
             </p>
             <Button onClick={() => setIsStarted(true)} className="bg-primary text-primary-foreground">
               Start Game
