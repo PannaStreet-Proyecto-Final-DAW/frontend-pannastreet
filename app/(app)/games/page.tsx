@@ -1,13 +1,13 @@
-import { GameCard } from "@/components/game-card"
+import { GameCard, type Game } from "@/components/game-card"
 
-const games = [
+const games: Game[] = [
   {
-    id: "wordle",
-    title: "Futbol Wordle",
+    id: "guess-the-player",
+    title: "Guess the Player",
     description: "Guess the mystery football player in 6 tries. Get clues about nationality, team, position and more.",
-    icon: "wordle",
+    icon: "guess-the-player",
     color: "from-emerald-500/20 to-emerald-600/10",
-    href: "/games/wordle"
+    href: "/games/guess-the-player"
   },
   {
     id: "11clubs",
