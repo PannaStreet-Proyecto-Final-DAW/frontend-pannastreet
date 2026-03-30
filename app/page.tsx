@@ -174,7 +174,7 @@ export default function AuthPage() {
         </Card>
 
         <p className="text-center text-xs text-muted-foreground mt-6">
-          Play Wordle, Trivia, 11 Clubs and more football games daily
+          Play Guess the Player, Trivia, 11 Clubs and more football games daily
         </p>
       </div>
     </div>

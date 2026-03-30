@@ -9,7 +9,7 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: 'PannaMaster - Football Games',
-  description: 'Daily football games - Wordle, Trivia, 11 Clubs and more',
+  description: 'Daily football games - Guess the Player, Trivia, 11 Clubs and more',
   generator: 'v0.app',
   icons: {
     icon: '/icon.jpg',
