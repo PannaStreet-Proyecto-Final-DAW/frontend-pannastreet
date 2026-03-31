@@ -263,6 +263,7 @@ export default function ElevenClubsPage() {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="bg-input border-border mb-4"
+                      autoComplete="off"
                       autoFocus
                     />
                     <div className="space-y-2 max-h-64 overflow-y-auto">
