@@ -29,34 +29,34 @@ export function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm">
+      <div className="container mx-auto flex h-[72px] items-center justify-between px-6">
         {/* Logo */}
-        <Link href="/games" className="flex items-center gap-2">
-          <div className="flex items-center justify-center">
+        <Link href="/games" className="flex items-center gap-3">
+          <div className="flex items-center justify-center shrink-0">
             <Image 
               src="/icon.jpg" 
               alt="PannaMaster Logo" 
-              width={36} 
-              height={36} 
-              className="rounded-full"
+              width={42} 
+              height={42} 
+              className="rounded-full shadow-md"
               priority
             />
           </div>
-          <span className="font-bold text-foreground hidden sm:inline">PannaMaster</span>
+          <span className="font-bold text-lg text-foreground tracking-tight">PannaMaster</span>
         </Link>
 
         {/* Navigation */}
-        <nav className="flex items-center gap-1">
+        <nav className="flex items-center gap-2">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               className={cn(
-                "px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+                "px-4 py-2 rounded-xl text-base font-semibold transition-all duration-200",
                 pathname === link.href || pathname.startsWith(link.href + "/")
-                  ? "bg-primary/10 text-primary"
-                  : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                  ? "bg-primary/15 text-primary shadow-sm"
+                  : "text-muted-foreground hover:text-foreground hover:bg-secondary/70"
               )}
             >
               {link.label}
@@ -69,14 +69,14 @@ export function Navbar() {
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
-              className="flex items-center gap-2 text-foreground hover:bg-secondary"
+              className="flex items-center gap-3 py-4 px-3 h-auto text-foreground hover:bg-secondary/70 rounded-xl transition-all"
             >
-              <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                <span className="text-sm font-medium text-primary">
+              <div className="w-9 h-9 rounded-full bg-primary/20 flex items-center justify-center border border-primary/10 shadow-inner">
+                <span className="text-sm font-bold text-primary">
                   {user?.userName?.charAt(0).toUpperCase()}
                 </span>
               </div>
-              <span className="hidden sm:inline text-sm font-medium">
+              <span className="hidden md:inline text-sm font-semibold">
                 {user?.userName}
               </span>
               <svg
