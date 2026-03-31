@@ -4,7 +4,7 @@ const games: Game[] = [
   {
     id: "guess-the-player",
     title: "Guess the Player",
-    description: "Guess the mystery football player in 6 tries. Get clues about nationality, team, position and more.",
+    description: "Test your football intuition by identifying the mystery player from daily clues. You have 6 attempts to solve the puzzle.",
     icon: "guess-the-player",
     color: "from-emerald-500/20 to-emerald-600/10",
     href: "/games/guess-the-player"
@@ -12,7 +12,7 @@ const games: Game[] = [
   {
     id: "11clubs",
     title: "11 Clubs",
-    description: "Build a starting 11 using players from 11 different clubs. Complete the lineup to win.",
+    description: "Build a unique starting 11 using players from eleven different football clubs. Complete the lineup to win the challenge.",
     icon: "lineup",
     color: "from-blue-500/20 to-blue-600/10",
     href: "/games/11clubs"
@@ -20,7 +20,7 @@ const games: Game[] = [
   {
     id: "trivia",
     title: "Football Trivia",
-    description: "Test your football knowledge with daily trivia questions about players, teams and history.",
+    description: "Prove your status as a football historian with our daily knowledge test about legends, records, and iconic moments.",
     icon: "trivia",
     color: "from-amber-500/20 to-amber-600/10",
     href: "/games/trivia"
@@ -51,3 +51,4 @@ export default function GamesPage() {
     </div>
   )
 }
+
