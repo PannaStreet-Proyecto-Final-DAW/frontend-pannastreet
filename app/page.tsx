@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { useAuth } from "@/lib/auth-context"
@@ -21,11 +21,11 @@ export default function AuthPage() {
   const { login, register, user, isLoading } = useAuth()
   const router = useRouter()
 
-  // Redirect if already logged in
-  if (!isLoading && user) {
-    router.push("/games")
-    return null
-  }
+  useEffect(() => {
+    if (!isLoading && user) {
+      router.push("/games")
+    }
+  }, [isLoading, user, router])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -55,7 +55,7 @@ export default function AuthPage() {
     setIsSubmitting(false)
   }
 
-  if (isLoading) {
+  if (isLoading || user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <Spinner className="h-8 w-8 text-primary" />
@@ -106,6 +106,7 @@ export default function AuthPage() {
                       value={userName}
                       onChange={(e) => setUserName(e.target.value)}
                       required={!isLogin}
+                      autoComplete="username"
                       className="bg-input border-border"
                     />
                   </Field>
@@ -119,6 +120,7 @@ export default function AuthPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    autoComplete="email"
                     className="bg-input border-border"
                   />
                 </Field>
@@ -132,6 +134,7 @@ export default function AuthPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     minLength={6}
+                    autoComplete={isLogin ? "current-password" : "new-password"}
                     className="bg-input border-border"
                   />
                 </Field>
