@@ -157,7 +157,7 @@ export default function TriviaPage() {
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-foreground mb-2">Football Trivia</h1>
         <p className="text-muted-foreground">
-          Test your football knowledge with daily questions
+          Prove your status as a football historian with our daily knowledge test.
         </p>
       </div>
 
@@ -171,9 +171,9 @@ export default function TriviaPage() {
                 <circle cx="12" cy="17" r="0.5" className="fill-current" />
               </svg>
             </div>
-            <h2 className="text-xl font-bold text-card-foreground mb-2">Ready to Play?</h2>
-            <p className="text-muted-foreground mb-6">
-              Answer 5 questions about football history, players, and teams.
+            <h2 className="text-xl font-bold text-card-foreground mb-3">The Ultimate Knowledge Test</h2>
+            <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
+              Face a curated set of <strong>5 challenging questions</strong> covering everything from World Cup records and Champions League legends to iconic stadiums and Premier League history. Do you have what it takes to score a perfect 5/5 today?
             </p>
             <Button onClick={() => setIsStarted(true)} className="bg-primary text-primary-foreground">
               Start Trivia
