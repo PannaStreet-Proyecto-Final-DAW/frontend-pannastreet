@@ -130,20 +130,28 @@ export default function GuessThePlayerPage() {
       </div>
 
       {!isStarted ? (
-        <Card className="border-border bg-card">
-          <CardContent className="pt-6 text-center">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
-              <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
+        <Card className="border-border bg-card overflow-hidden">
+          <CardContent className="p-0">
+            <div className="flex flex-col md:flex-row items-stretch">
+              <div className="w-full md:w-2/5 aspect-square">
+                <img
+                  src="/images/games/guess-the-player.png"
+                  alt="Guess the Player"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="p-6 md:p-8 flex-1 flex flex-col justify-center text-center md:text-left">
+                <h2 className="text-2xl font-bold text-card-foreground mb-4">Will You Solve Today's Mystery?</h2>
+                <p className="text-muted-foreground mb-6 max-w-lg mx-auto md:mx-0 leading-relaxed">
+                  You have <strong>6 attempts</strong> to uncover the hidden football star of the day. After each guess, you'll receive dynamic feedback based on the player's current team, nationality, position, and age. The tiles will change color to show how close you are: <strong>Green</strong> indicates a perfect match, and <strong>Grey</strong> means no match. Use these strategic hints to narrow down your options!
+                </p>
+                <div className="flex justify-center md:justify-start">
+                  <Button onClick={() => setIsStarted(true)} size="lg" className="bg-primary text-primary-foreground font-bold px-8">
+                    Start Game
+                  </Button>
+                </div>
+              </div>
             </div>
-            <h2 className="text-xl font-bold text-card-foreground mb-3">Will You Solve Today's Mystery?</h2>
-            <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
-              You have <strong>6 attempts</strong> to uncover the hidden football star of the day. After each guess, you'll receive dynamic feedback based on the player's current team, nationality, position, and age. The tiles will change color to show how close you are: <strong>Green</strong> indicates a perfect match, and <strong>Grey</strong> means no match. Use these strategic hints to narrow down your options!
-            </p>
-            <Button onClick={() => setIsStarted(true)} className="bg-primary text-primary-foreground">
-              Start Game
-            </Button>
           </CardContent>
         </Card>
       ) : (

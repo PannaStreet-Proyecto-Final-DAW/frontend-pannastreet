@@ -9,6 +9,7 @@ export interface Game {
   title: string
   description: string
   icon: "guess-the-player" | "lineup" | "trivia"
+  image: string
   color: string
   href: string
 }
@@ -61,24 +62,27 @@ export function GameCard({ game }: { game: Game }) {
         "hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5",
         "hover:-translate-y-1"
       )}>
-        <div className={cn(
-          "absolute inset-0 bg-gradient-to-br opacity-50 transition-opacity group-hover:opacity-100",
-          game.color
-        )} />
-        <CardHeader className="relative">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center justify-center w-14 h-14 rounded-xl bg-secondary/50 text-primary">
-              {icons[game.icon]}
-            </div>
-            <div>
-              <CardTitle className="text-lg text-card-foreground group-hover:text-primary transition-colors">
-                {game.title}
-              </CardTitle>
-              <div className="flex items-center gap-2 mt-1">
-                <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary">
-                  Daily
-                </span>
-              </div>
+        <div className="relative aspect-square overflow-hidden border-b border-border">
+          <img
+            src={game.image}
+            alt={game.title}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+          <div className={cn(
+            "absolute inset-0 bg-gradient-to-t from-background/80 to-transparent opacity-0 transition-opacity group-hover:opacity-100",
+            game.color
+          )} />
+        </div>
+
+        <CardHeader className="relative pt-4 pb-2">
+          <div>
+            <CardTitle className="text-xl text-card-foreground group-hover:text-primary transition-colors">
+              {game.title}
+            </CardTitle>
+            <div className="flex items-center gap-2 mt-1">
+              <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+                Daily Game
+              </span>
             </div>
           </div>
         </CardHeader>
