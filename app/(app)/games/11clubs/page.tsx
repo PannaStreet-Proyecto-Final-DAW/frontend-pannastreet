@@ -160,15 +160,28 @@ export default function ElevenClubsPage() {
       </div>
 
       {!isPlaying ? (
-        <Card className="border-border bg-card">
-          <CardContent className="pt-6 text-center">
-            <h2 className="text-xl font-bold text-card-foreground mb-3">Ready for the 11 Clubs Challenge?</h2>
-            <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
-              In this game, your mission is to complete a full lineup by selecting a different player for each position. The catch? You must use a <strong>unique club</strong> for each player in your squad. Once a club has been used for any position, it becomes unavailable for the rest of your lineup. Put your knowledge of current squads and transfer history to the test to complete the formation as quickly as possible.
-            </p>
-            <Button onClick={startGame} className="bg-primary text-primary-foreground">
-              Start Game
-            </Button>
+        <Card className="border-border bg-card overflow-hidden">
+          <CardContent className="p-0">
+            <div className="flex flex-col md:flex-row items-stretch">
+              <div className="w-full md:w-2/5 aspect-square">
+                <img
+                  src="/images/games/11clubs.png"
+                  alt="11 Clubs"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="p-6 md:p-8 flex-1 flex flex-col justify-center text-center md:text-left">
+                <h2 className="text-2xl font-bold text-card-foreground mb-4">Ready for the 11 Clubs Challenge?</h2>
+                <p className="text-muted-foreground mb-6 max-w-lg mx-auto md:mx-0 leading-relaxed">
+                  In this game, your mission is to complete a full lineup by selecting a different player for each position. The catch? You must use a <strong>unique club</strong> for each player in your squad. Once a club has been used for any position, it becomes unavailable for the rest of your lineup. Put your knowledge of current squads and transfer history to the test to complete the formation as quickly as possible.
+                </p>
+                <div className="flex justify-center md:justify-start">
+                  <Button onClick={startGame} size="lg" className="bg-primary text-primary-foreground font-bold px-8">
+                    Start Game
+                  </Button>
+                </div>
+              </div>
+            </div>
           </CardContent>
         </Card>
       ) : (

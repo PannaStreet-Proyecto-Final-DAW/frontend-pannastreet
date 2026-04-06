@@ -162,22 +162,28 @@ export default function TriviaPage() {
       </div>
 
       {!isStarted ? (
-        <Card className="border-border bg-card">
-          <CardContent className="pt-6 text-center">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
-              <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" strokeWidth="2" />
-                <path strokeWidth="2" d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3" />
-                <circle cx="12" cy="17" r="0.5" className="fill-current" />
-              </svg>
+        <Card className="border-border bg-card overflow-hidden">
+          <CardContent className="p-0">
+            <div className="flex flex-col md:flex-row items-stretch">
+              <div className="w-full md:w-2/5 aspect-square">
+                <img
+                  src="/images/games/trivia.png"
+                  alt="Football Trivia"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="p-6 md:p-8 flex-1 flex flex-col justify-center text-center md:text-left">
+                <h2 className="text-2xl font-bold text-card-foreground mb-4">The Ultimate Knowledge Test</h2>
+                <p className="text-muted-foreground mb-6 max-w-lg mx-auto md:mx-0 leading-relaxed">
+                  Face a curated set of <strong>5 challenging questions</strong> covering everything from World Cup records and Champions League legends to iconic stadiums and Premier League history. Do you have what it takes to score a perfect 5/5 today?
+                </p>
+                <div className="flex justify-center md:justify-start">
+                  <Button onClick={() => setIsStarted(true)} size="lg" className="bg-primary text-primary-foreground font-bold px-8">
+                    Start Trivia
+                  </Button>
+                </div>
+              </div>
             </div>
-            <h2 className="text-xl font-bold text-card-foreground mb-3">The Ultimate Knowledge Test</h2>
-            <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
-              Face a curated set of <strong>5 challenging questions</strong> covering everything from World Cup records and Champions League legends to iconic stadiums and Premier League history. Do you have what it takes to score a perfect 5/5 today?
-            </p>
-            <Button onClick={() => setIsStarted(true)} className="bg-primary text-primary-foreground">
-              Start Trivia
-            </Button>
           </CardContent>
         </Card>
       ) : gameState.isComplete ? (
