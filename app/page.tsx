@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { FieldGroup, Field, FieldLabel } from "@/components/ui/field"
 import { Spinner } from "@/components/ui/spinner"
-import { ThemeToggle } from "@/components/theme-toggle"
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true)
@@ -65,10 +64,7 @@ export default function AuthPage() {
   }
 
   return (
-     <div className="min-h-screen flex items-center justify-center bg-transparent p-4">
-      <div className="absolute top-4 right-4">
-        <ThemeToggle />
-      </div>
+    <div className="min-h-screen flex items-center justify-center bg-transparent p-4">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
