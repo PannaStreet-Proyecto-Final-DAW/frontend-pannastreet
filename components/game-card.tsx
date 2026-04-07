@@ -57,9 +57,9 @@ export function GameCard({ game }: { game: Game }) {
   return (
     <Link href={game.href} className="block group">
       <Card className={cn(
-        "relative overflow-hidden border-border bg-card transition-all duration-300",
-        "hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5",
-        "hover:-translate-y-1"
+        "relative overflow-hidden border-border bg-card transition-all duration-500",
+        "hover:border-primary/50 hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)] hover:shadow-primary/20",
+        "hover:-translate-y-3"
       )}>
         <div className={cn(
           "absolute inset-0 bg-gradient-to-br opacity-50 transition-opacity group-hover:opacity-100",
@@ -67,7 +67,7 @@ export function GameCard({ game }: { game: Game }) {
         )} />
         <CardHeader className="relative">
           <div className="flex items-center gap-4">
-            <div className="flex items-center justify-center w-14 h-14 rounded-xl bg-secondary/50 text-primary">
+            <div className="flex items-center justify-center w-14 h-14 rounded-xl bg-primary/10 text-primary">
               {icons[game.icon]}
             </div>
             <div>
@@ -83,7 +83,7 @@ export function GameCard({ game }: { game: Game }) {
           </div>
         </CardHeader>
         <CardContent className="relative">
-          <CardDescription className="text-muted-foreground line-clamp-2">
+          <CardDescription className="text-neutral-600 dark:text-neutral-300 line-clamp-2 transition-colors">
             {game.description}
           </CardDescription>
           <div className="mt-4 flex items-center text-sm text-primary font-medium">

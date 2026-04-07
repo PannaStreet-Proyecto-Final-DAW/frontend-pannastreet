@@ -29,7 +29,7 @@ export function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-card/90 backdrop-blur-md shadow-sm">
       <div className="container mx-auto flex h-[72px] items-center justify-between px-6">
         {/* Logo */}
         <Link href="/games" className="flex items-center gap-3">
@@ -43,7 +43,7 @@ export function Navbar() {
               priority
             />
           </div>
-          <span className="font-bold text-lg text-foreground tracking-tight">PannaMaster</span>
+          <span className="font-bold text-lg text-primary tracking-tight">PannaMaster</span>
         </Link>
 
         {/* Navigation */}
@@ -53,10 +53,10 @@ export function Navbar() {
               key={link.href}
               href={link.href}
               className={cn(
-                "px-4 py-2 rounded-xl text-base font-semibold transition-all duration-200",
+                "px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200",
                 pathname === link.href || pathname.startsWith(link.href + "/")
-                  ? "bg-primary/15 text-primary shadow-sm"
-                  : "text-muted-foreground hover:text-foreground hover:bg-secondary/70"
+                  ? "bg-primary/10 text-primary shadow-sm"
+                  : "text-muted-foreground hover:text-primary hover:bg-primary/5"
               )}
             >
               {link.label}
@@ -71,12 +71,12 @@ export function Navbar() {
               variant="ghost"
               className="flex items-center gap-3 py-4 px-3 h-auto text-foreground hover:bg-secondary/70 rounded-xl transition-all"
             >
-              <div className="w-9 h-9 rounded-full bg-primary/20 flex items-center justify-center border border-primary/10 shadow-inner">
+              <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20 shadow-inner">
                 <span className="text-sm font-bold text-primary">
                   {user?.userName?.charAt(0).toUpperCase()}
                 </span>
               </div>
-              <span className="hidden md:inline text-sm font-semibold">
+              <span className="hidden md:inline text-sm font-bold text-muted-foreground">
                 {user?.userName}
               </span>
               <svg
