@@ -58,14 +58,14 @@ export default function AuthPage() {
 
   if (isLoading || user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="min-h-screen flex items-center justify-center bg-transparent">
         <Spinner className="h-8 w-8 text-primary" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4 relative">
+     <div className="min-h-screen flex items-center justify-center bg-transparent p-4">
       <div className="absolute top-4 right-4">
         <ThemeToggle />
       </div>
