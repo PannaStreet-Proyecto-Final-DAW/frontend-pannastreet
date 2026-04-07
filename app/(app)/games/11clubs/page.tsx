@@ -154,7 +154,7 @@ export default function ElevenClubsPage() {
 
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-foreground mb-2">11 Clubs</h1>
-        <p className="text-muted-foreground">
+        <p className="text-foreground/80 font-medium">
           Build a unique starting 11 using players from eleven different football clubs.
         </p>
       </div>
@@ -163,7 +163,7 @@ export default function ElevenClubsPage() {
         <Card className="border-border bg-card">
           <CardContent className="pt-6 text-center">
             <h2 className="text-xl font-bold text-card-foreground mb-3">Ready for the 11 Clubs Challenge?</h2>
-            <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
+            <p className="text-neutral-600 dark:text-neutral-300 mb-6 max-w-lg mx-auto leading-relaxed">
               In this game, your mission is to complete a full lineup by selecting a different player for each position. The catch? You must use a <strong>unique club</strong> for each player in your squad. Once a club has been used for any position, it becomes unavailable for the rest of your lineup. Put your knowledge of current squads and transfer history to the test to complete the formation as quickly as possible.
             </p>
             <Button onClick={startGame} className="bg-primary text-primary-foreground">
