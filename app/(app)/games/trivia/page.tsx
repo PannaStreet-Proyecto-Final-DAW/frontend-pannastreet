@@ -146,7 +146,7 @@ export default function TriviaPage() {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="mb-6">
-        <Link href="/games" className="text-muted-foreground hover:text-primary text-sm flex items-center gap-1">
+        <Link href="/games" className="text-white hover:text-primary text-sm flex items-center gap-1">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
           </svg>
@@ -156,7 +156,7 @@ export default function TriviaPage() {
 
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-foreground mb-2">Football Trivia</h1>
-        <p className="text-foreground/80 font-medium">
+        <p className="text-white font-medium">
           Prove your status as a football historian with our daily knowledge test.
         </p>
       </div>
@@ -199,10 +199,10 @@ export default function TriviaPage() {
               </span>
             </div>
             <h2 className="text-2xl font-bold text-card-foreground mb-2">
-              {gameState.score >= questions.length * 0.8 ? "Amazing!" : gameState.score >= questions.length * 0.5 ? "Good job!" : "Nice try!"}
+              {gameState.score >= questions.length * 0.8 ? "¡Increíble!" : gameState.score >= questions.length * 0.5 ? "¡Buen trabajo!" : "¡Buen intento!"}
             </h2>
             <p className="text-muted-foreground mb-6">{getScoreMessage()}</p>
-            
+
             {/* Results breakdown */}
             <div className="mb-6 space-y-2">
               {questions.map((q, i) => (
@@ -229,17 +229,17 @@ export default function TriviaPage() {
               ))}
             </div>
 
-            <Button onClick={resetGame} className="bg-primary text-primary-foreground">
-              Play Again
-            </Button>
+            <div className="mt-6 pt-6 border-t border-border/50 max-w-sm mx-auto">
+              <p className="text-primary font-bold">¡Gracias por jugar! Nos vemos mañana</p>
+            </div>
           </CardContent>
         </Card>
       ) : (
         <>
           {/* Progress */}
           <div className="flex items-center justify-between mb-4">
-            <span className="text-sm text-muted-foreground">
-              Question {gameState.currentQuestion + 1} of {questions.length}
+            <span className="text-sm text-white font-medium">
+              Pregunta {gameState.currentQuestion + 1} de {questions.length}
             </span>
             <span className="text-sm font-medium text-primary">
               Score: {gameState.score}
@@ -279,10 +279,10 @@ export default function TriviaPage() {
                         showCorrect
                           ? "border-primary bg-primary/10 text-primary"
                           : showWrong
-                          ? "border-destructive bg-destructive/10 text-destructive"
-                          : isSelected
-                          ? "border-primary bg-primary/5 text-card-foreground"
-                          : "border-border bg-secondary/30 text-card-foreground hover:border-primary/50"
+                            ? "border-destructive bg-destructive/10 text-destructive"
+                            : isSelected
+                              ? "border-primary bg-primary/5 text-card-foreground"
+                              : "border-border bg-secondary/30 text-card-foreground hover:border-primary/50"
                       )}
                     >
                       <div className="flex items-center justify-between">

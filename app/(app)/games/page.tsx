@@ -35,7 +35,7 @@ export default function GamesPage() {
     <div className="max-w-4xl mx-auto">
       <div className="text-center mb-10">
         <h1 className="text-3xl font-bold text-foreground mb-2">Daily Football Games</h1>
-        <p className="text-foreground/80 font-medium tracking-wide">
+        <p className="text-white font-medium tracking-wide">
           Select a game to play and test your football knowledge
         </p>
       </div>
@@ -47,7 +47,7 @@ export default function GamesPage() {
       </div>
 
       <div className="mt-12 text-center">
-        <p className="text-sm text-foreground/80 font-medium">
+        <p className="text-sm text-white font-medium">
           New challenges every day at midnight
         </p>
       </div>

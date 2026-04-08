@@ -144,7 +144,7 @@ export default function ElevenClubsPage() {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="mb-6">
-        <Link href="/games" className="text-muted-foreground hover:text-primary text-sm flex items-center gap-1">
+        <Link href="/games" className="text-white hover:text-primary text-sm flex items-center gap-1">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
           </svg>
@@ -154,7 +154,7 @@ export default function ElevenClubsPage() {
 
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-foreground mb-2">11 Clubs</h1>
-        <p className="text-foreground/80 font-medium">
+        <p className="text-white font-medium">
           Build a unique starting 11 using players from eleven different football clubs.
         </p>
       </div>
@@ -189,7 +189,7 @@ export default function ElevenClubsPage() {
         <>
           {/* Timer and progress */}
           <div className="flex items-center justify-between mb-6">
-            <div className="text-sm text-muted-foreground">
+            <div className="text-sm text-white font-medium">
               Players: {lineup.filter(Boolean).length}/11
             </div>
             <div className="text-lg font-mono text-foreground">{formatTime(timer)}</div>
@@ -224,8 +224,8 @@ export default function ElevenClubsPage() {
                         player
                           ? "bg-primary text-primary-foreground"
                           : isSelected
-                          ? "bg-primary/50 text-primary-foreground ring-2 ring-primary"
-                          : "bg-secondary/80 text-secondary-foreground hover:bg-secondary",
+                            ? "bg-primary/50 text-primary-foreground ring-2 ring-primary"
+                            : "bg-secondary/80 text-secondary-foreground hover:bg-secondary",
                         !player && !gameComplete && "cursor-pointer"
                       )}
                       style={{
@@ -254,20 +254,20 @@ export default function ElevenClubsPage() {
                   {currentPosition !== null
                     ? `Select player for ${POSITIONS[currentPosition]}`
                     : gameComplete
-                    ? "Lineup Complete!"
-                    : "Click a position"}
+                      ? "Lineup Complete!"
+                      : "Click a position"}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 {gameComplete ? (
                   <div className="text-center py-8">
-                    <p className="text-2xl font-bold text-primary mb-2">Great job!</p>
-                    <p className="text-muted-foreground mb-4">
-                      You completed the lineup in {formatTime(timer)}
+                    <p className="text-2xl font-bold text-primary mb-2">¡Buen trabajo!</p>
+                    <p className="text-muted-foreground mb-6">
+                      Has completado la alineación en {formatTime(timer)}
                     </p>
-                    <Button onClick={resetGame} className="bg-primary text-primary-foreground">
-                      Play Again
-                    </Button>
+                    <div className="mt-4 pt-4 border-t border-border/50 max-w-sm mx-auto">
+                      <p className="text-primary font-bold">¡Gracias por jugar! Nos vemos mañana</p>
+                    </div>
                   </div>
                 ) : currentPosition !== null ? (
                   <>
