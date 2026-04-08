@@ -42,10 +42,10 @@ export function ThemeToggle() {
       className="relative h-10 w-10 rounded-xl bg-secondary/50 hover:bg-secondary/80 text-foreground transition-all duration-300 shadow-sm border border-border/50"
       title={
         theme === "system"
-          ? "Modo: Sistema"
+          ? "Mode: System"
           : theme === "light"
-            ? "Modo: Claro"
-            : "Modo: Oscuro"
+            ? "Mode: Light"
+            : "Mode: Dark"
       }
     >
       <div className="relative h-full w-full flex items-center justify-center">
