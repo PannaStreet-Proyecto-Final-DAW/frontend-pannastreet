@@ -6,6 +6,7 @@ const games: Game[] = [
     title: "Guess the Player",
     description: "Test your football intuition by identifying the mystery player from daily clues. You have 6 attempts to solve the puzzle.",
     icon: "guess-the-player",
+    image: "/images/games/guess-the-player.png",
     color: "from-game-1 to-transparent",
     href: "/games/guess-the-player"
   },
@@ -14,6 +15,7 @@ const games: Game[] = [
     title: "11 Clubs",
     description: "Build a unique starting 11 using players from eleven different football clubs. Complete the lineup to win the challenge.",
     icon: "lineup",
+    image: "/images/games/11clubs.png",
     color: "from-game-2 to-transparent",
     href: "/games/11clubs"
   },
@@ -22,6 +24,7 @@ const games: Game[] = [
     title: "Football Trivia",
     description: "Prove your status as a football historian with our daily knowledge test about legends, records, and iconic moments.",
     icon: "trivia",
+    image: "/images/games/trivia.png",
     color: "from-game-3 to-transparent",
     href: "/games/trivia"
   }

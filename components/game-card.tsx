@@ -9,6 +9,7 @@ export interface Game {
   title: string
   description: string
   icon: "guess-the-player" | "lineup" | "trivia"
+  image: string
   color: string
   href: string
 }
@@ -62,27 +63,27 @@ export function GameCard({ game }: { game: Game }) {
         "hover:-translate-y-3"
       )}>
         <div className={cn(
-          "absolute inset-0 bg-gradient-to-br opacity-50 transition-opacity group-hover:opacity-100",
-          game.color
-        )} />
-        <CardHeader className="relative">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center justify-center w-14 h-14 rounded-xl bg-primary/10 text-primary">
-              {icons[game.icon]}
-            </div>
-            <div>
-              <CardTitle className="text-lg text-card-foreground group-hover:text-primary transition-colors">
-                {game.title}
-              </CardTitle>
-              <div className="flex items-center gap-2 mt-1">
-                <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary">
-                  Daily
-                </span>
-              </div>
-            </div>
-          </div>
+          "relative aspect-[16/10] overflow-hidden border-b border-border flex items-center justify-center p-6 bg-muted/5",
+        )}>
+          {/* Subtle background glow */}
+          <div className={cn(
+            "absolute inset-0 opacity-20 bg-gradient-to-br",
+            game.color
+          )} />
+          
+          <img
+            src={game.image}
+            alt={game.title}
+            className="relative z-10 max-h-full max-w-full object-contain rounded-xl shadow-2xl transition-transform duration-500 group-hover:scale-110"
+          />
+        </div>
+
+        <CardHeader className="relative pt-1 pb-0">
+          <CardTitle className="text-xl text-card-foreground group-hover:text-primary transition-colors text-center">
+            {game.title}
+          </CardTitle>
         </CardHeader>
-        <CardContent className="relative">
+        <CardContent className="relative pt-0">
           <CardDescription className="text-neutral-600 dark:text-neutral-300 line-clamp-2 transition-colors">
             {game.description}
           </CardDescription>
