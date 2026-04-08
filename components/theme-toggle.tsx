@@ -20,7 +20,7 @@ export function ThemeToggle() {
       <Button
         variant="ghost"
         size="icon"
-        className="h-10 w-10 rounded-xl bg-secondary/50 border border-border/50"
+        className="h-10 w-10 rounded-xl bg-primary/5 border border-primary/10"
         disabled
       >
         <Sun className="h-[1.2rem] w-[1.2rem] text-primary/50" />
@@ -39,7 +39,7 @@ export function ThemeToggle() {
       variant="ghost"
       size="icon"
       onClick={cycleTheme}
-      className="relative h-10 w-10 rounded-xl bg-secondary/50 hover:bg-secondary/80 text-foreground transition-all duration-300 shadow-sm border border-border/50"
+      className="relative h-10 w-10 rounded-xl bg-primary/5 hover:bg-primary/10 text-foreground hover:text-primary transition-all duration-300 shadow-sm border border-primary/20"
       title={
         theme === "system"
           ? "Mode: System"
