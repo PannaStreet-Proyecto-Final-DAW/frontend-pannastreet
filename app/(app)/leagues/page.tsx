@@ -109,7 +109,7 @@ export default function LeaguesPage() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-3xl font-bold text-foreground">My Leagues</h1>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-foreground/80 mt-1">
             Compete with friends and track your scores
           </p>
         </div>
@@ -232,7 +232,7 @@ export default function LeaguesPage() {
             <Card key={membership.id} className="border-border bg-card">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg text-card-foreground">
+                  <CardTitle className="text-lg text-primary transition-colors">
                     {membership.league?.name || `League ${membership.leagueId}`}
                   </CardTitle>
                   <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
@@ -243,12 +243,12 @@ export default function LeaguesPage() {
               <CardContent>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-muted-foreground">Your Score</p>
+                    <p className="text-sm text-foreground/70">Your Score</p>
                     <p className="text-2xl font-bold text-primary">{membership.score}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm text-muted-foreground">Joined</p>
-                    <p className="text-sm text-card-foreground">
+                    <p className="text-sm text-foreground/70">Joined</p>
+                    <p className="text-sm text-primary">
                       {new Date(membership.joinedAt).toLocaleDateString()}
                     </p>
                   </div>

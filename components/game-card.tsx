@@ -58,36 +58,33 @@ export function GameCard({ game }: { game: Game }) {
   return (
     <Link href={game.href} className="block group">
       <Card className={cn(
-        "relative overflow-hidden border-border bg-card transition-all duration-300",
-        "hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5",
-        "hover:-translate-y-1"
+        "relative overflow-hidden border-border bg-card transition-all duration-500",
+        "hover:border-primary/50 hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)] hover:shadow-primary/20",
+        "hover:-translate-y-3"
       )}>
-        <div className="relative aspect-square overflow-hidden border-b border-border">
+        <div className={cn(
+          "relative aspect-[16/10] overflow-hidden border-b border-border bg-gradient-to-br",
+          game.color
+        )}>
           <img
             src={game.image}
             alt={game.title}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
           />
-          <div className={cn(
-            "absolute inset-0 bg-gradient-to-t from-background/80 to-transparent opacity-0 transition-opacity group-hover:opacity-100",
-            game.color
-          )} />
         </div>
 
         <CardHeader className="relative pt-4 pb-2">
-          <div>
-            <CardTitle className="text-xl text-card-foreground group-hover:text-primary transition-colors">
-              {game.title}
-            </CardTitle>
-            <div className="flex items-center gap-2 mt-1">
-              <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
-                Daily Game
-              </span>
-            </div>
+          <CardTitle className="text-xl text-card-foreground group-hover:text-primary transition-colors">
+            {game.title}
+          </CardTitle>
+          <div className="flex items-center gap-2 mt-1">
+            <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+              Daily Game
+            </span>
           </div>
         </CardHeader>
         <CardContent className="relative">
-          <CardDescription className="text-muted-foreground line-clamp-2">
+          <CardDescription className="text-neutral-600 dark:text-neutral-300 line-clamp-2 transition-colors">
             {game.description}
           </CardDescription>
           <div className="mt-4 flex items-center text-sm text-primary font-medium">

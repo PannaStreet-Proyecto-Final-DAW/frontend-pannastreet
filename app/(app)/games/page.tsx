@@ -7,7 +7,7 @@ const games: Game[] = [
     description: "Test your football intuition by identifying the mystery player from daily clues. You have 6 attempts to solve the puzzle.",
     icon: "guess-the-player",
     image: "/images/games/guess-the-player.png",
-    color: "from-emerald-950/40 to-emerald-900/20",
+    color: "from-game-1 to-transparent",
     href: "/games/guess-the-player"
   },
   {
@@ -16,7 +16,7 @@ const games: Game[] = [
     description: "Build a unique starting 11 using players from eleven different football clubs. Complete the lineup to win the challenge.",
     icon: "lineup",
     image: "/images/games/11clubs.png",
-    color: "from-emerald-950/40 to-emerald-900/20",
+    color: "from-game-2 to-transparent",
     href: "/games/11clubs"
   },
   {
@@ -25,7 +25,7 @@ const games: Game[] = [
     description: "Prove your status as a football historian with our daily knowledge test about legends, records, and iconic moments.",
     icon: "trivia",
     image: "/images/games/trivia.png",
-    color: "from-emerald-950/40 to-emerald-900/20",
+    color: "from-game-3 to-transparent",
     href: "/games/trivia"
   }
 ]
@@ -35,7 +35,7 @@ export default function GamesPage() {
     <div className="max-w-4xl mx-auto">
       <div className="text-center mb-10">
         <h1 className="text-3xl font-bold text-foreground mb-2">Daily Football Games</h1>
-        <p className="text-muted-foreground">
+        <p className="text-foreground/80 font-medium tracking-wide">
           Select a game to play and test your football knowledge
         </p>
       </div>
@@ -47,7 +47,7 @@ export default function GamesPage() {
       </div>
 
       <div className="mt-12 text-center">
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-foreground/80 font-medium">
           New challenges every day at midnight
         </p>
       </div>
