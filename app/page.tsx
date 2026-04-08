@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { FieldGroup, Field, FieldLabel } from "@/components/ui/field"
+import { ThemeToggle } from "@/components/theme-toggle"
 import { Spinner } from "@/components/ui/spinner"
 
 export default function AuthPage() {
@@ -64,7 +65,10 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-transparent p-4">
+    <div className="min-h-screen flex items-center justify-center bg-transparent p-4 relative">
+      <div className="absolute top-6 right-6 z-10">
+        <ThemeToggle />
+      </div>
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
