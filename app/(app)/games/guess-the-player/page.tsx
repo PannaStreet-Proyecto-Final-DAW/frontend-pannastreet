@@ -133,11 +133,12 @@ export default function GuessThePlayerPage() {
         <Card className="border-border bg-card overflow-hidden">
           <CardContent className="p-0">
             <div className="flex flex-col md:flex-row items-stretch">
-              <div className="w-full md:w-1/2 aspect-video md:aspect-[4/3] bg-primary/5">
+              <div className="w-full md:w-1/2 aspect-video md:aspect-[4/3] relative flex items-center justify-center p-8 bg-muted/5">
+                <div className="absolute inset-0 opacity-10 bg-gradient-to-br from-game-1 to-transparent" />
                 <img
                   src="/images/games/guess-the-player.png"
                   alt="Guess the Player"
-                  className="w-full h-full object-contain p-4"
+                  className="relative z-10 max-h-full max-w-full object-contain rounded-2xl shadow-2xl"
                 />
               </div>
               <div className="p-6 md:p-8 flex-1 flex flex-col justify-center text-center md:text-left">
