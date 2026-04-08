@@ -23,30 +23,30 @@ export default function LeaguesPage() {
   const [availableLeagues, setAvailableLeagues] = useState<UserLeague[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState("")
-  
+
   // Create league state
   const [newLeagueName, setNewLeagueName] = useState("")
   const [isCreating, setIsCreating] = useState(false)
   const [createDialogOpen, setCreateDialogOpen] = useState(false)
-  
+
   // Join league state
   const [joinDialogOpen, setJoinDialogOpen] = useState(false)
   const [isJoining, setIsJoining] = useState(false)
 
   const fetchData = async () => {
     if (!user) return
-    
+
     setIsLoading(true)
     setError("")
-    
+
     try {
       const [membershipData, leaguesData] = await Promise.all([
         getUserMemberships(user.id),
         getAllUserLeagues()
       ])
-      
+
       setMemberships(membershipData)
-      
+
       // Filter out leagues user is already a member of
       const memberLeagueIds = new Set(membershipData.map(m => m.leagueId))
       setAvailableLeagues(leaguesData.filter(l => !memberLeagueIds.has(l.id)))
@@ -64,7 +64,7 @@ export default function LeaguesPage() {
   const handleCreateLeague = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!user || !newLeagueName.trim()) return
-    
+
     setIsCreating(true)
     try {
       const newLeague = await createUserLeague(newLeagueName)
@@ -81,7 +81,7 @@ export default function LeaguesPage() {
 
   const handleJoinLeague = async (leagueId: string) => {
     if (!user) return
-    
+
     setIsJoining(true)
     try {
       await joinLeague(user.id, leagueId)
@@ -109,7 +109,7 @@ export default function LeaguesPage() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-3xl font-bold text-foreground">My Leagues</h1>
-          <p className="text-foreground/80 mt-1">
+          <p className="text-white mt-1">
             Compete with friends and track your scores
           </p>
         </div>
@@ -182,7 +182,7 @@ export default function LeaguesPage() {
               </DialogHeader>
               <form onSubmit={handleCreateLeague}>
                 <Field>
-                  <FieldLabel htmlFor="league-name">League Name</FieldLabel>
+                  <FieldLabel htmlFor="league-name" className="text-card-foreground">League Name</FieldLabel>
                   <Input
                     id="league-name"
                     type="text"
@@ -243,11 +243,11 @@ export default function LeaguesPage() {
               <CardContent>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-foreground/70">Your Score</p>
+                    <p className="text-sm text-muted-foreground">Your Score</p>
                     <p className="text-2xl font-bold text-primary">{membership.score}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm text-foreground/70">Joined</p>
+                    <p className="text-sm text-muted-foreground">Joined</p>
                     <p className="text-sm text-primary">
                       {new Date(membership.joinedAt).toLocaleDateString()}
                     </p>
