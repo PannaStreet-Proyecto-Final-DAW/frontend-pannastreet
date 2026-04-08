@@ -74,7 +74,7 @@ export function Navbar() {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
-                className="flex items-center gap-3 py-4 px-3 h-auto text-foreground hover:bg-secondary/70 rounded-xl transition-all"
+                className="flex items-center gap-3 py-4 px-3 h-auto text-muted-foreground hover:bg-primary/5 hover:text-primary rounded-xl transition-all"
               >
                 <div className="w-9 h-9 rounded-full bg-primary/20 flex items-center justify-center border border-primary/10 shadow-inner">
                   <span className="text-sm font-bold text-primary">
