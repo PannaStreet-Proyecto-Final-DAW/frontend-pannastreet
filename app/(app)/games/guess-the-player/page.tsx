@@ -124,7 +124,7 @@ export default function GuessThePlayerPage() {
 
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-foreground mb-2">Guess the Player</h1>
-        <p className="text-muted-foreground">
+        <p className="text-foreground/80 font-medium">
           Test your football intuition by identifying the mystery player from daily clues.
         </p>
       </div>
@@ -133,17 +133,17 @@ export default function GuessThePlayerPage() {
         <Card className="border-border bg-card overflow-hidden">
           <CardContent className="p-0">
             <div className="flex flex-col md:flex-row items-stretch">
-              <div className="w-full md:w-2/5 aspect-square">
+              <div className="w-full md:w-1/2 aspect-video md:aspect-[4/3] bg-primary/5">
                 <img
                   src="/images/games/guess-the-player.png"
                   alt="Guess the Player"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain p-4"
                 />
               </div>
               <div className="p-6 md:p-8 flex-1 flex flex-col justify-center text-center md:text-left">
                 <h2 className="text-2xl font-bold text-card-foreground mb-4">Will You Solve Today's Mystery?</h2>
                 <p className="text-muted-foreground mb-6 max-w-lg mx-auto md:mx-0 leading-relaxed">
-                  You have <strong>6 attempts</strong> to uncover the hidden football star of the day. After each guess, you'll receive dynamic feedback based on the player's current team, nationality, position, and age. The tiles will change color to show how close you are: <strong>Green</strong> indicates a perfect match, and <strong>Grey</strong> means no match. Use these strategic hints to narrow down your options!
+                  You have <strong>6 attempts</strong> to uncover the hidden football star of the day. After each guess, you'll receive dynamic feedback. The tiles will change color to show how close you are: <strong>Green</strong> for a match, and <strong>Grey</strong> for no match.
                 </p>
                 <div className="flex justify-center md:justify-start">
                   <Button onClick={() => setIsStarted(true)} size="lg" className="bg-primary text-primary-foreground font-bold px-8">
@@ -184,7 +184,7 @@ export default function GuessThePlayerPage() {
                     </div>
                   )}
                 </form>
-                <p className="text-xs text-muted-foreground mt-2 text-center">
+                <p className="text-xs text-foreground/70 mt-2 text-center font-medium uppercase tracking-wider">
                   Attempts: {guesses.length}/6
                 </p>
               </CardContent>

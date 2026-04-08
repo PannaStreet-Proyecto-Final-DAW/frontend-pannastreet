@@ -154,7 +154,7 @@ export default function ElevenClubsPage() {
 
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-foreground mb-2">11 Clubs</h1>
-        <p className="text-muted-foreground">
+        <p className="text-foreground/80 font-medium">
           Build a unique starting 11 using players from eleven different football clubs.
         </p>
       </div>
@@ -163,17 +163,17 @@ export default function ElevenClubsPage() {
         <Card className="border-border bg-card overflow-hidden">
           <CardContent className="p-0">
             <div className="flex flex-col md:flex-row items-stretch">
-              <div className="w-full md:w-2/5 aspect-square">
+              <div className="w-full md:w-1/2 aspect-video md:aspect-[4/3] bg-primary/5">
                 <img
                   src="/images/games/11clubs.png"
                   alt="11 Clubs"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain p-4"
                 />
               </div>
               <div className="p-6 md:p-8 flex-1 flex flex-col justify-center text-center md:text-left">
                 <h2 className="text-2xl font-bold text-card-foreground mb-4">Ready for the 11 Clubs Challenge?</h2>
                 <p className="text-muted-foreground mb-6 max-w-lg mx-auto md:mx-0 leading-relaxed">
-                  In this game, your mission is to complete a full lineup by selecting a different player for each position. The catch? You must use a <strong>unique club</strong> for each player in your squad. Once a club has been used for any position, it becomes unavailable for the rest of your lineup. Put your knowledge of current squads and transfer history to the test to complete the formation as quickly as possible.
+                  In this game, your mission is to complete a full lineup by selecting a different player for each position. The catch? You must use a <strong>unique club</strong> for each player in your squad. Once a club has been used for any position, it becomes unavailable for the rest of your lineup.
                 </p>
                 <div className="flex justify-center md:justify-start">
                   <Button onClick={startGame} size="lg" className="bg-primary text-primary-foreground font-bold px-8">
