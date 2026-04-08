@@ -59,8 +59,8 @@ export function GameCard({ game }: { game: Game }) {
     <Link href={game.href} className="block group">
       <Card className={cn(
         "relative overflow-hidden border-border bg-card transition-all duration-500",
-        "hover:border-primary/50 hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)] hover:shadow-primary/20",
-        "hover:-translate-y-3"
+        "hover:border-primary hover:shadow-[0_20px_50px_rgba(0,0,0,0.15)] hover:shadow-primary/40",
+"hover:-translate-y-3"
       )}>
         <div className={cn(
           "relative aspect-[16/10] overflow-hidden border-b border-border flex items-center justify-center p-6 bg-muted/5",
