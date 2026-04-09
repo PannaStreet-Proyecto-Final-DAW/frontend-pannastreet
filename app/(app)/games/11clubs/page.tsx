@@ -56,6 +56,8 @@ export default function ElevenClubsPage() {
   const [gameComplete, setGameComplete] = useState(false)
   const [timer, setTimer] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
+  const [difficulty, setDifficulty] = useState("Intermediate")
+  const [mode, setMode] = useState("Male")
 
   useEffect(() => {
     // Shuffle and pick 11 random clubs
@@ -142,7 +144,7 @@ export default function ElevenClubsPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-3xl mx-auto">
       <div className="mb-6">
         <Link href="/games" className="text-white hover:text-primary text-sm flex items-center gap-1">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -163,7 +165,7 @@ export default function ElevenClubsPage() {
         <Card className="border-border bg-card overflow-hidden">
           <CardContent className="p-0">
             <div className="flex flex-col md:flex-row items-stretch">
-              <div className="w-full md:w-1/2 aspect-video md:aspect-[4/3] relative flex items-center justify-center p-8 bg-muted/5">
+              <div className="w-full md:w-1/2 aspect-video md:aspect-[4/3] relative flex items-center justify-center p-4 bg-muted/5">
                 <div className="absolute inset-0 opacity-10 bg-gradient-to-br from-game-2 to-transparent" />
                 <img
                   src="/images/games/11clubs.png"
@@ -171,13 +173,63 @@ export default function ElevenClubsPage() {
                   className="relative z-10 max-h-full max-w-full object-contain rounded-2xl shadow-2xl"
                 />
               </div>
-              <div className="p-6 md:p-8 flex-1 flex flex-col justify-center text-center md:text-left">
-                <h2 className="text-2xl font-bold text-card-foreground mb-4">Ready for the 11 Clubs Challenge?</h2>
-                <p className="text-muted-foreground mb-6 max-w-lg mx-auto md:mx-0 leading-relaxed">
-                  In this game, your mission is to complete a full lineup by selecting a different player for each position. The catch? You must use a <strong>unique club</strong> for each player in your squad. Once a club has been used for any position, it becomes unavailable for the rest of your lineup.
-                </p>
+              <div className="p-4 md:p-6 flex-1 flex flex-col justify-center text-center md:text-left">
+                <h2 className="text-2xl font-black italic mb-2 tracking-tighter uppercase">
+                  <span className="text-primary">FOOTBALL 11</span> <span className="text-white tracking-normal">CLUBS</span>
+                </h2>
+                <div className="text-xs text-white/90 mb-4 max-w-lg mx-auto md:mx-0 font-medium leading-relaxed space-y-1 text-pretty">
+                  <p>Football 11 is a daily football game where you have to add players from 11 different clubs in one lineup.</p>
+                  <ul className="list-disc list-inside space-y-0.5 opacity-80 decoration-primary/50">
+                    <li>Clubs will appear in random order, and you must add a player from each club.</li>
+                    <li>Complete the full lineup to win.</li>
+                    <li>You can give up by clicking the White Flag button.</li>
+                  </ul>
+                </div>
+
+                <div className="space-y-3 mb-6">
+                  <div>
+                    <p className="text-white text-sm font-bold mb-3 uppercase tracking-wider">Select difficulty:</p>
+                    <div className="flex flex-wrap gap-2 justify-center md:justify-start">
+                      {["Easy", "Intermediate", "Hard"].map((opt) => (
+                        <Button
+                          key={opt}
+                          variant={difficulty === opt ? "default" : "secondary"}
+                          onClick={() => setDifficulty(opt)}
+                          className={cn(
+                            "rounded-full px-6 transition-all duration-300",
+                            difficulty === opt ? "bg-primary text-primary-foreground shadow-[0_0_15px_rgba(var(--gold),0.3)]" : "bg-card/50 hover:bg-card text-white/70"
+                          )}
+                          size="sm"
+                        >
+                          {opt}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="text-white text-sm font-bold mb-3 uppercase tracking-wider">Select mode:</p>
+                    <div className="flex flex-wrap gap-2 justify-center md:justify-start">
+                      {["Male", "Female", "Mixed"].map((opt) => (
+                        <Button
+                          key={opt}
+                          variant={mode === opt ? "default" : "secondary"}
+                          onClick={() => setMode(opt)}
+                          className={cn(
+                            "rounded-full px-6 transition-all duration-300",
+                            mode === opt ? "bg-primary text-primary-foreground shadow-[0_0_15px_rgba(var(--gold),0.3)]" : "bg-card/50 hover:bg-card text-white/70"
+                          )}
+                          size="sm"
+                        >
+                          {opt}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
                 <div className="flex justify-center md:justify-start">
-                  <Button onClick={startGame} size="lg" className="bg-primary text-primary-foreground font-bold px-8">
+                  <Button onClick={startGame} size="lg" className="bg-primary text-primary-foreground font-black px-12 rounded-xl text-lg hover:scale-105 transition-transform shadow-lg">
                     Start Game
                   </Button>
                 </div>
