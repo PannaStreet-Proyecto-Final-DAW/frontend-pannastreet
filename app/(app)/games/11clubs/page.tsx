@@ -175,9 +175,9 @@ export default function ElevenClubsPage() {
               </div>
               <div className="p-4 md:p-6 flex-1 flex flex-col justify-center text-center md:text-left">
                 <h2 className="text-2xl font-black italic mb-2 tracking-tighter uppercase">
-                  <span className="text-primary">FOOTBALL 11</span> <span className="text-white tracking-normal">CLUBS</span>
+                  <span className="text-primary">FOOTBALL 11</span> <span className="text-black dark:text-white tracking-normal">CLUBS</span>
                 </h2>
-                <div className="text-xs text-white/90 mb-4 max-w-lg mx-auto md:mx-0 font-medium leading-relaxed space-y-1 text-pretty">
+                <div className="text-xs text-black dark:text-white/90 mb-4 max-w-lg mx-auto md:mx-0 font-medium leading-relaxed space-y-1 text-pretty">
                   <p>Football 11 is a daily football game where you have to add players from 11 different clubs in one lineup.</p>
                   <ul className="list-disc list-inside space-y-0.5 opacity-80 decoration-primary/50">
                     <li>Clubs will appear in random order, and you must add a player from each club.</li>
@@ -188,7 +188,7 @@ export default function ElevenClubsPage() {
 
                 <div className="space-y-3 mb-6">
                   <div>
-                    <p className="text-white text-sm font-bold mb-3 uppercase tracking-wider">Select difficulty:</p>
+                    <p className="text-black dark:text-white text-sm font-bold mb-3 uppercase tracking-wider">Select difficulty:</p>
                     <div className="flex flex-wrap gap-2 justify-center md:justify-start">
                       {["Easy", "Intermediate", "Hard"].map((opt) => (
                         <Button
@@ -197,7 +197,7 @@ export default function ElevenClubsPage() {
                           onClick={() => setDifficulty(opt)}
                           className={cn(
                             "rounded-full px-6 transition-all duration-300",
-                            difficulty === opt ? "bg-primary text-primary-foreground shadow-[0_0_15px_rgba(var(--gold),0.3)]" : "bg-card/50 hover:bg-card text-white/70"
+                            difficulty === opt ? "bg-primary text-primary-foreground shadow-[0_0_15px_rgba(var(--gold),0.3)]" : "bg-primary/10 hover:bg-primary/20 text-black/70 dark:text-white/70"
                           )}
                           size="sm"
                         >
@@ -208,7 +208,7 @@ export default function ElevenClubsPage() {
                   </div>
 
                   <div>
-                    <p className="text-white text-sm font-bold mb-3 uppercase tracking-wider">Select mode:</p>
+                    <p className="text-black dark:text-white text-sm font-bold mb-3 uppercase tracking-wider">Select mode:</p>
                     <div className="flex flex-wrap gap-2 justify-center md:justify-start">
                       {["Male", "Female", "Mixed"].map((opt) => (
                         <Button
@@ -217,7 +217,7 @@ export default function ElevenClubsPage() {
                           onClick={() => setMode(opt)}
                           className={cn(
                             "rounded-full px-6 transition-all duration-300",
-                            mode === opt ? "bg-primary text-primary-foreground shadow-[0_0_15px_rgba(var(--gold),0.3)]" : "bg-card/50 hover:bg-card text-white/70"
+                            mode === opt ? "bg-primary text-primary-foreground shadow-[0_0_15px_rgba(var(--gold),0.3)]" : "bg-primary/10 hover:bg-primary/20 text-black/70 dark:text-white/70"
                           )}
                           size="sm"
                         >

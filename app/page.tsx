@@ -83,7 +83,7 @@ export default function AuthPage() {
             />
           </div>
           <h1 className="text-3xl font-bold text-foreground">PannaMaster</h1>
-          <p className="text-muted-foreground mt-1">Daily Football Games</p>
+          <p className="text-white mt-1">Daily Football Games</p>
         </div>
 
         <Card className="border-border bg-card">
@@ -180,7 +180,7 @@ export default function AuthPage() {
           </CardContent>
         </Card>
 
-        <p className="text-center text-xs text-muted-foreground mt-6">
+        <p className="text-center text-xs text-white mt-6">
           Play Guess the Player, Trivia, 11 Clubs and more football games daily
         </p>
       </div>
