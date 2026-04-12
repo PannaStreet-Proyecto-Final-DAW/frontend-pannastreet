@@ -175,7 +175,7 @@ export default function TriviaPage() {
               </div>
               <div className="p-6 md:p-8 flex-1 flex flex-col justify-center text-center md:text-left">
                 <h2 className="text-2xl font-bold text-card-foreground mb-4">The Ultimate Knowledge Test</h2>
-                <p className="text-muted-foreground mb-6 max-w-lg mx-auto md:mx-0 leading-relaxed">
+                <p className="text-black/80 dark:text-muted-foreground mb-6 max-w-lg mx-auto md:mx-0 leading-relaxed">
                   Face a curated set of <strong>5 challenging questions</strong> covering everything from World Cup records and Champions League legends to iconic stadiums and Premier League history.
                 </p>
                 <div className="flex justify-center md:justify-start">
@@ -238,7 +238,7 @@ export default function TriviaPage() {
         <>
           {/* Progress */}
           <div className="flex items-center justify-between mb-4">
-            <span className="text-sm text-white font-medium">
+            <span className="text-sm text-black dark:text-white font-medium">
               Pregunta {gameState.currentQuestion + 1} de {questions.length}
             </span>
             <span className="text-sm font-medium text-primary">
