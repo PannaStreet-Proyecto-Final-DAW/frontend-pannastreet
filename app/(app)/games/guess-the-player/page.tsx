@@ -114,7 +114,7 @@ export default function GuessThePlayerPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="max-w-2xl mx-auto">
       <div className="mb-6">
         <Link href="/games" className="text-white hover:text-primary text-sm flex items-center gap-1">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -125,8 +125,8 @@ export default function GuessThePlayerPage() {
       </div>
 
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Guess the Player</h1>
-        <p className="text-white font-medium">
+        <h1 className="text-2xl font-bold text-foreground mb-1">Guess the Player</h1>
+        <p className="text-sm text-white/90 font-medium">
           Test your football intuition by identifying the mystery player from daily clues.
         </p>
       </div>
@@ -134,8 +134,8 @@ export default function GuessThePlayerPage() {
       {!isStarted ? (
         <Card className="border-border bg-card overflow-hidden">
           <CardContent className="p-0">
-            <div className="flex flex-col md:flex-row items-stretch">
-              <div className="w-full md:w-1/2 aspect-video md:aspect-[4/3] relative flex-1 flex items-center justify-center p-4 bg-muted/5">
+            <div className="flex flex-col md:flex-row items-stretch md:items-center">
+              <div className="w-full md:w-[35%] aspect-video md:aspect-auto relative flex items-center justify-center p-6 bg-muted/5">
                 <div className="absolute inset-0 opacity-10 bg-gradient-to-br from-game-1 to-transparent" />
                 <img
                   src="/images/games/guess-the-player.png"
@@ -144,10 +144,10 @@ export default function GuessThePlayerPage() {
                 />
               </div>
               <div className="p-4 md:p-6 flex-1 flex flex-col justify-center text-center md:text-left">
-                <h2 className="text-2xl font-black italic mb-2 tracking-tighter uppercase">
+                <h2 className="text-xl font-black italic mb-2 tracking-tighter uppercase">
                   <span className="text-primary">GUESS THE</span> <span className="text-black dark:text-white tracking-normal">PLAYER</span>
                 </h2>
-                <div className="text-xs text-black dark:text-white/90 mb-4 max-w-lg mx-auto md:mx-0 font-medium leading-relaxed space-y-1 text-pretty">
+                <div className="text-[10px] text-black dark:text-white/90 mb-4 max-w-lg mx-auto md:mx-0 font-medium leading-relaxed space-y-1 text-pretty">
                   <p>Guess the Player is a daily football game where you have 6 attempts to uncover the hidden football star.</p>
                   <ul className="list-disc list-inside space-y-0.5 opacity-80 decoration-primary/50">
                     <li>After each guess, you'll receive dynamic feedback.</li>
@@ -169,7 +169,7 @@ export default function GuessThePlayerPage() {
                           variant={difficulty === opt ? "default" : "secondary"}
                           onClick={() => setDifficulty(opt)}
                           className={cn(
-                            "rounded-full px-6 transition-all duration-300",
+                            "rounded-full px-4 transition-all duration-300",
                             difficulty === opt ? "bg-primary text-primary-foreground shadow-[0_0_15px_rgba(var(--gold),0.3)]" : "bg-primary/10 hover:bg-primary/20 text-black/70 dark:text-white/70"
                           )}
                           size="sm"
@@ -183,13 +183,13 @@ export default function GuessThePlayerPage() {
                   <div>
                     <p className="text-black dark:text-white text-sm font-bold mb-3 uppercase tracking-wider">Select mode:</p>
                     <div className="flex flex-wrap gap-2 justify-center md:justify-start">
-                      {["Male", "Female", "Both"].map((opt) => (
+                      {["Male", "Female", "Mixed"].map((opt) => (
                         <Button
                           key={opt}
                           variant={mode === opt ? "default" : "secondary"}
                           onClick={() => setMode(opt)}
                           className={cn(
-                            "rounded-full px-6 transition-all duration-300",
+                            "rounded-full px-4 transition-all duration-300",
                             mode === opt ? "bg-primary text-primary-foreground shadow-[0_0_15px_rgba(var(--gold),0.3)]" : "bg-primary/10 hover:bg-primary/20 text-black/70 dark:text-white/70"
                           )}
                           size="sm"
@@ -202,7 +202,7 @@ export default function GuessThePlayerPage() {
                 </div>
 
                 <div className="flex justify-center md:justify-start">
-                  <Button onClick={() => setIsStarted(true)} size="lg" className="bg-primary text-primary-foreground font-black px-12 rounded-xl text-lg hover:scale-105 transition-transform shadow-lg">
+                  <Button onClick={() => setIsStarted(true)} size="md" className="bg-primary text-primary-foreground font-black px-8 rounded-xl text-base hover:scale-105 transition-transform shadow-lg">
                     Start Game
                   </Button>
                 </div>
