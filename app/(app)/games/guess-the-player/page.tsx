@@ -153,6 +153,9 @@ export default function GuessThePlayerPage() {
                     <li>After each guess, you'll receive dynamic feedback.</li>
                     <li>The tiles will change color to show how close you are.</li>
                     <li>Green for a match, and Grey for no match.</li>
+                    <li>Select from 3 difficulty levels that increase in challenge.</li>
+                    <li>Play in Men's, Women's, or Mixed categories.</li>
+                    <li>Double your points by choosing the Mixed mode!</li>
                   </ul>
                 </div>
 
