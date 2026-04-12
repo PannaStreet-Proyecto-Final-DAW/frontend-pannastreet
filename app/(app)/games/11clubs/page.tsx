@@ -210,7 +210,7 @@ export default function ElevenClubsPage() {
                   <div>
                     <p className="text-black dark:text-white text-sm font-bold mb-3 uppercase tracking-wider">Select mode:</p>
                     <div className="flex flex-wrap gap-2 justify-center md:justify-start">
-                      {["Male", "Female", "Mixed"].map((opt) => (
+                      {["Male", "Female", "Both"].map((opt) => (
                         <Button
                           key={opt}
                           variant={mode === opt ? "default" : "secondary"}
