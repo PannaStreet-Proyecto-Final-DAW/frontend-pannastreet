@@ -60,7 +60,7 @@ export function GameCard({ game }: { game: Game }) {
       <Card className={cn(
         "relative overflow-hidden border-border bg-card transition-all duration-500",
         "hover:border-primary hover:shadow-[0_20px_50px_rgba(0,0,0,0.15)] hover:shadow-primary/40",
-"hover:-translate-y-3"
+        "hover:-translate-y-3"
       )}>
         <div className={cn(
           "relative aspect-[16/10] overflow-hidden border-b border-border flex items-center justify-center p-6 bg-muted/5",
@@ -70,7 +70,7 @@ export function GameCard({ game }: { game: Game }) {
             "absolute inset-0 opacity-20 bg-gradient-to-br",
             game.color
           )} />
-          
+
           <img
             src={game.image}
             alt={game.title}
