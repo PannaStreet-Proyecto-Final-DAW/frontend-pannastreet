@@ -145,20 +145,21 @@ export default function ElevenClubsPage() {
 
   return (
     <div className="max-w-5xl mx-auto">
-      <div className="mb-6">
-        <Link href="/games" className="text-white hover:text-primary text-sm flex items-center gap-1">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-          </svg>
-          Back to Games
-        </Link>
-      </div>
-
-      <div className="text-center mb-8">
-        <h1 className="text-2xl font-bold text-foreground mb-1">11 Clubs</h1>
-        <p className="text-sm text-white/90 font-medium">
-          Build a unique starting 11 using players from eleven different football clubs.
-        </p>
+      <div className="relative flex flex-col items-center justify-center mb-6">
+        <div className="absolute left-0 top-0">
+          <Link href="/games" className="text-white hover:text-primary text-sm flex items-center gap-1">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to Games
+          </Link>
+        </div>
+        <div className="text-center pt-6 md:pt-0">
+          <h1 className="text-xl font-bold text-foreground">11 Clubs</h1>
+          <p className="text-xs text-white/80 font-medium">
+            Build a unique starting 11 using players from eleven different football clubs.
+          </p>
+        </div>
       </div>
 
       {!isPlaying ? (
@@ -191,7 +192,7 @@ export default function ElevenClubsPage() {
 
                 <div className="grid md:grid-cols-2 gap-4 mb-4">
                   <div>
-                    <p className="text-black dark:text-white text-[12px] font-bold mb-1 uppercase tracking-wider">Select difficulty:</p>
+                    <p className="text-black dark:text-white text-[12px] font-bold mb-3 uppercase tracking-wider">Select difficulty:</p>
                     <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
                       {["Easy", "Intermediate", "Hard"].map((opt) => (
                         <Button
@@ -211,7 +212,7 @@ export default function ElevenClubsPage() {
                   </div>
 
                   <div>
-                    <p className="text-black dark:text-white text-[12px] font-bold mb-1 uppercase tracking-wider">Select mode:</p>
+                    <p className="text-black dark:text-white text-[12px] font-bold mb-3 uppercase tracking-wider">Select mode:</p>
                     <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
                       {["Male", "Female", "Both"].map((opt) => (
                         <Button
