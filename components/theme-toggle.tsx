@@ -59,7 +59,7 @@ export function ThemeToggle() {
           <Monitor className="h-[1.2rem] w-[1.2rem] text-primary transition-all animate-in zoom-in-50 duration-300" />
         )}
       </div>
-      <span className="sr-only">Cambiar tema</span>
+      <span className="sr-only">Change theme</span>
     </Button>
   )
 }

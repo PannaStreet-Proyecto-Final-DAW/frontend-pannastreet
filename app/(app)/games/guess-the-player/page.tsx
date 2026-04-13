@@ -258,11 +258,11 @@ export default function GuessThePlayerPage() {
                   <table className="w-full">
                     <thead>
                       <tr className="text-xs text-black/80 dark:text-white font-bold uppercase tracking-wider">
-                        <th className="text-left pb-2">Jugador</th>
-                        <th className="text-center pb-2">Equipo</th>
-                        <th className="text-center pb-2">Nación</th>
-                        <th className="text-center pb-2">Posición</th>
-                        <th className="text-center pb-2">Edad</th>
+                        <th className="text-left pb-2">Player</th>
+                        <th className="text-center pb-2">Team</th>
+                        <th className="text-center pb-2">Nationality</th>
+                        <th className="text-center pb-2">Position</th>
+                        <th className="text-center pb-2">Age</th>
                       </tr>
                     </thead>
                     <tbody className="space-y-2">
@@ -317,22 +317,22 @@ export default function GuessThePlayerPage() {
               <CardContent className="py-2 text-center">
                 {won ? (
                   <>
-                    <h2 className="text-2xl font-bold text-primary">¡Felicidades!</h2>
+                    <h2 className="text-2xl font-bold text-primary">¡Congratulations!</h2>
                     <p className="text-foreground/80 font-medium">
-                      Has adivinado a <span className="font-bold">{targetPlayer.name}</span> en {guesses.length} {guesses.length === 1 ? "intento" : "intentos"}.
+                      You have guessed <span className="font-bold">{targetPlayer.name}</span> in {guesses.length} {guesses.length === 1 ? "guess" : "guesses"}.
                     </p>
                   </>
                 ) : (
                   <>
-                    <h2 className="text-2xl font-bold text-destructive">Fin del juego</h2>
+                    <h2 className="text-2xl font-bold text-destructive">Game Over</h2>
                     <p className="text-foreground/80 font-medium">
-                      El jugador era <span className="font-bold">{targetPlayer.name}</span>.
+                      The player was <span className="font-bold">{targetPlayer.name}</span>.
                     </p>
                   </>
                 )}
 
                 <div className="mt-2 pt-2 border-t border-border/50 max-w-xs mx-auto">
-                  <p className="text-primary font-bold">¡Gracias por jugar! Nos vemos mañana</p>
+                  <p className="text-primary font-bold">¡Thanks for playing! See you tomorrow</p>
                 </div>
               </CardContent>
             </Card>
@@ -342,11 +342,11 @@ export default function GuessThePlayerPage() {
           <div className="mt-6 flex items-center justify-center gap-4 text-xs text-white font-medium">
             <div className="flex items-center gap-1.5">
               <span className="w-4 h-4 rounded bg-primary"></span>
-              Correcto
+              Correct
             </div>
             <div className="flex items-center gap-1.5">
               <span className="w-4 h-4 rounded bg-secondary"></span>
-              Incorrecto
+              Incorrect
             </div>
           </div>
         </>
