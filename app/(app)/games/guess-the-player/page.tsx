@@ -114,28 +114,29 @@ export default function GuessThePlayerPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="mb-6">
-        <Link href="/games" className="text-white hover:text-primary text-sm flex items-center gap-1">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-          </svg>
-          Back to Games
-        </Link>
-      </div>
-
-      <div className="text-center mb-8">
-        <h1 className="text-2xl font-bold text-foreground mb-1">Guess the Player</h1>
-        <p className="text-sm text-white/90 font-medium">
-          Test your football intuition by identifying the mystery player from daily clues.
-        </p>
+    <div className="max-w-5xl mx-auto">
+      <div className="relative flex flex-col items-center justify-center mb-6">
+        <div className="absolute left-0 top-0">
+          <Link href="/games" className="text-white hover:text-primary text-sm flex items-center gap-1">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to Games
+          </Link>
+        </div>
+        <div className="text-center pt-6 md:pt-0">
+          <h1 className="text-xl font-bold text-foreground">Guess the Player</h1>
+          <p className="text-xs text-white/80 font-medium">
+            Test your football intuition by identifying the mystery player from daily clues.
+          </p>
+        </div>
       </div>
 
       {!isStarted ? (
         <Card className="border-border bg-card overflow-hidden">
           <CardContent className="p-0">
             <div className="flex flex-col md:flex-row items-stretch md:items-center">
-              <div className="w-full md:w-[35%] aspect-video md:aspect-auto relative flex items-center justify-center p-6 bg-muted/5">
+              <div className="w-full md:w-[25%] aspect-video md:aspect-auto relative flex items-center justify-center p-4 md:pl-8 bg-muted/5">
                 <div className="absolute inset-0 opacity-10 bg-gradient-to-br from-game-1 to-transparent" />
                 <img
                   src="/images/games/guess-the-player.png"
@@ -144,12 +145,12 @@ export default function GuessThePlayerPage() {
                 />
               </div>
               <div className="p-4 md:p-6 flex-1 flex flex-col justify-center text-center md:text-left">
-                <h2 className="text-xl font-black italic mb-2 tracking-tighter uppercase">
+                <h2 className="text-3xl font-black italic mb-2 tracking-tighter uppercase">
                   <span className="text-primary">GUESS THE</span> <span className="text-black dark:text-white tracking-normal">PLAYER</span>
                 </h2>
-                <div className="text-[10px] text-black dark:text-white/90 mb-4 max-w-lg mx-auto md:mx-0 font-medium leading-relaxed space-y-1 text-pretty">
+                <div className="text-[13px] text-black dark:text-white/90 mb-8 max-w-lg mx-auto md:mx-0 font-medium leading-tight space-y-0.5 text-pretty">
                   <p>Guess the Player is a daily football game where you have 6 attempts to uncover the hidden football star.</p>
-                  <ul className="list-disc list-inside space-y-0.5 opacity-80 decoration-primary/50">
+                  <ul className="list-disc list-inside space-y-0 opacity-80 decoration-primary/50">
                     <li>After each guess, you'll receive dynamic feedback.</li>
                     <li>The tiles will change color to show how close you are.</li>
                     <li>Green for a match, and Grey for no match.</li>
@@ -159,18 +160,18 @@ export default function GuessThePlayerPage() {
                   </ul>
                 </div>
 
-                <div className="space-y-3 mb-6">
+                <div className="grid md:grid-cols-2 gap-4 mb-4">
                   <div>
-                    <p className="text-black dark:text-white text-sm font-bold mb-3 uppercase tracking-wider">Select difficulty:</p>
-                    <div className="flex flex-wrap gap-2 justify-center md:justify-start">
+                    <p className="text-black dark:text-white text-[12px] font-bold mb-3 uppercase tracking-wider">Select difficulty:</p>
+                    <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
                       {["Easy", "Intermediate", "Hard"].map((opt) => (
                         <Button
                           key={opt}
                           variant={difficulty === opt ? "default" : "secondary"}
                           onClick={() => setDifficulty(opt)}
                           className={cn(
-                            "rounded-full px-4 transition-all duration-300",
-                            difficulty === opt ? "bg-primary text-primary-foreground shadow-[0_0_15px_rgba(var(--gold),0.3)]" : "bg-primary/10 hover:bg-primary/20 text-black/70 dark:text-white/70"
+                            "rounded-full px-4 h-8 text-xs transition-all duration-300",
+                            difficulty === opt ? "bg-primary text-primary-foreground shadow-[0_0_10px_rgba(var(--gold),0.3)]" : "bg-primary/10 hover:bg-primary/20 text-black/70 dark:text-white/70"
                           )}
                           size="sm"
                         >
@@ -181,16 +182,16 @@ export default function GuessThePlayerPage() {
                   </div>
 
                   <div>
-                    <p className="text-black dark:text-white text-sm font-bold mb-3 uppercase tracking-wider">Select mode:</p>
-                    <div className="flex flex-wrap gap-2 justify-center md:justify-start">
+                    <p className="text-black dark:text-white text-[12px] font-bold mb-3 uppercase tracking-wider">Select mode:</p>
+                    <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
                       {["Male", "Female", "Both"].map((opt) => (
                         <Button
                           key={opt}
                           variant={mode === opt ? "default" : "secondary"}
                           onClick={() => setMode(opt)}
                           className={cn(
-                            "rounded-full px-4 transition-all duration-300",
-                            mode === opt ? "bg-primary text-primary-foreground shadow-[0_0_15px_rgba(var(--gold),0.3)]" : "bg-primary/10 hover:bg-primary/20 text-black/70 dark:text-white/70"
+                            "rounded-full px-4 h-8 text-xs transition-all duration-300",
+                            mode === opt ? "bg-primary text-primary-foreground shadow-[0_0_10px_rgba(var(--gold),0.3)]" : "bg-primary/10 hover:bg-primary/20 text-black/70 dark:text-white/70"
                           )}
                           size="sm"
                         >
@@ -201,8 +202,8 @@ export default function GuessThePlayerPage() {
                   </div>
                 </div>
 
-                <div className="flex justify-center md:justify-start">
-                  <Button onClick={() => setIsStarted(true)} size="lg" className="bg-primary text-primary-foreground font-black px-8 rounded-xl text-base hover:scale-105 transition-transform shadow-lg">
+                <div className="flex justify-center md:justify-start mt-2">
+                  <Button onClick={() => setIsStarted(true)} size="lg" className="bg-primary text-primary-foreground font-black px-8 py-2.5 rounded-xl text-sm hover:scale-105 transition-transform shadow-lg h-auto">
                     Start Game
                   </Button>
                 </div>
@@ -241,7 +242,7 @@ export default function GuessThePlayerPage() {
                   )}
                 </form>
                 <p className="text-xs text-black dark:text-white mt-2 text-center font-bold uppercase tracking-wider">
-                  Intentos: {guesses.length}/6
+                  Attempts: {guesses.length}/6
                 </p>
               </CardContent>
             </Card>
