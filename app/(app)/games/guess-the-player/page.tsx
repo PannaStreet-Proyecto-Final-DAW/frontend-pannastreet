@@ -154,8 +154,8 @@ export default function GuessThePlayerPage() {
                     <li>The tiles will change color to show how close you are.</li>
                     <li>Green for a match, and Grey for no match.</li>
                     <li>Select from 3 difficulty levels that increase in challenge.</li>
-                    <li>Play in Men's, Women's, or Mixed categories.</li>
-                    <li>Double your points by choosing the Mixed mode!</li>
+                    <li>Play in Men's, Women's, or Both categories.</li>
+                    <li>Double your points by choosing the Both mode!</li>
                   </ul>
                 </div>
 
@@ -183,7 +183,7 @@ export default function GuessThePlayerPage() {
                   <div>
                     <p className="text-black dark:text-white text-sm font-bold mb-3 uppercase tracking-wider">Select mode:</p>
                     <div className="flex flex-wrap gap-2 justify-center md:justify-start">
-                      {["Male", "Female", "Mixed"].map((opt) => (
+                      {["Male", "Female", "Both"].map((opt) => (
                         <Button
                           key={opt}
                           variant={mode === opt ? "default" : "secondary"}
@@ -202,7 +202,7 @@ export default function GuessThePlayerPage() {
                 </div>
 
                 <div className="flex justify-center md:justify-start">
-                  <Button onClick={() => setIsStarted(true)} size="md" className="bg-primary text-primary-foreground font-black px-8 rounded-xl text-base hover:scale-105 transition-transform shadow-lg">
+                  <Button onClick={() => setIsStarted(true)} size="lg" className="bg-primary text-primary-foreground font-black px-8 rounded-xl text-base hover:scale-105 transition-transform shadow-lg">
                     Start Game
                   </Button>
                 </div>
