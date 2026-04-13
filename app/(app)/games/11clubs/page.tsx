@@ -316,12 +316,12 @@ export default function ElevenClubsPage() {
               <CardContent>
                 {gameComplete ? (
                   <div className="text-center py-8">
-                    <p className="text-2xl font-bold text-primary mb-2">¡Buen trabajo!</p>
+                    <p className="text-2xl font-bold text-primary mb-2">¡Good Job!</p>
                     <p className="text-muted-foreground mb-6">
-                      Has completado la alineación en {formatTime(timer)}
+                      You have completed the lineup in {formatTime(timer)}
                     </p>
                     <div className="mt-4 pt-4 border-t border-border/50 max-w-sm mx-auto">
-                      <p className="text-primary font-bold">¡Gracias por jugar! Nos vemos mañana</p>
+                      <p className="text-primary font-bold">¡Thanks for playing! See you tomorrow</p>
                     </div>
                   </div>
                 ) : currentPosition !== null ? (
