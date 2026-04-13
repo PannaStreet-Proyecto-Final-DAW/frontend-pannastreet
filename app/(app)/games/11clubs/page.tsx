@@ -183,8 +183,8 @@ export default function ElevenClubsPage() {
                     <li>Clubs will appear in random order, and you must add a player from each club.</li>
                     <li>Complete the full lineup to win.</li>
                     <li>Choose between 3 difficulty levels that get progressively harder.</li>
-                    <li>Play in Men's, Women's, or Mixed mode.</li>
-                    <li>Earn double points by playing in Mixed mode!</li>
+                    <li>Play in Men's, Women's, or Both mode.</li>
+                    <li>Earn double points by playing in Both mode!</li>
                     <li>You can give up by clicking the Red Card button.</li>
                   </ul>
                 </div>
@@ -213,7 +213,7 @@ export default function ElevenClubsPage() {
                   <div>
                     <p className="text-black dark:text-white text-sm font-bold mb-3 uppercase tracking-wider">Select mode:</p>
                     <div className="flex flex-wrap gap-2 justify-center md:justify-start">
-                      {["Male", "Female", "Mixed"].map((opt) => (
+                      {["Male", "Female", "Both"].map((opt) => (
                         <Button
                           key={opt}
                           variant={mode === opt ? "default" : "secondary"}
@@ -232,7 +232,7 @@ export default function ElevenClubsPage() {
                 </div>
 
                 <div className="flex justify-center md:justify-start">
-                  <Button onClick={startGame} size="md" className="bg-primary text-primary-foreground font-black px-8 rounded-xl text-base hover:scale-105 transition-transform shadow-lg">
+                  <Button onClick={startGame} size="lg" className="bg-primary text-primary-foreground font-black px-8 rounded-xl text-base hover:scale-105 transition-transform shadow-lg">
                     Start Game
                   </Button>
                 </div>
