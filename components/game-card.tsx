@@ -12,6 +12,7 @@ export interface Game {
   image: string
   color: string
   href: string
+  isComingSoon?: boolean
 }
 
 const icons = {
@@ -55,15 +56,18 @@ const icons = {
 }
 
 export function GameCard({ game }: { game: Game }) {
+  const CardWrapper = game.isComingSoon ? "div" : Link;
+  const wrapperProps = game.isComingSoon ? {} : { href: game.href };
+
   return (
-    <Link href={game.href} className="block group">
+    <CardWrapper {...(wrapperProps as any)} className={cn("block group", game.isComingSoon && "cursor-default")}>
       <Card className={cn(
         "relative overflow-hidden border-border bg-card transition-all duration-500",
-        "hover:border-primary hover:shadow-[0_20px_50px_rgba(0,0,0,0.15)] hover:shadow-primary/40",
-        "hover:-translate-y-3"
+        "hover:border-primary hover:shadow-[0_20px_50px_rgba(0,0,0,0.15)] hover:shadow-primary/40 hover:-translate-y-3"
       )}>
         <div className={cn(
           "relative aspect-[16/10] overflow-hidden border-b border-border flex items-center justify-center p-6 bg-muted/5",
+          game.isComingSoon && "filter blur-md"
         )}>
           {/* Subtle background glow */}
           <div className={cn(
@@ -74,32 +78,63 @@ export function GameCard({ game }: { game: Game }) {
           <img
             src={game.image}
             alt={game.title}
-            className="relative z-10 max-h-full max-w-full object-contain rounded-xl shadow-2xl transition-transform duration-500 group-hover:scale-110"
+            className={cn(
+              "relative z-10 max-h-full max-w-full object-contain rounded-xl shadow-2xl transition-transform duration-500",
+              "group-hover:scale-110"
+            )}
           />
+
+          {game.isComingSoon && (
+            <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/20" />
+          )}
         </div>
 
+        {/* Overlaid Coming Soon Badge - OUTSIDE the blurred container if possible, 
+            but in current structure it's better to put it here and ensure it has no blur */}
+        {game.isComingSoon && (
+          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 z-30 flex items-center justify-center pointer-events-none">
+            <span className="bg-primary text-primary-foreground px-6 py-2 rounded-full text-xs font-bold tracking-[0.2em] uppercase shadow-2xl border border-primary/50 backdrop-blur-md">
+              Coming Soon
+            </span>
+          </div>
+        )}
+
         <CardHeader className="relative pt-1 pb-0">
-          <CardTitle className="text-xl text-card-foreground group-hover:text-primary transition-colors text-center">
+          <CardTitle className={cn(
+            "text-xl text-card-foreground transition-colors text-center",
+            !game.isComingSoon && "group-hover:text-primary",
+            game.isComingSoon && "opacity-5 blur-md"
+          )}>
             {game.title}
           </CardTitle>
         </CardHeader>
         <CardContent className="relative pt-0">
-          <CardDescription className="text-neutral-600 dark:text-neutral-300 line-clamp-2 transition-colors">
+          <CardDescription className={cn(
+            "text-neutral-600 dark:text-neutral-300 line-clamp-2 transition-colors",
+            game.isComingSoon && "opacity-10 blur-[3px]"
+          )}>
             {game.description}
           </CardDescription>
-          <div className="mt-4 flex items-center text-sm text-primary font-medium">
-            Play now
-            <svg
-              className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-            </svg>
+          <div className={cn(
+            "mt-4 flex items-center text-sm font-medium transition-colors",
+            game.isComingSoon ? "text-muted-foreground opacity-20 blur-[1px]" : "text-primary"
+          )}>
+            {game.isComingSoon ? "Coming Soon" : "Play now"}
+            {!game.isComingSoon && (
+              <svg
+                className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+              </svg>
+            )}
           </div>
         </CardContent>
+
       </Card>
-    </Link>
+    </CardWrapper>
   )
 }
+

@@ -26,7 +26,8 @@ const games: Game[] = [
     icon: "trivia",
     image: "/images/games/trivia.png",
     color: "from-game-3 to-transparent",
-    href: "/games/trivia"
+    href: "/games/trivia",
+    isComingSoon: true
   }
 ]
 
