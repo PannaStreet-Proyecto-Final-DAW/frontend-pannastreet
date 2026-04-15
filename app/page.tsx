@@ -18,7 +18,7 @@ export default function AuthPage() {
   const [userName, setUserName] = useState("")
   const [error, setError] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
-  
+
   const { login, register, user, isLoading } = useAuth()
   const router = useRouter()
 
@@ -73,11 +73,11 @@ export default function AuthPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center mb-4">
-            <Image 
-              src="/icon.jpg" 
-              alt="PannaMaster Logo" 
-              width={80} 
-              height={80} 
+            <Image
+              src="/icon.jpg"
+              alt="PannaMaster Logo"
+              width={80}
+              height={80}
               className="rounded-full shadow-lg"
               priority
             />
@@ -181,7 +181,7 @@ export default function AuthPage() {
         </Card>
 
         <p className="text-center text-xs text-white mt-6">
-          Play Guess the Player, Trivia, 11 Clubs and more football games daily
+          Play Guess the Player, 11 Clubs and more football games daily
         </p>
       </div>
     </div>

@@ -103,7 +103,7 @@ export function GameCard({ game }: { game: Game }) {
           <CardTitle className={cn(
             "text-xl text-card-foreground transition-colors text-center",
             !game.isComingSoon && "group-hover:text-primary",
-            game.isComingSoon && "opacity-5 blur-md"
+            game.isComingSoon && "opacity-40 blur-sm"
           )}>
             {game.title}
           </CardTitle>
@@ -111,13 +111,13 @@ export function GameCard({ game }: { game: Game }) {
         <CardContent className="relative pt-0">
           <CardDescription className={cn(
             "text-neutral-600 dark:text-neutral-300 line-clamp-2 transition-colors",
-            game.isComingSoon && "opacity-10 blur-[3px]"
+            game.isComingSoon && "opacity-40 blur-sm"
           )}>
             {game.description}
           </CardDescription>
           <div className={cn(
             "mt-4 flex items-center text-sm font-medium transition-colors",
-            game.isComingSoon ? "text-muted-foreground opacity-20 blur-[1px]" : "text-primary"
+            game.isComingSoon ? "text-primary opacity-40 blur-sm" : "text-primary"
           )}>
             {game.isComingSoon ? "Coming Soon" : "Play now"}
             {!game.isComingSoon && (
