@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
+import { SurrenderButton } from "@/components/surrender-button"
 
 // Sample trivia questions - in production, fetch from API
 const TRIVIA_QUESTIONS = [
@@ -237,13 +238,16 @@ export default function TriviaPage() {
       ) : (
         <>
           {/* Progress */}
-          <div className="flex items-center justify-between mb-4">
+          <div className="relative flex items-center justify-between mb-4">
             <span className="text-sm text-black dark:text-white font-medium">
               Pregunta {gameState.currentQuestion + 1} de {questions.length}
             </span>
-            <span className="text-sm font-medium text-primary">
-              Score: {gameState.score}
-            </span>
+            <div className="flex items-center gap-4">
+              <span className="text-sm font-medium text-primary">
+                Score: {gameState.score}
+              </span>
+              <SurrenderButton onClick={() => console.log("Surrender")} />
+            </div>
           </div>
           <div className="w-full h-2 bg-secondary rounded-full mb-6 overflow-hidden">
             <div
