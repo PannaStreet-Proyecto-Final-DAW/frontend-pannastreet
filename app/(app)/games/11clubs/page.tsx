@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
+import { SurrenderButton } from "@/components/surrender-button"
 
 // Sample data - in production, fetch from API
 const CLUBS = [
@@ -160,6 +161,11 @@ export default function ElevenClubsPage() {
             Build a unique starting 11 using players from eleven different football clubs.
           </p>
         </div>
+        {isPlaying && !gameComplete && (
+          <div className="absolute right-0 top-0">
+            <SurrenderButton onClick={() => console.log("Surrender")} />
+          </div>
+        )}
       </div>
 
       {!isPlaying ? (
