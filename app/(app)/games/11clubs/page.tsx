@@ -55,7 +55,6 @@ export default function ElevenClubsPage() {
   const [currentPosition, setCurrentPosition] = useState<number | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [gameComplete, setGameComplete] = useState(false)
-  const [timer, setTimer] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
   const [difficulty, setDifficulty] = useState("Intermediate")
   const [mode, setMode] = useState("Male")
@@ -66,25 +65,10 @@ export default function ElevenClubsPage() {
     setSelectedClubs(shuffled.slice(0, 11))
   }, [])
 
-  useEffect(() => {
-    let interval: NodeJS.Timeout
-    if (isPlaying && !gameComplete) {
-      interval = setInterval(() => {
-        setTimer((t) => t + 1)
-      }, 1000)
-    }
-    return () => clearInterval(interval)
-  }, [isPlaying, gameComplete])
 
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60)
-    const secs = seconds % 60
-    return `${mins}:${secs.toString().padStart(2, "0")}`
-  }
 
   const startGame = () => {
     setIsPlaying(true)
-    setTimer(0)
   }
 
   const handlePositionClick = (positionId: number) => {
@@ -133,16 +117,6 @@ export default function ElevenClubsPage() {
     return available.slice(0, 10)
   }
 
-  const resetGame = () => {
-    const shuffled = [...CLUBS].sort(() => Math.random() - 0.5)
-    setSelectedClubs(shuffled.slice(0, 11))
-    setLineup(Array(11).fill(null))
-    setCurrentPosition(null)
-    setSearchQuery("")
-    setGameComplete(false)
-    setTimer(0)
-    setIsPlaying(false)
-  }
 
   return (
     <div className="max-w-5xl mx-auto">
@@ -254,10 +228,6 @@ export default function ElevenClubsPage() {
             <div className="text-sm text-white font-medium">
               Players: {lineup.filter(Boolean).length}/11
             </div>
-            <div className="text-lg font-mono text-foreground">{formatTime(timer)}</div>
-            <Button variant="outline" size="sm" onClick={resetGame} className="border-border">
-              Reset
-            </Button>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
@@ -325,7 +295,7 @@ export default function ElevenClubsPage() {
                   <div className="text-center py-8">
                     <p className="text-2xl font-bold text-primary mb-2">¡Good Job!</p>
                     <p className="text-muted-foreground mb-6">
-                      You have completed the lineup in {formatTime(timer)}
+                      You have completed the lineup!
                     </p>
                     <div className="mt-4 pt-4 border-t border-border/50 max-w-sm mx-auto">
                       <p className="text-primary font-bold">¡Thanks for playing! See you tomorrow</p>
