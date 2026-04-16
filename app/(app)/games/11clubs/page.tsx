@@ -119,8 +119,8 @@ export default function ElevenClubsPage() {
 
 
   return (
-    <div className="max-w-5xl mx-auto">
-      <div className="relative flex flex-col items-center justify-center mb-6">
+    <div className="max-w-5xl mx-auto pb-10">
+      <div className="relative flex flex-col items-center justify-center mb-4">
         <div className="absolute left-0 top-0">
           <Link href="/games" className="text-white hover:text-primary text-sm flex items-center gap-1">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -231,31 +231,25 @@ export default function ElevenClubsPage() {
         </Card>
       ) : (
         <>
-          {/* Timer and progress */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="text-sm text-white font-medium">
-              Players: {lineup.filter(Boolean).length}/11
-            </div>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-[180px_1fr_1fr] gap-6 items-start">
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_1.8fr_1fr] gap-6 items-stretch">
             {/* Clubs used */}
-            <Card className="border-border bg-card sticky top-6">
-              <CardHeader className="p-4 pb-2">
-                <CardTitle className="text-xs font-bold uppercase tracking-wider text-card-foreground/70">Clubs to Use</CardTitle>
+            <Card className="border-border bg-card sticky top-6 md:h-full flex flex-col">
+              <CardHeader className="p-3 pb-1">
+                <CardTitle className="text-[11px] font-bold uppercase tracking-wider text-card-foreground/70">Clubs to Use</CardTitle>
               </CardHeader>
-              <CardContent className="p-4 pt-0">
-                <div className="flex flex-wrap md:flex-col gap-1.5">
+              <CardContent className="p-3 pt-0">
+                <div className="flex flex-wrap md:flex-col gap-1">
                   {selectedClubs.map((club) => {
                     const isUsed = lineup.some((l) => l?.club === club)
                     return (
                       <span
                         key={club}
                         className={cn(
-                          "px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all border",
+                          "px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all border",
                           isUsed
-                            ? "bg-primary/5 border-primary/20 text-primary/50 line-through"
-                            : "bg-secondary/50 border-border text-secondary-foreground"
+                            ? "bg-primary/5 border-primary/20 text-primary/40 line-through"
+                            : "bg-secondary/40 border-border/50 text-secondary-foreground"
                         )}
                       >
                         {club}
@@ -267,8 +261,8 @@ export default function ElevenClubsPage() {
             </Card>
 
             {/* Pitch */}
-            <Card className="border-border bg-card overflow-hidden">
-              <div className="relative bg-gradient-to-b from-primary/20 to-primary/10 aspect-[3/4] p-4">
+            <Card className="border-border bg-card overflow-hidden h-full flex flex-col">
+              <div className="relative bg-gradient-to-b from-primary/20 to-primary/10 flex-1 p-2 min-h-[320px]">
                 {/* Field lines */}
                 <div className="absolute inset-4 border-2 border-primary/30 rounded-lg">
                   <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-1/6 border-2 border-t-0 border-primary/30"></div>
@@ -297,7 +291,7 @@ export default function ElevenClubsPage() {
                       )}
                       style={{
                         left: `${(pos.col / 4) * 80 + 10}%`,
-                        top: `${(pos.row / 5) * 80 + 10}%`,
+                        top: `${(pos.row / 5) * 85 + 7.5}%`,
                       }}
                       disabled={!!player || gameComplete}
                     >
@@ -315,57 +309,57 @@ export default function ElevenClubsPage() {
             </Card>
 
             {/* Player selection */}
-            <Card className="border-border bg-card">
-              <CardHeader>
-                <CardTitle className="text-lg text-card-foreground">
+            <Card className="border-border bg-card h-full flex flex-col">
+              <CardHeader className="p-4 pb-2">
+                <CardTitle className="text-base text-card-foreground">
                   {currentPosition !== null
-                    ? `Select player for ${POSITIONS[currentPosition]}`
+                    ? `Select for ${POSITIONS[currentPosition]}`
                     : gameComplete
                       ? "Lineup Complete!"
-                      : "Click a position"}
+                      : "Choose Position"}
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-4 pt-0">
                 {gameComplete ? (
-                  <div className="text-center py-8">
-                    <p className="text-2xl font-bold text-primary mb-2">¡Good Job!</p>
-                    <p className="text-muted-foreground mb-6">
-                      You have completed the lineup!
+                  <div className="text-center py-4">
+                    <p className="text-xl font-bold text-primary mb-1">¡Well done!</p>
+                    <p className="text-xs text-muted-foreground mb-4">
+                      Lineup complete
                     </p>
-                    <div className="mt-4 pt-4 border-t border-border/50 max-w-sm mx-auto">
-                      <p className="text-primary font-bold">¡Thanks for playing! See you tomorrow</p>
+                    <div className="mt-2 pt-2 border-t border-border/50">
+                      <p className="text-primary text-[11px] font-bold">Thanks for playing!</p>
                     </div>
                   </div>
                 ) : currentPosition !== null ? (
                   <>
                     <Input
                       type="text"
-                      placeholder="Search players or clubs..."
+                      placeholder="Search..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="bg-input border-border mb-4"
+                      className="bg-input border-border h-8 text-sm mb-3"
                       autoComplete="off"
                       autoFocus
                     />
-                    <div className="space-y-2 max-h-64 overflow-y-auto">
+                    <div className="space-y-1 max-h-56 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-primary/20">
                       {getAvailablePlayers().map(({ club, player }) => (
                         <button
                           key={`${club}-${player}`}
                           onClick={() => handlePlayerSelect(club, player)}
-                          className="w-full flex items-center justify-between p-3 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors"
+                          className="w-full flex items-center justify-between p-2 rounded-lg bg-secondary/40 hover:bg-secondary/60 transition-colors border border-transparent hover:border-border/50"
                         >
-                          <span className="font-medium text-card-foreground">{player}</span>
-                          <span className="text-xs text-muted-foreground">{club}</span>
+                          <span className="text-xs font-bold text-card-foreground">{player}</span>
+                          <span className="text-[11px] text-muted-foreground">{club}</span>
                         </button>
                       ))}
                       {getAvailablePlayers().length === 0 && (
-                        <p className="text-center text-muted-foreground py-4">No players found</p>
+                        <p className="text-center text-xs text-muted-foreground py-2">No players found</p>
                       )}
                     </div>
                   </>
                 ) : (
-                  <div className="text-center py-8 text-muted-foreground">
-                    <p>Click on a position on the pitch to add a player</p>
+                  <div className="text-center py-6 text-muted-foreground">
+                    <p className="text-sm">Click the pitch to start</p>
                   </div>
                 )}
               </CardContent>
