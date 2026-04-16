@@ -216,8 +216,8 @@ export default function ElevenClubsPage() {
                     </div>
 
                     <div className="w-full md:w-auto flex items-center justify-center md:pr-4">
-                       <Button 
-                        onClick={startGame} 
+                      <Button
+                        onClick={startGame}
                         className="w-full md:w-[180px] bg-primary text-primary-foreground font-black py-4 rounded-xl text-xs hover:scale-[1.05] transition-transform shadow-lg h-auto uppercase tracking-[0.2em]"
                       >
                         Start Game
@@ -236,7 +236,7 @@ export default function ElevenClubsPage() {
             {/* Clubs used */}
             <Card className="border-border bg-card sticky top-6 md:h-full flex flex-col">
               <CardHeader className="p-3 pb-1">
-                <CardTitle className="text-[11px] font-bold uppercase tracking-wider text-card-foreground/70">Clubs to Use</CardTitle>
+                <CardTitle className="text-[11px] font-bold uppercase tracking-wider text-card-foreground">Clubs to Use</CardTitle>
               </CardHeader>
               <CardContent className="p-3 pt-0">
                 <div className="flex flex-wrap md:flex-col gap-1">
@@ -246,10 +246,10 @@ export default function ElevenClubsPage() {
                       <span
                         key={club}
                         className={cn(
-                          "px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all border",
+                          "px-2.5 py-1 rounded-lg text-[11px] font-black uppercase tracking-wider transition-all border",
                           isUsed
-                            ? "bg-primary/5 border-primary/20 text-primary/40 line-through"
-                            : "bg-secondary/40 border-border/50 text-secondary-foreground"
+                            ? "bg-black/5 dark:bg-white/5 border-transparent text-card-foreground/30 line-through"
+                            : "bg-secondary/10 dark:bg-secondary/40 border-secondary/20 text-card-foreground"
                         )}
                       >
                         {club}
@@ -346,10 +346,10 @@ export default function ElevenClubsPage() {
                         <button
                           key={`${club}-${player}`}
                           onClick={() => handlePlayerSelect(club, player)}
-                          className="w-full flex items-center justify-between p-2 rounded-lg bg-secondary/40 hover:bg-secondary/60 transition-colors border border-transparent hover:border-border/50"
+                          className="w-full flex items-center justify-between p-2 rounded-lg bg-secondary/10 dark:bg-secondary/40 hover:bg-secondary/20 dark:hover:bg-secondary/60 transition-all border border-secondary/20 hover:border-primary/50 shadow-sm group"
                         >
-                          <span className="text-xs font-bold text-card-foreground">{player}</span>
-                          <span className="text-[11px] text-muted-foreground">{club}</span>
+                          <span className="text-[10px] font-black uppercase tracking-widest text-card-foreground group-hover:text-primary dark:group-hover:text-white transition-colors">{player}</span>
+                          <span className="text-[10px] font-bold text-card-foreground/60 dark:text-white/60 group-hover:text-card-foreground dark:group-hover:text-white/90">{club}</span>
                         </button>
                       ))}
                       {getAvailablePlayers().length === 0 && (
