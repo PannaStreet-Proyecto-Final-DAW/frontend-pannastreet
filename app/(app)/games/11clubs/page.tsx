@@ -146,7 +146,7 @@ export default function ElevenClubsPage() {
         <Card className="border-border bg-card overflow-hidden">
           <CardContent className="p-0">
             <div className="flex flex-col md:flex-row items-stretch md:items-center">
-              <div className="w-full md:w-[25%] aspect-video md:aspect-auto relative flex items-center justify-center p-4 md:pl-8 bg-muted/5">
+              <div className="w-full md:w-1/3 aspect-video md:aspect-auto relative flex items-center justify-center p-4 md:p-8 bg-muted/5">
                 <div className="absolute inset-0 opacity-10 bg-gradient-to-br from-game-2 to-transparent" />
                 <img
                   src="/images/games/11clubs.png"
@@ -158,64 +158,72 @@ export default function ElevenClubsPage() {
                 <h2 className="text-3xl font-black italic mb-2 tracking-tighter uppercase">
                   <span className="text-primary">FOOTBALL 11</span> <span className="text-black dark:text-white tracking-normal">CLUBS</span>
                 </h2>
-                <div className="text-[13px] text-black dark:text-white/90 mb-8 max-w-lg mx-auto md:mx-0 font-medium leading-tight space-y-0.5 text-pretty">
-                  <p>Football 11 is a daily football game where you have to add players from 11 different clubs in one lineup.</p>
-                  <ul className="list-disc list-inside space-y-0 opacity-80 decoration-primary/50">
-                    <li>Clubs will appear in random order, and you must add a player from each club.</li>
-                    <li>Complete the full lineup to win.</li>
-                    <li>Choose between 3 difficulty levels that get progressively harder.</li>
-                    <li>Play in Men's, Women's, or Both mode.</li>
-                    <li>Earn double points by playing in Both mode!</li>
-                    <li>You can give up by clicking the Red Card button.</li>
-                  </ul>
-                </div>
 
-                <div className="grid md:grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <p className="text-black dark:text-white text-[12px] font-bold mb-3 uppercase tracking-wider">Select difficulty:</p>
-                    <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
-                      {["Easy", "Intermediate", "Hard"].map((opt) => (
-                        <Button
-                          key={opt}
-                          variant={difficulty === opt ? "default" : "secondary"}
-                          onClick={() => setDifficulty(opt)}
-                          className={cn(
-                            "rounded-full px-4 h-8 text-xs transition-all duration-300",
-                            difficulty === opt ? "bg-primary text-primary-foreground shadow-[0_0_10px_rgba(var(--gold),0.3)]" : "bg-primary/10 hover:bg-primary/20 text-black/70 dark:text-white/70"
-                          )}
-                          size="sm"
-                        >
-                          {opt}
-                        </Button>
-                      ))}
-                    </div>
+                <div className="flex flex-col gap-4">
+                  <div className="text-[13px] text-black dark:text-white/90 font-medium leading-tight space-y-0.5 text-pretty">
+                    <p className="mb-2">Football 11 is a daily football game where you have to add players from 11 different clubs in one lineup.</p>
+                    <ul className="list-disc list-inside space-y-0 opacity-80 decoration-primary/50">
+                      <li>Clubs appear in random order, and you must add a player from each club.</li>
+                      <li>Complete the full lineup to win.</li>
+                      <li>Choose between 3 difficulty levels that get progressively harder.</li>
+                      <li>Play in Men's, Women's, or Both mode.</li>
+                      <li>Earn double points by playing in Both mode!</li>
+                      <li>You can give up by clicking the Red Card button.</li>
+                    </ul>
                   </div>
 
-                  <div>
-                    <p className="text-black dark:text-white text-[12px] font-bold mb-3 uppercase tracking-wider">Select mode:</p>
-                    <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
-                      {["Male", "Female", "Both"].map((opt) => (
-                        <Button
-                          key={opt}
-                          variant={mode === opt ? "default" : "secondary"}
-                          onClick={() => setMode(opt)}
-                          className={cn(
-                            "rounded-full px-4 h-8 text-xs transition-all duration-300",
-                            mode === opt ? "bg-primary text-primary-foreground shadow-[0_0_10px_rgba(var(--gold),0.3)]" : "bg-primary/10 hover:bg-primary/20 text-black/70 dark:text-white/70"
-                          )}
-                          size="sm"
-                        >
-                          {opt}
-                        </Button>
-                      ))}
+                  <div className="flex flex-col md:flex-row gap-8 items-center bg-muted/5 p-4 rounded-2xl border border-border/50 backdrop-blur-sm">
+                    <div className="flex flex-col gap-4 flex-1 w-full">
+                      <div>
+                        <p className="text-black dark:text-white text-[11px] font-bold mb-2 uppercase tracking-wider">Select difficulty:</p>
+                        <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
+                          {["Easy", "Intermediate", "Hard"].map((opt) => (
+                            <Button
+                              key={opt}
+                              variant={difficulty === opt ? "default" : "secondary"}
+                              onClick={() => setDifficulty(opt)}
+                              className={cn(
+                                "rounded-full px-4 h-7 text-[11px] transition-all duration-300",
+                                difficulty === opt ? "bg-primary text-primary-foreground shadow-sm" : "bg-primary/10 hover:bg-primary/20 text-black/70 dark:text-white/70"
+                              )}
+                              size="sm"
+                            >
+                              {opt}
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="pt-2 border-t border-border/30">
+                        <p className="text-black dark:text-white text-[11px] font-bold mb-2 uppercase tracking-wider">Select mode:</p>
+                        <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
+                          {["Male", "Female", "Both"].map((opt) => (
+                            <Button
+                              key={opt}
+                              variant={mode === opt ? "default" : "secondary"}
+                              onClick={() => setMode(opt)}
+                              className={cn(
+                                "rounded-full px-4 h-7 text-[11px] transition-all duration-300",
+                                mode === opt ? "bg-primary text-primary-foreground shadow-sm" : "bg-primary/10 hover:bg-primary/20 text-black/70 dark:text-white/70"
+                              )}
+                              size="sm"
+                            >
+                              {opt}
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="w-full md:w-auto flex items-center justify-center md:pr-4">
+                       <Button 
+                        onClick={startGame} 
+                        className="w-full md:w-[180px] bg-primary text-primary-foreground font-black py-4 rounded-xl text-xs hover:scale-[1.05] transition-transform shadow-lg h-auto uppercase tracking-[0.2em]"
+                      >
+                        Start Game
+                      </Button>
                     </div>
                   </div>
-                </div>
-
-                <div className="flex justify-center md:justify-start mt-2">
-                  <Button onClick={startGame} size="lg" className="bg-primary text-primary-foreground font-black px-8 py-2.5 rounded-xl text-sm hover:scale-105 transition-transform shadow-lg h-auto">
-                    Start Game
-                  </Button>
                 </div>
               </div>
             </div>

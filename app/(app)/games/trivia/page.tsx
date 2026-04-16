@@ -166,7 +166,7 @@ export default function TriviaPage() {
         <Card className="border-border bg-card overflow-hidden">
           <CardContent className="p-0">
             <div className="flex flex-col md:flex-row items-stretch">
-              <div className="w-full md:w-1/2 aspect-video md:aspect-[4/3] relative flex items-center justify-center p-8 bg-muted/5">
+              <div className="w-full md:w-1/3 aspect-video md:aspect-[4/3] relative flex items-center justify-center p-8 bg-muted/5">
                 <div className="absolute inset-0 opacity-10 bg-gradient-to-br from-game-3 to-transparent" />
                 <img
                   src="/images/games/trivia.png"
@@ -176,13 +176,25 @@ export default function TriviaPage() {
               </div>
               <div className="p-6 md:p-8 flex-1 flex flex-col justify-center text-center md:text-left">
                 <h2 className="text-2xl font-bold text-card-foreground mb-4">The Ultimate Knowledge Test</h2>
-                <p className="text-black/80 dark:text-muted-foreground mb-6 max-w-lg mx-auto md:mx-0 leading-relaxed">
-                  Face a curated set of <strong>5 challenging questions</strong> covering everything from World Cup records and Champions League legends to iconic stadiums and Premier League history.
-                </p>
-                <div className="flex justify-center md:justify-start">
-                  <Button onClick={() => setIsStarted(true)} size="lg" className="bg-primary text-primary-foreground font-bold px-8">
-                    Start Trivia
-                  </Button>
+
+                <div className="flex flex-col gap-6">
+                  <p className="text-black/80 dark:text-muted-foreground leading-relaxed">
+                    Face a curated set of <strong>5 challenging questions</strong> covering everything from World Cup records and Champions League legends to iconic stadiums and Premier League history.
+                  </p>
+                  
+                  <div className="flex flex-col md:flex-row gap-8 items-center bg-muted/5 p-4 rounded-2xl border border-border/50 backdrop-blur-sm">
+                    <div className="flex-1 text-xs text-muted-foreground font-medium italic">
+                      "Knowledge is the only tool that grows when you use it. Face today's challenge and prove your expertise."
+                    </div>
+                    <div className="w-full md:w-auto flex items-center justify-center md:pr-4">
+                      <Button 
+                        onClick={() => setIsStarted(true)} 
+                        className="w-full md:w-[180px] bg-primary text-primary-foreground font-black py-4 rounded-xl text-xs hover:scale-[1.05] transition-transform shadow-lg h-auto uppercase tracking-[0.2em]"
+                      >
+                        Start Trivia
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
