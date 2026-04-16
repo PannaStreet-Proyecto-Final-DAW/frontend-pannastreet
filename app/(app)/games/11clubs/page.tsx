@@ -238,7 +238,34 @@ export default function ElevenClubsPage() {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-[180px_1fr_1fr] gap-6 items-start">
+            {/* Clubs used */}
+            <Card className="border-border bg-card sticky top-6">
+              <CardHeader className="p-4 pb-2">
+                <CardTitle className="text-xs font-bold uppercase tracking-wider text-card-foreground/70">Clubs to Use</CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 pt-0">
+                <div className="flex flex-wrap md:flex-col gap-1.5">
+                  {selectedClubs.map((club) => {
+                    const isUsed = lineup.some((l) => l?.club === club)
+                    return (
+                      <span
+                        key={club}
+                        className={cn(
+                          "px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all border",
+                          isUsed
+                            ? "bg-primary/5 border-primary/20 text-primary/50 line-through"
+                            : "bg-secondary/50 border-border text-secondary-foreground"
+                        )}
+                      >
+                        {club}
+                      </span>
+                    )
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Pitch */}
             <Card className="border-border bg-card overflow-hidden">
               <div className="relative bg-gradient-to-b from-primary/20 to-primary/10 aspect-[3/4] p-4">
@@ -344,33 +371,6 @@ export default function ElevenClubsPage() {
               </CardContent>
             </Card>
           </div>
-
-          {/* Clubs used */}
-          <Card className="border-border bg-card mt-6">
-            <CardHeader>
-              <CardTitle className="text-sm text-card-foreground">Clubs to Use</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-wrap gap-2">
-                {selectedClubs.map((club) => {
-                  const isUsed = lineup.some((l) => l?.club === club)
-                  return (
-                    <span
-                      key={club}
-                      className={cn(
-                        "px-3 py-1 rounded-full text-xs font-medium transition-all",
-                        isUsed
-                          ? "bg-primary/20 text-primary line-through"
-                          : "bg-secondary text-secondary-foreground"
-                      )}
-                    >
-                      {club}
-                    </span>
-                  )
-                })}
-              </div>
-            </CardContent>
-          </Card>
         </>
       )}
     </div>
