@@ -165,6 +165,7 @@ export default function GuessThePlayerPage() {
                       <li>Select from 3 difficulty levels that increase in challenge.</li>
                       <li>Play in Men's, Women's, or Both categories.</li>
                       <li>Double your points by choosing the Both mode!</li>
+                      <li>You can give up by clicking the Red Card button.</li>
                     </ul>
                   </div>
 
