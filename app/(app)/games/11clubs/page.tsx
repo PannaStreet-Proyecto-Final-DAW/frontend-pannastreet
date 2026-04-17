@@ -129,12 +129,7 @@ export default function ElevenClubsPage() {
             Back to Games
           </Link>
         </div>
-        <div className="text-center pt-6 md:pt-0">
-          <h1 className="text-xl font-bold text-foreground">11 Clubs</h1>
-          <p className="text-xs text-white/80 font-medium">
-            Build a unique starting 11 using players from eleven different football clubs.
-          </p>
-        </div>
+        <div className="h-8 md:h-10" /> {/* Spacer */}
         {isPlaying && !gameComplete && (
           <div className="absolute right-0 top-0">
             <SurrenderButton onClick={() => console.log("Surrender")} />
