@@ -125,12 +125,7 @@ export default function GuessThePlayerPage() {
             Back to Games
           </Link>
         </div>
-        <div className="text-center pt-6 md:pt-0">
-          <h1 className="text-xl font-bold text-foreground">Guess the Player</h1>
-          <p className="text-xs text-white/80 font-medium">
-            Test your football intuition by identifying the mystery player from daily clues.
-          </p>
-        </div>
+        <div className="h-8 md:h-10" /> {/* Spacer */}
         {isStarted && !gameOver && (
           <div className="absolute right-0 top-0">
             <SurrenderButton onClick={() => console.log("Surrender")} />
