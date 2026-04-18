@@ -281,7 +281,7 @@ export default function ElevenClubsPage() {
                           ? "bg-primary text-primary-foreground"
                           : isSelected
                             ? "bg-primary/50 text-primary-foreground ring-2 ring-primary"
-                            : "bg-secondary/80 text-secondary-foreground hover:bg-secondary",
+                            : "bg-secondary/40 dark:bg-secondary/80 text-secondary-foreground hover:bg-secondary/60 dark:hover:bg-secondary",
                         !player && !gameComplete && "cursor-pointer"
                       )}
                       style={{
