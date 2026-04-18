@@ -241,10 +241,10 @@ export default function ElevenClubsPage() {
                       <span
                         key={club}
                         className={cn(
-                          "px-2.5 py-1 rounded-lg text-[11px] font-black uppercase tracking-wider transition-all border",
+                          "px-2.5 py-1 rounded-xl text-[11px] font-black uppercase tracking-wider transition-all border shadow-sm",
                           isUsed
-                            ? "bg-black/5 dark:bg-white/5 border-transparent text-card-foreground/30 line-through"
-                            : "bg-secondary/10 dark:bg-secondary/40 border-secondary/20 text-card-foreground"
+                            ? "bg-black/5 dark:bg-white/5 border-transparent text-primary/30 dark:text-white/30 line-through"
+                            : "bg-primary/5 dark:bg-secondary/40 border-primary/20 dark:border-secondary/20 text-primary dark:text-card-foreground"
                         )}
                       >
                         {club}
@@ -332,7 +332,7 @@ export default function ElevenClubsPage() {
                       placeholder="Search..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="bg-input border-border h-8 text-sm mb-3"
+                      className="bg-primary/5 dark:bg-input border-primary/20 dark:border-border h-9 text-sm mb-3 rounded-xl focus-visible:ring-primary/30 text-primary dark:text-foreground placeholder:text-primary/40 dark:placeholder:text-muted-foreground"
                       autoComplete="off"
                       autoFocus
                     />
@@ -341,10 +341,24 @@ export default function ElevenClubsPage() {
                         <button
                           key={`${club}-${player}`}
                           onClick={() => handlePlayerSelect(club, player)}
-                          className="w-full flex items-center justify-between p-2 rounded-lg bg-secondary/10 dark:bg-secondary/40 hover:bg-secondary/20 dark:hover:bg-secondary/60 transition-all border border-secondary/20 hover:border-primary/50 shadow-sm group"
+                          className={cn(
+                            "w-full flex items-center justify-between p-2.5 rounded-xl transition-all duration-300 border shadow-sm group",
+                            "bg-primary/5 border-primary/20 text-primary hover:bg-primary/10 hover:border-primary/30",
+                            "dark:bg-secondary/40 dark:border-secondary/20 dark:text-card-foreground dark:hover:bg-secondary/60 dark:hover:border-primary/50"
+                          )}
                         >
-                          <span className="text-[10px] font-black uppercase tracking-widest text-card-foreground group-hover:text-primary dark:group-hover:text-white transition-colors">{player}</span>
-                          <span className="text-[10px] font-bold text-card-foreground/60 dark:text-white/60 group-hover:text-card-foreground dark:group-hover:text-white/90">{club}</span>
+                          <span className={cn(
+                            "text-[10px] font-black uppercase tracking-widest transition-colors opacity-70 group-hover:opacity-100",
+                            "dark:opacity-100 dark:group-hover:text-primary"
+                          )}>
+                            {player}
+                          </span>
+                          <span className={cn(
+                            "text-[10px] font-bold transition-colors opacity-50 group-hover:opacity-100",
+                            "dark:opacity-70 dark:group-hover:text-card-foreground"
+                          )}>
+                            {club}
+                          </span>
                         </button>
                       ))}
                       {getAvailablePlayers().length === 0 && (

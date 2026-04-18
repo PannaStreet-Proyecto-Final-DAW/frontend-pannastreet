@@ -208,8 +208,8 @@ export default function GuessThePlayerPage() {
                     </div>
 
                     <div className="w-full md:w-auto flex items-center justify-center md:pr-4">
-                      <Button 
-                        onClick={() => setIsStarted(true)} 
+                      <Button
+                        onClick={() => setIsStarted(true)}
                         className="w-full md:w-[180px] bg-primary text-primary-foreground font-black py-4 rounded-xl text-xs hover:scale-[1.05] transition-transform shadow-lg h-auto uppercase tracking-[0.2em]"
                       >
                         Start Game
