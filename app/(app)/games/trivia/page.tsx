@@ -258,7 +258,10 @@ export default function TriviaPage() {
               <span className="text-sm font-medium text-primary">
                 Score: {gameState.score}
               </span>
-              <SurrenderButton onClick={() => console.log("Surrender")} />
+              <SurrenderButton 
+                onClick={() => console.log("Surrender")} 
+                title="Surrender / Rendirse"
+              />
             </div>
           </div>
           <div className="w-full h-2 bg-secondary rounded-full mb-6 overflow-hidden">
