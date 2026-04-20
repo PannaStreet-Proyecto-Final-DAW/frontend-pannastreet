@@ -132,7 +132,10 @@ export default function ElevenClubsPage() {
         <div className="h-8 md:h-10" /> {/* Spacer */}
         {isPlaying && !gameComplete && (
           <div className="absolute right-0 top-0">
-            <SurrenderButton onClick={() => console.log("Surrender")} />
+            <SurrenderButton
+              onClick={() => console.log("Surrender")}
+              title="Surrender"
+            />
           </div>
         )}
       </div>

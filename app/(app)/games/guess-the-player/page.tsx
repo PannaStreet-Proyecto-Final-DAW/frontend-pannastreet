@@ -128,7 +128,10 @@ export default function GuessThePlayerPage() {
         <div className="h-8 md:h-10" /> {/* Spacer */}
         {isStarted && !gameOver && (
           <div className="absolute right-0 top-0">
-            <SurrenderButton onClick={() => console.log("Surrender")} />
+            <SurrenderButton
+              onClick={() => console.log("Surrender")}
+              title="Surrender"
+            />
           </div>
         )}
       </div>

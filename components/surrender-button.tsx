@@ -5,16 +5,18 @@ import { cn } from "@/lib/utils"
 interface SurrenderButtonProps {
   className?: string
   onClick?: () => void
+  title?: string
 }
 
-export function SurrenderButton({ className, onClick }: SurrenderButtonProps) {
+export function SurrenderButton({ className, onClick, title = "Surrender" }: SurrenderButtonProps) {
   return (
     <button
       onClick={onClick}
+      title={title}
       className={cn(
-        "w-10 h-10 rounded-xl border-2 border-primary flex items-center justify-center transition-all duration-300",
-        "bg-card/50 backdrop-blur-md shadow-lg",
-        "hover:scale-110 hover:shadow-primary/20 hover:border-primary/80",
+        "w-10 h-10 rounded-xl border-[3px] border-primary flex items-center justify-center transition-all duration-300",
+        "bg-primary/5 dark:bg-card/50 dark:backdrop-blur-md shadow-sm dark:shadow-lg dark:shadow-primary/10",
+        "hover:scale-110 hover:shadow-primary/30 hover:border-primary",
         "active:scale-95",
         "group",
         className
