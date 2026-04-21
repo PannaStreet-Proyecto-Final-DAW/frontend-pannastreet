@@ -124,7 +124,7 @@ export default function LeaguesPage() {
                 Join League
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-card border-border">
+            <DialogContent className="bg-card border-border text-card-foreground [&>button[data-slot=dialog-close]]:text-primary">
               <DialogHeader>
                 <DialogTitle className="text-card-foreground">Join a League</DialogTitle>
                 <DialogDescription>
@@ -140,7 +140,7 @@ export default function LeaguesPage() {
                   {availableLeagues.map((league) => (
                     <div
                       key={league.id}
-                      className="flex items-center justify-between p-3 rounded-lg bg-secondary/50 border border-border"
+                      className="flex items-center justify-between p-3 rounded-lg bg-primary/5 border border-border"
                     >
                       <div>
                         <p className="font-medium text-card-foreground">{league.name}</p>
@@ -173,7 +173,7 @@ export default function LeaguesPage() {
                 Create League
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-card border-border">
+            <DialogContent className="bg-card border-border text-card-foreground [&>button[data-slot=dialog-close]]:text-primary">
               <DialogHeader>
                 <DialogTitle className="text-card-foreground">Create a League</DialogTitle>
                 <DialogDescription>
@@ -190,7 +190,7 @@ export default function LeaguesPage() {
                     value={newLeagueName}
                     onChange={(e) => setNewLeagueName(e.target.value)}
                     required
-                    className="bg-input border-border"
+                    className="bg-primary/5 border-border text-primary placeholder:text-primary/50"
                   />
                 </Field>
                 <Button
