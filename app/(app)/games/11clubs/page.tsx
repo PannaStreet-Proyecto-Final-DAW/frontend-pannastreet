@@ -56,8 +56,8 @@ export default function ElevenClubsPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [gameComplete, setGameComplete] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
-  const [difficulty, setDifficulty] = useState("Intermediate")
-  const [mode, setMode] = useState("Male")
+  const [difficulty, setDifficulty] = useState("Easy")
+  const [mode, setMode] = useState("Both")
 
   useEffect(() => {
     // Shuffle and pick 11 random clubs
@@ -195,7 +195,7 @@ export default function ElevenClubsPage() {
                       <div className="pt-2 border-t border-border/30">
                         <p className="text-black dark:text-white text-[11px] font-bold mb-2 uppercase tracking-wider">Select mode:</p>
                         <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
-                          {["Male", "Female", "Both"].map((opt) => (
+                          {["Both", "Male", "Female"].map((opt) => (
                             <Button
                               key={opt}
                               variant={mode === opt ? "default" : "secondary"}

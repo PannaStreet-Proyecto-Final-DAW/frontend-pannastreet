@@ -40,8 +40,8 @@ export default function GuessThePlayerPage() {
   const [won, setWon] = useState(false)
   const [suggestions, setSuggestions] = useState<typeof PLAYERS>([])
   const [isStarted, setIsStarted] = useState(false)
-  const [difficulty, setDifficulty] = useState("Intermediate")
-  const [mode, setMode] = useState("Male")
+  const [difficulty, setDifficulty] = useState("Easy")
+  const [mode, setMode] = useState("Both")
 
   useEffect(() => {
     // Pick a random player for today (in production, use a seed based on date)
@@ -192,7 +192,7 @@ export default function GuessThePlayerPage() {
                       <div className="pt-2 border-t border-border/30">
                         <p className="text-black dark:text-white text-[11px] font-bold mb-2 uppercase tracking-wider">Select mode:</p>
                         <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
-                          {["Male", "Female", "Both"].map((opt) => (
+                          {["Both", "Male", "Female"].map((opt) => (
                             <Button
                               key={opt}
                               variant={mode === opt ? "default" : "secondary"}
