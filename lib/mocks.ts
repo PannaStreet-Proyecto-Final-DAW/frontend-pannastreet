@@ -26,7 +26,23 @@ export const MOCK_MEMBERSHIPS = [
     userId: "1",
     leagueId: "1",
     score: 1500,
-    joinedAt: new Date().toISOString(),
+    joinedAt: "2024-01-10T10:00:00Z",
+    league: MOCK_LEAGUES[0]
+  },
+  {
+    id: "m2",
+    userId: "2",
+    leagueId: "1",
+    score: 1250,
+    joinedAt: "2024-01-15T12:00:00Z",
+    league: MOCK_LEAGUES[0]
+  },
+  {
+    id: "m3",
+    userId: "3",
+    leagueId: "1",
+    score: 1800,
+    joinedAt: "2024-01-05T09:00:00Z",
     league: MOCK_LEAGUES[0]
   }
 ]

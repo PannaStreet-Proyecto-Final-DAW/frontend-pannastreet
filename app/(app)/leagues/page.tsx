@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useAuth } from "@/lib/auth-context"
-import { getUserMemberships, createUserLeague, getAllUserLeagues, joinLeague, type UserLeagueMembership, type UserLeague } from "@/lib/api"
+import { getUserMemberships, createUserLeague, getAllUserLeagues, joinLeague, getLeagueMembers, type UserLeagueMembership, type UserLeague } from "@/lib/api"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -16,6 +16,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
 export default function LeaguesPage() {
   const { user } = useAuth()
@@ -32,6 +40,11 @@ export default function LeaguesPage() {
   // Join league state
   const [joinDialogOpen, setJoinDialogOpen] = useState(false)
   const [isJoining, setIsJoining] = useState(false)
+
+  // League details state
+  const [selectedLeague, setSelectedLeague] = useState<UserLeagueMembership | null>(null)
+  const [leagueMembers, setLeagueMembers] = useState<UserLeagueMembership[]>([])
+  const [isLoadingMembers, setIsLoadingMembers] = useState(false)
 
   const fetchData = async () => {
     if (!user) return
@@ -91,6 +104,19 @@ export default function LeaguesPage() {
       setError("Failed to join league")
     } finally {
       setIsJoining(false)
+    }
+  }
+
+  const handleViewLeagueDetails = async (membership: UserLeagueMembership) => {
+    setSelectedLeague(membership)
+    setIsLoadingMembers(true)
+    try {
+      const members = await getLeagueMembers(membership.leagueId)
+      setLeagueMembers(members)
+    } catch {
+      setError("Failed to load league members")
+    } finally {
+      setIsLoadingMembers(false)
     }
   }
 
@@ -190,6 +216,7 @@ export default function LeaguesPage() {
                     value={newLeagueName}
                     onChange={(e) => setNewLeagueName(e.target.value)}
                     required
+                    autoComplete="off"
                     className="bg-primary/5 border-border text-primary placeholder:text-primary/50"
                   />
                 </Field>
@@ -229,32 +256,97 @@ export default function LeaguesPage() {
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
           {memberships.map((membership) => (
-            <Card key={membership.id} className="border-border bg-card">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg text-primary transition-colors">
-                    {membership.league?.name || `League ${membership.leagueId}`}
-                  </CardTitle>
-                  <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
-                    Member
-                  </span>
+            <Dialog key={membership.id}>
+              <DialogTrigger asChild>
+                <Card 
+                  className="border-border bg-card hover:border-primary/50 transition-all cursor-pointer group"
+                  onClick={() => handleViewLeagueDetails(membership)}
+                >
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-lg text-primary transition-colors group-hover:text-primary/80">
+                        {membership.league?.name || `League ${membership.leagueId}`}
+                      </CardTitle>
+                      <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
+                        Member
+                      </span>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Your Score</p>
+                        <p className="text-2xl font-bold text-primary">{membership.score}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm text-muted-foreground">Joined</p>
+                        <p className="text-sm text-primary">
+                          {new Date(membership.joinedAt).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </DialogTrigger>
+              <DialogContent className="max-w-3xl bg-card border-border text-card-foreground [&>button[data-slot=dialog-close]]:text-primary">
+                <DialogHeader>
+                  <DialogTitle className="text-2xl font-bold text-primary">
+                    {membership.league?.name}
+                  </DialogTitle>
+                  <DialogDescription className="text-primary/70 text-base font-medium">
+                    Leaderboard
+                  </DialogDescription>
+                </DialogHeader>
+
+                <div className="mt-4">
+                  {isLoadingMembers ? (
+                    <div className="flex justify-center py-10">
+                      <Spinner className="h-6 w-6 text-primary" />
+                    </div>
+                  ) : (
+                    <div className="rounded-xl border border-border bg-primary/5 overflow-hidden">
+                      <Table>
+                        <TableHeader className="bg-primary/10">
+                          <TableRow className="hover:bg-transparent">
+                            <TableHead className="text-primary font-bold">Name</TableHead>
+                            <TableHead className="text-primary font-bold text-center">Total Score</TableHead>
+                            <TableHead className="text-primary font-bold text-center">Today's Score</TableHead>
+                            <TableHead className="text-primary font-bold text-right">Join Date</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {leagueMembers.length > 0 ? (
+                            leagueMembers.sort((a, b) => b.score - a.score).map((member, index) => (
+                              <TableRow key={member.id} className="border-border/50">
+                                <TableCell className="font-medium text-primary">
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-xs w-5 text-muted-foreground">#{index + 1}</span>
+                                    {member.userId === user.id ? "You" : `User ${member.userId}`}
+                                  </div>
+                                </TableCell>
+                                <TableCell className="text-center font-bold text-primary">{member.score}</TableCell>
+                                <TableCell className="text-center text-primary/70">
+                                  {Math.floor(member.score / 10)} {/* Dummy score today */}
+                                </TableCell>
+                                <TableCell className="text-right text-muted-foreground">
+                                  {new Date(member.joinedAt).toLocaleDateString()}
+                                </TableCell>
+                              </TableRow>
+                            ))
+                          ) : (
+                            <TableRow>
+                              <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
+                                No members found.
+                              </TableCell>
+                            </TableRow>
+                          )}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  )}
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Your Score</p>
-                    <p className="text-2xl font-bold text-primary">{membership.score}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm text-muted-foreground">Joined</p>
-                    <p className="text-sm text-primary">
-                      {new Date(membership.joinedAt).toLocaleDateString()}
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+              </DialogContent>
+            </Dialog>
           ))}
         </div>
       )}
