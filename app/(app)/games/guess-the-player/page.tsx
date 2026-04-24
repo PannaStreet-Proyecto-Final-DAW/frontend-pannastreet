@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 import { SurrenderButton } from "@/components/surrender-button"
+import { GuessesTable, type Guess } from "@/components/guesses-table"
 
 // Sample players for the game - in production, fetch from API
 const PLAYERS = [
@@ -20,17 +21,6 @@ const PLAYERS = [
   { name: "De Bruyne", team: "Man City", nationality: "Belgium", position: "Midfielder", age: 32 },
 ]
 
-type Hint = "correct" | "partial" | "wrong"
-
-interface Guess {
-  name: string
-  hints: {
-    team: Hint
-    nationality: Hint
-    position: Hint
-    age: "correct" | "higher" | "lower"
-  }
-}
 
 export default function GuessThePlayerPage() {
   const [targetPlayer, setTargetPlayer] = useState(PLAYERS[0])
@@ -103,16 +93,6 @@ export default function GuessThePlayerPage() {
     setIsStarted(false)
   }
 
-  const getHintColor = (hint: Hint | "higher" | "lower") => {
-    switch (hint) {
-      case "correct":
-        return "bg-primary text-primary-foreground"
-      case "partial":
-        return "bg-amber-500 text-white"
-      default:
-        return "bg-secondary text-secondary-foreground"
-    }
-  }
 
   return (
     <div className="max-w-5xl mx-auto">
@@ -262,68 +242,7 @@ export default function GuessThePlayerPage() {
           )}
 
           {/* Guesses table */}
-          {guesses.length > 0 && (
-            <Card className="border-border bg-card mb-6">
-              <CardHeader>
-                <CardTitle className="text-lg text-card-foreground">Your Guesses</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="text-xs text-black/80 dark:text-white font-bold uppercase tracking-wider">
-                        <th className="text-left pb-2">Player</th>
-                        <th className="text-center pb-2">Team</th>
-                        <th className="text-center pb-2">Nationality</th>
-                        <th className="text-center pb-2">Position</th>
-                        <th className="text-center pb-2">Age</th>
-                      </tr>
-                    </thead>
-                    <tbody className="space-y-2">
-                      {guesses.map((guess, index) => {
-                        const player = PLAYERS.find((p) => p.name === guess.name)!
-                        return (
-                          <tr key={index} className="text-sm">
-                            <td className="py-2 font-medium text-card-foreground">{guess.name}</td>
-                            <td className="py-2">
-                              <span className={cn("px-2 py-1 rounded text-xs", getHintColor(guess.hints.team))}>
-                                {player.team}
-                              </span>
-                            </td>
-                            <td className="py-2">
-                              <span className={cn("px-2 py-1 rounded text-xs", getHintColor(guess.hints.nationality))}>
-                                {player.nationality}
-                              </span>
-                            </td>
-                            <td className="py-2">
-                              <span className={cn("px-2 py-1 rounded text-xs", getHintColor(guess.hints.position))}>
-                                {player.position}
-                              </span>
-                            </td>
-                            <td className="py-2">
-                              <span className={cn("px-2 py-1 rounded text-xs flex items-center justify-center gap-1", getHintColor(guess.hints.age))}>
-                                {player.age}
-                                {guess.hints.age === "higher" && (
-                                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7" />
-                                  </svg>
-                                )}
-                                {guess.hints.age === "lower" && (
-                                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                                  </svg>
-                                )}
-                              </span>
-                            </td>
-                          </tr>
-                        )
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              </CardContent>
-            </Card>
-          )}
+          <GuessesTable guesses={guesses} players={PLAYERS} />
 
           {/* Game over */}
           {gameOver && (
