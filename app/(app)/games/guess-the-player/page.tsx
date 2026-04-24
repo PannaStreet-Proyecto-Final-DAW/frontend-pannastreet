@@ -11,14 +11,14 @@ import { GuessesTable, type Guess } from "@/components/guesses-table"
 
 // Sample players for the game - in production, fetch from API
 const PLAYERS = [
-  { name: "Messi", team: "Inter Miami", nationality: "Argentina", position: "Forward", age: 36 },
-  { name: "Ronaldo", team: "Al Nassr", nationality: "Portugal", position: "Forward", age: 39 },
-  { name: "Mbappe", team: "Real Madrid", nationality: "France", position: "Forward", age: 25 },
-  { name: "Haaland", team: "Man City", nationality: "Norway", position: "Forward", age: 23 },
-  { name: "Bellingham", team: "Real Madrid", nationality: "England", position: "Midfielder", age: 20 },
-  { name: "Vinicius", team: "Real Madrid", nationality: "Brazil", position: "Forward", age: 23 },
-  { name: "Salah", team: "Liverpool", nationality: "Egypt", position: "Forward", age: 31 },
-  { name: "De Bruyne", team: "Man City", nationality: "Belgium", position: "Midfielder", age: 32 },
+  { name: "Messi", team: "Inter Miami", league: "MLS", nationality: "Argentina", position: "Forward", age: 36 },
+  { name: "Ronaldo", team: "Al Nassr", league: "Saudi Pro League", nationality: "Portugal", position: "Forward", age: 39 },
+  { name: "Mbappe", team: "Real Madrid", league: "La Liga", nationality: "France", position: "Forward", age: 25 },
+  { name: "Haaland", team: "Man City", league: "Premier League", nationality: "Norway", position: "Forward", age: 23 },
+  { name: "Bellingham", team: "Real Madrid", league: "La Liga", nationality: "England", position: "Midfielder", age: 20 },
+  { name: "Vinicius", team: "Real Madrid", league: "La Liga", nationality: "Brazil", position: "Forward", age: 23 },
+  { name: "Salah", team: "Liverpool", league: "Premier League", nationality: "Egypt", position: "Forward", age: 31 },
+  { name: "De Bruyne", team: "Man City", league: "Premier League", nationality: "Belgium", position: "Midfielder", age: 32 },
 ]
 
 
@@ -59,6 +59,7 @@ export default function GuessThePlayerPage() {
 
     const hints: Guess["hints"] = {
       team: player.team === targetPlayer.team ? "correct" : "wrong",
+      league: player.league === targetPlayer.league ? "correct" : "wrong",
       nationality: player.nationality === targetPlayer.nationality ? "correct" : "wrong",
       position: player.position === targetPlayer.position ? "correct" : "wrong",
       age: player.age === targetPlayer.age ? "correct" : player.age > targetPlayer.age ? "lower" : "higher",
@@ -272,13 +273,13 @@ export default function GuessThePlayerPage() {
           )}
 
           {/* Legend */}
-          <div className="mt-6 flex items-center justify-center gap-4 text-xs text-white font-medium">
-            <div className="flex items-center gap-1.5">
+          <div className="mt-6 flex items-center justify-center gap-4 text-xs font-medium">
+            <div className="flex items-center gap-1.5 text-white">
               <span className="w-4 h-4 rounded bg-primary"></span>
               Correct
             </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-4 h-4 rounded bg-secondary"></span>
+            <div className="flex items-center gap-1.5 text-white">
+              <span className="w-4 h-4 rounded bg-[#DAE0C9] dark:bg-secondary"></span>
               Incorrect
             </div>
           </div>

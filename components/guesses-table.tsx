@@ -10,6 +10,7 @@ export interface Guess {
   name: string
   hints: {
     team: Hint
+    league: Hint
     nationality: Hint
     position: Hint
     age: "correct" | "higher" | "lower"
@@ -19,6 +20,7 @@ export interface Guess {
 interface Player {
   name: string
   team: string
+  league: string
   nationality: string
   position: string
   age: number
@@ -37,7 +39,7 @@ export function GuessesTable({ guesses, players }: GuessesTableProps) {
       case "partial":
         return "bg-amber-500 text-white"
       default:
-        return "bg-secondary text-secondary-foreground"
+        return "bg-[#DAE0C9] dark:bg-secondary text-black dark:text-white"
     }
   }
 
@@ -53,13 +55,16 @@ export function GuessesTable({ guesses, players }: GuessesTableProps) {
       <CardContent className="p-0">
         <div className="overflow-x-auto">
           <Table>
-            <TableHeader className="bg-muted/50">
+            <TableHeader className="bg-primary/10">
               <TableRow className="hover:bg-transparent border-b-2 border-border/50">
                 <TableHead className="py-4 px-6 text-[11px] font-black uppercase tracking-widest text-black/60 dark:text-white/60">
                   Player
                 </TableHead>
                 <TableHead className="py-4 px-4 text-center text-[11px] font-black uppercase tracking-widest text-black/60 dark:text-white/60 border-l border-border/30">
                   Team
+                </TableHead>
+                <TableHead className="py-4 px-4 text-center text-[11px] font-black uppercase tracking-widest text-black/60 dark:text-white/60 border-l border-border/30">
+                  League
                 </TableHead>
                 <TableHead className="py-4 px-4 text-center text-[11px] font-black uppercase tracking-widest text-black/60 dark:text-white/60 border-l border-border/30">
                   Nationality
@@ -94,6 +99,15 @@ export function GuessesTable({ guesses, players }: GuessesTableProps) {
                         getHintColor(guess.hints.team)
                       )}>
                         {player.team}
+                      </span>
+                    </TableCell>
+
+                    <TableCell className="py-4 px-4 text-center border-l border-border/30">
+                      <span className={cn(
+                         "inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider min-w-[80px] shadow-sm transition-transform group-hover:scale-105 duration-300",
+                         getHintColor(guess.hints.league)
+                       )}>
+                        {player.league}
                       </span>
                     </TableCell>
 
