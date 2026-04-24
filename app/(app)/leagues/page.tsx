@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useAuth } from "@/lib/auth-context"
-import { getUserMemberships, createUserLeague, getAllUserLeagues, joinLeague, type UserLeagueMembership, type UserLeague } from "@/lib/api"
+import { getUserMemberships, createUserLeague, getAllUserLeagues, joinLeague, getLeagueMembers, type UserLeagueMembership, type UserLeague } from "@/lib/api"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -16,6 +16,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { cn } from "@/lib/utils"
 
 export default function LeaguesPage() {
   const { user } = useAuth()
@@ -32,6 +41,11 @@ export default function LeaguesPage() {
   // Join league state
   const [joinDialogOpen, setJoinDialogOpen] = useState(false)
   const [isJoining, setIsJoining] = useState(false)
+
+  // League details state
+  const [selectedLeague, setSelectedLeague] = useState<UserLeagueMembership | null>(null)
+  const [leagueMembers, setLeagueMembers] = useState<UserLeagueMembership[]>([])
+  const [isLoadingMembers, setIsLoadingMembers] = useState(false)
 
   const fetchData = async () => {
     if (!user) return
@@ -94,6 +108,19 @@ export default function LeaguesPage() {
     }
   }
 
+  const handleViewLeagueDetails = async (membership: UserLeagueMembership) => {
+    setSelectedLeague(membership)
+    setIsLoadingMembers(true)
+    try {
+      const members = await getLeagueMembers(membership.leagueId)
+      setLeagueMembers(members)
+    } catch {
+      setError("Failed to load league members")
+    } finally {
+      setIsLoadingMembers(false)
+    }
+  }
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -106,156 +133,252 @@ export default function LeaguesPage() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">My Leagues</h1>
-          <p className="text-white mt-1">
-            Compete with friends and track your scores
-          </p>
-        </div>
-        <div className="flex gap-3">
-          {/* Join League Dialog */}
-          <Dialog open={joinDialogOpen} onOpenChange={setJoinDialogOpen}>
-            <DialogTrigger asChild>
-              <Button variant="outline" className="border-border">
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                </svg>
-                Join League
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="bg-card border-border text-card-foreground [&>button[data-slot=dialog-close]]:text-primary">
-              <DialogHeader>
-                <DialogTitle className="text-card-foreground">Join a League</DialogTitle>
-                <DialogDescription>
-                  Select a league to join and start competing
-                </DialogDescription>
-              </DialogHeader>
-              {availableLeagues.length === 0 ? (
-                <p className="text-muted-foreground text-center py-8">
-                  No available leagues to join. Create one!
-                </p>
-              ) : (
-                <div className="space-y-3 max-h-64 overflow-y-auto">
-                  {availableLeagues.map((league) => (
-                    <div
-                      key={league.id}
-                      className="flex items-center justify-between p-3 rounded-lg bg-primary/5 border border-border"
-                    >
-                      <div>
-                        <p className="font-medium text-card-foreground">{league.name}</p>
-                        <p className="text-xs text-muted-foreground">
-                          Code: {league.inviteCode}
-                        </p>
-                      </div>
-                      <Button
-                        size="sm"
-                        onClick={() => handleJoinLeague(league.id)}
-                        disabled={isJoining}
-                        className="bg-primary text-primary-foreground"
-                      >
-                        {isJoining ? <Spinner className="h-4 w-4" /> : "Join"}
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </DialogContent>
-          </Dialog>
-
-          {/* Create League Dialog */}
-          <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="bg-primary text-primary-foreground">
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
-                </svg>
-                Create League
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="bg-card border-border text-card-foreground [&>button[data-slot=dialog-close]]:text-primary">
-              <DialogHeader>
-                <DialogTitle className="text-card-foreground">Create a League</DialogTitle>
-                <DialogDescription>
-                  Create your own league and invite friends to compete
-                </DialogDescription>
-              </DialogHeader>
-              <form onSubmit={handleCreateLeague}>
-                <Field>
-                  <FieldLabel htmlFor="league-name" className="text-card-foreground">League Name</FieldLabel>
-                  <Input
-                    id="league-name"
-                    type="text"
-                    placeholder="Enter league name"
-                    value={newLeagueName}
-                    onChange={(e) => setNewLeagueName(e.target.value)}
-                    required
-                    className="bg-primary/5 border-border text-primary placeholder:text-primary/50"
-                  />
-                </Field>
-                <Button
-                  type="submit"
-                  className="w-full mt-4 bg-primary text-primary-foreground"
-                  disabled={isCreating}
-                >
-                  {isCreating ? <Spinner className="h-4 w-4" /> : "Create League"}
-                </Button>
-              </form>
-            </DialogContent>
-          </Dialog>
-        </div>
-      </div>
-
-      {error && (
-        <div className="mb-6 p-4 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm">
-          {error}
-        </div>
-      )}
-
-      {!hasLeagues ? (
-        <Card className="border-border bg-card">
-          <CardContent className="flex flex-col items-center justify-center py-16">
-            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-              <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
+      {!selectedLeague ? (
+        <>
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h1 className="text-3xl font-bold text-foreground">My Leagues</h1>
+              <p className="text-white mt-1">
+                Compete with friends and track your scores
+              </p>
             </div>
-            <CardTitle className="text-card-foreground mb-2">No leagues yet</CardTitle>
-            <CardDescription className="text-center max-w-sm">
-              Join an existing league or create your own to compete with friends and track your game scores.
-            </CardDescription>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="grid gap-4 md:grid-cols-2">
-          {memberships.map((membership) => (
-            <Card key={membership.id} className="border-border bg-card">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg text-primary transition-colors">
-                    {membership.league?.name || `League ${membership.leagueId}`}
-                  </CardTitle>
-                  <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
-                    Member
-                  </span>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Your Score</p>
-                    <p className="text-2xl font-bold text-primary">{membership.score}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm text-muted-foreground">Joined</p>
-                    <p className="text-sm text-primary">
-                      {new Date(membership.joinedAt).toLocaleDateString()}
+            <div className="flex gap-3">
+              {/* Join League Dialog */}
+              <Dialog open={joinDialogOpen} onOpenChange={setJoinDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="outline" className="border-border">
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                    </svg>
+                    Join League
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="bg-card border-border text-card-foreground [&>button[data-slot=dialog-close]]:text-primary">
+                  <DialogHeader>
+                    <DialogTitle className="text-card-foreground">Join a League</DialogTitle>
+                    <DialogDescription>
+                      Select a league to join and start competing
+                    </DialogDescription>
+                  </DialogHeader>
+                  {availableLeagues.length === 0 ? (
+                    <p className="text-muted-foreground text-center py-8">
+                      No available leagues to join. Create one!
                     </p>
-                  </div>
+                  ) : (
+                    <div className="space-y-3 max-h-64 overflow-y-auto">
+                      {availableLeagues.map((league) => (
+                        <div
+                          key={league.id}
+                          className="flex items-center justify-between p-3 rounded-lg bg-primary/5 border border-border"
+                        >
+                          <div>
+                            <p className="font-medium text-card-foreground">{league.name}</p>
+                            <p className="text-xs text-muted-foreground">
+                              Code: {league.inviteCode}
+                            </p>
+                          </div>
+                          <Button
+                            size="sm"
+                            onClick={() => handleJoinLeague(league.id)}
+                            disabled={isJoining}
+                            className="bg-primary text-primary-foreground"
+                          >
+                            {isJoining ? <Spinner className="h-4 w-4" /> : "Join"}
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </DialogContent>
+              </Dialog>
+
+              {/* Create League Dialog */}
+              <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button className="bg-primary text-primary-foreground">
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Create League
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="bg-card border-border text-card-foreground [&>button[data-slot=dialog-close]]:text-primary">
+                  <DialogHeader>
+                    <DialogTitle className="text-card-foreground">Create a League</DialogTitle>
+                    <DialogDescription>
+                      Create your own league and invite friends to compete
+                    </DialogDescription>
+                  </DialogHeader>
+                  <form onSubmit={handleCreateLeague}>
+                    <Field>
+                      <FieldLabel htmlFor="league-name" className="text-card-foreground">League Name</FieldLabel>
+                      <Input
+                        id="league-name"
+                        type="text"
+                        placeholder="Enter league name"
+                        value={newLeagueName}
+                        onChange={(e) => setNewLeagueName(e.target.value)}
+                        required
+                        autoComplete="off"
+                        className="bg-primary/5 border-border text-primary placeholder:text-primary/50"
+                      />
+                    </Field>
+                    <Button
+                      type="submit"
+                      className="w-full mt-4 bg-primary text-primary-foreground"
+                      disabled={isCreating}
+                    >
+                      {isCreating ? <Spinner className="h-4 w-4" /> : "Create League"}
+                    </Button>
+                  </form>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
+
+          {error && (
+            <div className="mb-6 p-4 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm">
+              {error}
+            </div>
+          )}
+
+          {!hasLeagues ? (
+            <Card className="border-border bg-card">
+              <CardContent className="flex flex-col items-center justify-center py-16">
+                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                  <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
                 </div>
+                <CardTitle className="text-card-foreground mb-2">No leagues yet</CardTitle>
+                <CardDescription className="text-center max-w-sm">
+                  Join an existing league or create your own to compete with friends and track your game scores.
+                </CardDescription>
               </CardContent>
             </Card>
-          ))}
+          ) : (
+            <div className="grid gap-4 md:grid-cols-2">
+              {memberships.map((membership) => (
+                <Card
+                  key={membership.id}
+                  className="border-border bg-card hover:border-primary/50 transition-all cursor-pointer group"
+                  onClick={() => handleViewLeagueDetails(membership)}
+                >
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-lg text-primary transition-colors group-hover:text-primary/80">
+                        {membership.league?.name || `League ${membership.leagueId}`}
+                      </CardTitle>
+                      <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
+                        Member
+                      </span>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Your Score</p>
+                        <p className="text-2xl font-bold text-primary">{membership.score}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm text-muted-foreground">Joined</p>
+                        <p className="text-sm text-primary">
+                          {new Date(membership.joinedAt).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="relative flex flex-col items-center justify-center mb-6">
+            <div className="absolute left-0 top-0">
+              <button
+                onClick={() => setSelectedLeague(null)}
+                className="text-white hover:text-primary text-sm flex items-center gap-1 transition-colors"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                Back to Leagues
+              </button>
+            </div>
+            <div className="h-8 md:h-10" />
+          </div>
+
+          <div className="mb-4">
+            <div className="flex items-center gap-3 border-b border-border/30 pb-2">
+              <h2 className="text-3xl font-black italic tracking-tighter uppercase text-primary">
+                {selectedLeague.league?.name}
+              </h2>
+              <button className="text-muted-foreground hover:text-primary transition-colors opacity-50 cursor-default" title="Edit league">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <Card className="border-border bg-card mt-4 overflow-hidden">
+            {isLoadingMembers ? (
+              <div className="flex justify-center py-20">
+                <Spinner className="h-8 w-8 text-primary" />
+              </div>
+            ) : (
+              <Table>
+                <TableHeader className="bg-muted/5 border-b border-border">
+                  <TableRow className="hover:bg-transparent border-none">
+                    <TableHead className="text-primary font-bold py-4 pl-10 w-16 text-center">Rank</TableHead>
+                    <TableHead className="text-primary font-bold py-4 px-4">Name</TableHead>
+                    <TableHead className="text-primary font-bold text-center py-4 px-4">Total Score</TableHead>
+                    <TableHead className="text-primary font-bold text-center py-4 px-4">Today's Score</TableHead>
+                    <TableHead className="text-primary font-bold text-right py-4 pr-10">Join Date</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {leagueMembers.length > 0 ? (
+                    leagueMembers.sort((a, b) => b.score - a.score).map((member, index) => (
+                      <TableRow
+                        key={member.id}
+                        className="border-border/50 hover:bg-muted/5 transition-colors"
+                      >
+                        <TableCell className="py-4 pl-10 text-center">
+                          <span className="text-xs font-bold text-muted-foreground bg-muted/20 w-6 h-6 inline-flex items-center justify-center rounded-full">
+                            {index + 1}
+                          </span>
+                        </TableCell>
+                        <TableCell className="font-medium py-4 px-4">
+                          <span className={cn(
+                            "text-base",
+                            member.userId === user?.id ? "text-primary font-bold" : "text-card-foreground"
+                          )}>
+                            {member.userId === user?.id ? "You" : `User ${member.userId.substring(0, 8)}`}
+                          </span>
+                        </TableCell>
+                        <TableCell className="text-center font-bold text-primary py-4 text-lg px-4">{member.score}</TableCell>
+                        <TableCell className="text-center text-primary/80 py-4 font-medium px-4">
+                          +{Math.floor(member.score / 10)}
+                        </TableCell>
+                        <TableCell className="text-right text-muted-foreground py-4 text-sm pr-10">
+                          {new Date(member.joinedAt).toLocaleDateString()}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={5} className="text-center py-12 text-muted-foreground">
+                        No members found.
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            )}
+          </Card>
         </div>
       )}
     </div>
