@@ -13,6 +13,8 @@ import {
 import { cn } from "@/lib/utils"
 import { type UserLeagueMembership } from "@/lib/api"
 
+import { GameLayout } from "./game-layout"
+
 interface LeagueWindowProps {
   selectedLeague: UserLeagueMembership
   leagueMembers: UserLeagueMembership[]
@@ -29,23 +31,12 @@ export function LeagueWindow({
   currentUserId 
 }: LeagueWindowProps) {
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="relative flex flex-col items-center justify-center mb-6">
-        <div className="absolute left-0 top-0">
-          <button
-            onClick={onBack}
-            className="text-white hover:text-primary text-sm flex items-center gap-1 transition-colors"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-            </svg>
-            Back to Leagues
-          </button>
-        </div>
-        <div className="h-8 md:h-10" />
-      </div>
-
-      <div className="mb-4">
+    <GameLayout
+      backOnClick={onBack}
+      backText="Back to Leagues"
+    >
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="mb-4">
         <div className="flex items-center gap-3 border-b border-border/30 pb-2">
           <h2 className="text-3xl font-black italic tracking-tighter uppercase text-primary">
             {selectedLeague.league?.name}
@@ -114,6 +105,7 @@ export function LeagueWindow({
           </Table>
         )}
       </Card>
-    </div>
+      </div>
+    </GameLayout>
   )
 }

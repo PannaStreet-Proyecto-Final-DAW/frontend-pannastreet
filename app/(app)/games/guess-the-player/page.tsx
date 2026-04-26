@@ -1,13 +1,13 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
-import { SurrenderButton } from "@/components/surrender-button"
 import { GuessesTable, type Guess } from "@/components/guesses-table"
+import { GameLayout } from "@/components/game-layout"
+import { GameIntroCard } from "@/components/game-intro-card"
 
 // Sample players for the game - in production, fetch from API
 const PLAYERS = [
@@ -96,115 +96,41 @@ export default function GuessThePlayerPage() {
 
 
   return (
-    <div className="max-w-5xl mx-auto">
-      <div className="relative flex flex-col items-center justify-center mb-6">
-        <div className="absolute left-0 top-0">
-          <Link href="/games" className="text-white hover:text-primary text-sm flex items-center gap-1">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-            </svg>
-            Back to Games
-          </Link>
-        </div>
-        <div className="h-8 md:h-10" /> {/* Spacer */}
-        {isStarted && !gameOver && (
-          <div className="absolute right-0 top-0">
-            <SurrenderButton
-              onClick={() => console.log("Surrender")}
-              title="Surrender"
-            />
-          </div>
-        )}
-      </div>
-
+    <GameLayout
+      backHref="/games"
+      backText="Back to Games"
+      showSurrender={isStarted && !gameOver}
+      onSurrender={() => console.log("Surrender")}
+    >
       {!isStarted ? (
-        <Card className="border-border bg-card overflow-hidden">
-          <CardContent className="p-0">
-            <div className="flex flex-col md:flex-row items-stretch md:items-center">
-              <div className="w-full md:w-1/3 aspect-video md:aspect-auto relative flex items-center justify-center p-4 md:p-8 bg-muted/5">
-                <div className="absolute inset-0 opacity-10 bg-gradient-to-br from-game-1 to-transparent" />
-                <img
-                  src="/images/games/guess-the-player.png"
-                  alt="Guess the Player"
-                  className="relative z-10 max-h-full max-w-full object-contain rounded-2xl shadow-2xl"
-                />
-              </div>
-              <div className="p-4 md:p-6 flex-1 flex flex-col justify-center text-center md:text-left">
-                <h2 className="text-3xl font-black italic mb-2 tracking-tighter uppercase">
-                  <span className="text-primary">GUESS THE</span> <span className="text-black dark:text-white tracking-normal">PLAYER</span>
-                </h2>
-
-                <div className="flex flex-col gap-4">
-                  <div className="text-[13px] text-black dark:text-white/90 font-medium leading-tight space-y-0.5 text-pretty">
-                    <p className="mb-2">Guess the Player is a daily football game where you have 6 attempts to uncover the hidden football star.</p>
-                    <ul className="list-disc list-inside space-y-0 opacity-80 decoration-primary/50">
-                      <li>After each guess, you'll receive dynamic feedback.</li>
-                      <li>The tiles will change color to show how close you are.</li>
-                      <li>Green for a match, and Grey for no match.</li>
-                      <li>Select from 3 difficulty levels that increase in challenge.</li>
-                      <li>Play in Men's, Women's, or Both categories.</li>
-                      <li>Double your points by choosing the Both mode!</li>
-                      <li>You can give up by clicking the Red Card button.</li>
-                    </ul>
-                  </div>
-
-                  <div className="flex flex-col md:flex-row gap-8 items-center bg-muted/5 p-4 rounded-2xl border border-border/50 backdrop-blur-sm">
-                    <div className="flex flex-col gap-4 flex-1 w-full">
-                      <div>
-                        <p className="text-black dark:text-white text-[11px] font-bold mb-2 uppercase tracking-wider">Select difficulty:</p>
-                        <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
-                          {["Easy", "Intermediate", "Hard"].map((opt) => (
-                            <Button
-                              key={opt}
-                              variant={difficulty === opt ? "default" : "secondary"}
-                              onClick={() => setDifficulty(opt)}
-                              className={cn(
-                                "rounded-full px-4 h-7 text-[11px] transition-all duration-300",
-                                difficulty === opt ? "bg-primary text-primary-foreground shadow-sm" : "bg-primary/10 hover:bg-primary/20 text-black/70 dark:text-white/70"
-                              )}
-                              size="sm"
-                            >
-                              {opt}
-                            </Button>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="pt-2 border-t border-border/30">
-                        <p className="text-black dark:text-white text-[11px] font-bold mb-2 uppercase tracking-wider">Select mode:</p>
-                        <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
-                          {["Both", "Male", "Female"].map((opt) => (
-                            <Button
-                              key={opt}
-                              variant={mode === opt ? "default" : "secondary"}
-                              onClick={() => setMode(opt)}
-                              className={cn(
-                                "rounded-full px-4 h-7 text-[11px] transition-all duration-300",
-                                mode === opt ? "bg-primary text-primary-foreground shadow-sm" : "bg-primary/10 hover:bg-primary/20 text-black/70 dark:text-white/70"
-                              )}
-                              size="sm"
-                            >
-                              {opt}
-                            </Button>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="w-full md:w-auto flex items-center justify-center md:pr-4">
-                      <Button
-                        onClick={() => setIsStarted(true)}
-                        className="w-full md:w-[180px] bg-primary text-primary-foreground font-black py-4 rounded-xl text-xs hover:scale-[1.05] transition-transform shadow-lg h-auto uppercase tracking-[0.2em]"
-                      >
-                        Start Game
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <GameIntroCard
+          gameId="guess-the-player"
+          title={
+            <>
+              <span className="text-primary">GUESS THE</span> <span className="text-black dark:text-white tracking-normal">PLAYER</span>
+            </>
+          }
+          image="/images/games/guess-the-player.png"
+          description={
+            <>
+              <p className="mb-2">Guess the Player is a daily football game where you have 6 attempts to uncover the hidden football star.</p>
+              <ul className="list-disc list-inside space-y-0 opacity-80 decoration-primary/50">
+                <li>After each guess, you'll receive dynamic feedback.</li>
+                <li>The tiles will change color to show how close you are.</li>
+                <li>Green for a match, and Grey for no match.</li>
+                <li>Select from 3 difficulty levels that increase in challenge.</li>
+                <li>Play in Men's, Women's, or Both categories.</li>
+                <li>Double your points by choosing the Both mode!</li>
+                <li>You can give up by clicking the Red Card button.</li>
+              </ul>
+            </>
+          }
+          difficulty={difficulty}
+          setDifficulty={setDifficulty}
+          mode={mode}
+          setMode={setMode}
+          onStart={() => setIsStarted(true)}
+        />
       ) : (
         <>
           {/* Guess input */}
@@ -285,7 +211,7 @@ export default function GuessThePlayerPage() {
           </div>
         </>
       )}
-    </div>
+    </GameLayout>
   )
 }
 
