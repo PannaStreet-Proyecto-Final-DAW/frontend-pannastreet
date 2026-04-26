@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils"
 import { GuessesTable, type Guess } from "@/components/guesses-table"
 import { GameLayout } from "@/components/game-layout"
 import { GameIntroCard } from "@/components/game-intro-card"
+import { GameResultCard } from "@/components/game-result-card"
 
 // Sample players for the game - in production, fetch from API
 const PLAYERS = [
@@ -173,29 +174,23 @@ export default function GuessThePlayerPage() {
 
           {/* Game over */}
           {gameOver && (
-            <Card className={cn("border-border", won ? "bg-primary/10" : "bg-destructive/10")}>
-              <CardContent className="py-2 text-center">
+            <GameResultCard
+              className={cn(won ? "bg-primary/10" : "bg-destructive/10")}
+              title={won ? "¡Congratulations!" : "Game Over"}
+              thanksMessage="¡Thanks for playing! See you tomorrow"
+            >
+              <p className="text-foreground/80 font-medium">
                 {won ? (
                   <>
-                    <h2 className="text-2xl font-bold text-primary">¡Congratulations!</h2>
-                    <p className="text-foreground/80 font-medium">
-                      You have guessed <span className="font-bold">{targetPlayer.name}</span> in {guesses.length} {guesses.length === 1 ? "guess" : "guesses"}.
-                    </p>
+                    You have guessed <span className="font-bold">{targetPlayer.name}</span> in {guesses.length} {guesses.length === 1 ? "guess" : "guesses"}.
                   </>
                 ) : (
                   <>
-                    <h2 className="text-2xl font-bold text-destructive">Game Over</h2>
-                    <p className="text-foreground/80 font-medium">
-                      The player was <span className="font-bold">{targetPlayer.name}</span>.
-                    </p>
+                    The player was <span className="font-bold">{targetPlayer.name}</span>.
                   </>
                 )}
-
-                <div className="mt-2 pt-2 border-t border-border/50 max-w-xs mx-auto">
-                  <p className="text-primary font-bold">¡Thanks for playing! See you tomorrow</p>
-                </div>
-              </CardContent>
-            </Card>
+              </p>
+            </GameResultCard>
           )}
 
           {/* Legend */}

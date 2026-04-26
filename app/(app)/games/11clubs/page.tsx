@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils"
 
 import { GameLayout } from "@/components/game-layout"
 import { GameIntroCard } from "@/components/game-intro-card"
+import { GameResultCard } from "@/components/game-result-card"
 
 // Sample data - in production, fetch from API
 const CLUBS = [
@@ -244,15 +245,13 @@ export default function ElevenClubsPage() {
             </CardHeader>
             <CardContent className="p-4 pt-0">
               {gameComplete ? (
-                <div className="text-center py-4">
-                  <p className="text-xl font-bold text-primary mb-1">¡Well done!</p>
-                  <p className="text-xs text-muted-foreground mb-4">
-                    Lineup complete
-                  </p>
-                  <div className="mt-2 pt-2 border-t border-border/50">
-                    <p className="text-primary text-[11px] font-bold">Thanks for playing!</p>
-                  </div>
-                </div>
+                <GameResultCard
+                  title="¡Well done!"
+                  subtitle="Lineup complete"
+                  thanksMessage="Thanks for playing!"
+                  noCard={true}
+                  className="py-4"
+                />
               ) : currentPosition !== null ? (
                 <>
                   <Input
