@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 import { DifficultySelector } from "./difficulty-selector"
+import { ModeSelector } from "./mode-selector"
 
 interface GameIntroCardProps {
   title: React.ReactNode
@@ -62,26 +63,12 @@ export function GameIntroCard({
                     />
                   )}
 
-                  {setMode && (
-                    <div className={cn(setDifficulty && "pt-2 border-t border-border/30")}>
-                      <p className="text-black dark:text-white text-[11px] font-bold mb-2 uppercase tracking-wider">Select mode:</p>
-                      <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
-                        {["Both", "Male", "Female"].map((opt) => (
-                          <Button
-                            key={opt}
-                            variant={mode === opt ? "default" : "secondary"}
-                            onClick={() => setMode(opt)}
-                            className={cn(
-                              "rounded-full px-4 h-7 text-[11px] transition-all duration-300",
-                              mode === opt ? "bg-primary text-primary-foreground shadow-sm" : "bg-primary/10 hover:bg-primary/20 text-black/70 dark:text-white/70"
-                            )}
-                            size="sm"
-                          >
-                            {opt}
-                          </Button>
-                        ))}
-                      </div>
-                    </div>
+                  {setMode && mode && (
+                    <ModeSelector 
+                      value={mode} 
+                      onChange={setMode} 
+                      className={cn(setDifficulty && "pt-2 border-t border-border/30")}
+                    />
                   )}
                 </div>
 
