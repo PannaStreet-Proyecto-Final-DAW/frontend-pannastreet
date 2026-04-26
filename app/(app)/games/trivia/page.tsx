@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils"
 
 import { GameLayout } from "@/components/game-layout"
 import { GameIntroCard } from "@/components/game-intro-card"
+import { GameResultCard } from "@/components/game-result-card"
 
 // Sample trivia questions - in production, fetch from API
 const TRIVIA_QUESTIONS = [
@@ -174,52 +175,46 @@ export default function TriviaPage() {
           onStart={() => setIsStarted(true)}
         />
       ) : gameState.isComplete ? (
-        <Card className="border-border bg-card">
-          <CardContent className="pt-6 text-center">
-            <div className={cn(
-              "w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center",
-              gameState.score >= questions.length * 0.6 ? "bg-primary/20" : "bg-secondary"
-            )}>
-              <span className="text-3xl font-bold text-primary">
-                {gameState.score}/{questions.length}
-              </span>
-            </div>
-            <h2 className="text-2xl font-bold text-card-foreground mb-2">
-              {gameState.score >= questions.length * 0.8 ? "¡Increíble!" : gameState.score >= questions.length * 0.5 ? "¡Buen trabajo!" : "¡Buen intento!"}
-            </h2>
-            <p className="text-muted-foreground mb-6">{getScoreMessage()}</p>
+        <GameResultCard
+          title={gameState.score >= questions.length * 0.8 ? "¡Increíble!" : gameState.score >= questions.length * 0.5 ? "¡Buen trabajo!" : "¡Buen intento!"}
+          subtitle={getScoreMessage()}
+          thanksMessage="¡Gracias por jugar! Nos vemos mañana"
+        >
+          <div className={cn(
+            "w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center",
+            gameState.score >= questions.length * 0.6 ? "bg-primary/20" : "bg-secondary"
+          )}>
+            <span className="text-3xl font-bold text-primary">
+              {gameState.score}/{questions.length}
+            </span>
+          </div>
 
-            {/* Results breakdown */}
-            <div className="mb-6 space-y-2">
-              {questions.map((q, i) => (
-                <div
-                  key={i}
-                  className={cn(
-                    "flex items-center justify-between p-3 rounded-lg text-sm",
-                    gameState.answers[i] === q.correctAnswer
-                      ? "bg-primary/10 text-primary"
-                      : "bg-destructive/10 text-destructive"
-                  )}
-                >
-                  <span className="truncate max-w-[80%]">{q.question}</span>
-                  {gameState.answers[i] === q.correctAnswer ? (
-                    <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-6 pt-6 border-t border-border/50 max-w-sm mx-auto">
-              <p className="text-primary font-bold">¡Gracias por jugar! Nos vemos mañana</p>
-            </div>
-          </CardContent>
-        </Card>
+          {/* Results breakdown */}
+          <div className="mb-6 space-y-2">
+            {questions.map((q, i) => (
+              <div
+                key={i}
+                className={cn(
+                  "flex items-center justify-between p-3 rounded-lg text-sm",
+                  gameState.answers[i] === q.correctAnswer
+                    ? "bg-primary/10 text-primary"
+                    : "bg-destructive/10 text-destructive"
+                )}
+              >
+                <span className="truncate max-w-[80%]">{q.question}</span>
+                {gameState.answers[i] === q.correctAnswer ? (
+                  <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                )}
+              </div>
+            ))}
+          </div>
+        </GameResultCard>
       ) : (
         <>
           {/* Progress */}
