@@ -54,20 +54,20 @@ export function GameIntroCard({
                 {description}
               </div>
 
-              <div className="flex flex-col md:flex-row gap-8 items-center bg-muted/5 p-4 rounded-2xl border border-border/50 backdrop-blur-sm">
+              <div className="flex flex-col md:flex-row gap-8 items-center bg-muted/5 p-4 rounded-2xl backdrop-blur-sm">
                 <div className="flex flex-col gap-4 flex-1 w-full">
                   {setDifficulty && difficulty && (
-                    <DifficultySelector 
-                      value={difficulty} 
-                      onChange={setDifficulty} 
+                    <DifficultySelector
+                      value={difficulty}
+                      onChange={setDifficulty}
                     />
                   )}
 
                   {setMode && mode && (
-                    <ModeSelector 
-                      value={mode} 
-                      onChange={setMode} 
-                      className={cn(setDifficulty && "pt-2 border-t border-border/30")}
+                    <ModeSelector
+                      value={mode}
+                      onChange={setMode}
+                      className={cn(setDifficulty && "pt-2")}
                     />
                   )}
                 </div>

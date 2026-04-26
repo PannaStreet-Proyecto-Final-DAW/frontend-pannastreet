@@ -56,23 +56,23 @@ export function GuessesTable({ guesses, players }: GuessesTableProps) {
         <div className="overflow-x-auto">
           <Table>
             <TableHeader className="bg-primary/10">
-              <TableRow className="hover:bg-transparent border-b-2 border-border/50">
+              <TableRow className="hover:bg-transparent">
                 <TableHead className="py-4 px-6 text-[11px] font-black uppercase tracking-widest text-black/60 dark:text-white/60">
                   Player
                 </TableHead>
-                <TableHead className="py-4 px-4 text-center text-[11px] font-black uppercase tracking-widest text-black/60 dark:text-white/60 border-l border-border/30">
+                <TableHead className="py-4 px-4 text-center text-[11px] font-black uppercase tracking-widest text-black/60 dark:text-white/60">
                   Team
                 </TableHead>
-                <TableHead className="py-4 px-4 text-center text-[11px] font-black uppercase tracking-widest text-black/60 dark:text-white/60 border-l border-border/30">
+                <TableHead className="py-4 px-4 text-center text-[11px] font-black uppercase tracking-widest text-black/60 dark:text-white/60">
                   League
                 </TableHead>
-                <TableHead className="py-4 px-4 text-center text-[11px] font-black uppercase tracking-widest text-black/60 dark:text-white/60 border-l border-border/30">
+                <TableHead className="py-4 px-4 text-center text-[11px] font-black uppercase tracking-widest text-black/60 dark:text-white/60">
                   Nationality
                 </TableHead>
-                <TableHead className="py-4 px-4 text-center text-[11px] font-black uppercase tracking-widest text-black/60 dark:text-white/60 border-l border-border/30">
+                <TableHead className="py-4 px-4 text-center text-[11px] font-black uppercase tracking-widest text-black/60 dark:text-white/60">
                   Position
                 </TableHead>
-                <TableHead className="py-4 px-4 text-center text-[11px] font-black uppercase tracking-widest text-black/60 dark:text-white/60 border-l border-border/30">
+                <TableHead className="py-4 px-4 text-center text-[11px] font-black uppercase tracking-widest text-black/60 dark:text-white/60">
                   Age
                 </TableHead>
               </TableRow>
@@ -83,17 +83,17 @@ export function GuessesTable({ guesses, players }: GuessesTableProps) {
                 if (!player) return null
 
                 return (
-                  <TableRow 
-                    key={index} 
-                    className="group border-b border-border/30 last:border-0 hover:bg-primary/5 transition-colors duration-300"
+                  <TableRow
+                    key={index}
+                    className="group last:border-0 hover:bg-primary/5 transition-colors duration-300"
                   >
                     <TableCell className="py-4 px-6">
                       <span className="font-bold text-sm text-card-foreground group-hover:text-primary transition-colors">
                         {guess.name}
                       </span>
                     </TableCell>
-                    
-                    <TableCell className="py-4 px-4 text-center border-l border-border/30">
+
+                    <TableCell className="py-4 px-4 text-center">
                       <span className={cn(
                         "inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider min-w-[80px] shadow-sm transition-transform group-hover:scale-105 duration-300",
                         getHintColor(guess.hints.team)
@@ -102,16 +102,16 @@ export function GuessesTable({ guesses, players }: GuessesTableProps) {
                       </span>
                     </TableCell>
 
-                    <TableCell className="py-4 px-4 text-center border-l border-border/30">
+                    <TableCell className="py-4 px-4 text-center">
                       <span className={cn(
-                         "inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider min-w-[80px] shadow-sm transition-transform group-hover:scale-105 duration-300",
-                         getHintColor(guess.hints.league)
-                       )}>
+                        "inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider min-w-[80px] shadow-sm transition-transform group-hover:scale-105 duration-300",
+                        getHintColor(guess.hints.league)
+                      )}>
                         {player.league}
                       </span>
                     </TableCell>
 
-                    <TableCell className="py-4 px-4 text-center border-l border-border/30">
+                    <TableCell className="py-4 px-4 text-center">
                       <span className={cn(
                         "inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider min-w-[80px] shadow-sm transition-transform group-hover:scale-105 duration-300",
                         getHintColor(guess.hints.nationality)
@@ -120,7 +120,7 @@ export function GuessesTable({ guesses, players }: GuessesTableProps) {
                       </span>
                     </TableCell>
 
-                    <TableCell className="py-4 px-4 text-center border-l border-border/30">
+                    <TableCell className="py-4 px-4 text-center">
                       <span className={cn(
                         "inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider min-w-[80px] shadow-sm transition-transform group-hover:scale-105 duration-300",
                         getHintColor(guess.hints.position)
@@ -129,7 +129,7 @@ export function GuessesTable({ guesses, players }: GuessesTableProps) {
                       </span>
                     </TableCell>
 
-                    <TableCell className="py-4 px-4 text-center border-l border-border/30">
+                    <TableCell className="py-4 px-4 text-center">
                       <span className={cn(
                         "inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider min-w-[60px] shadow-sm transition-transform group-hover:scale-105 duration-300",
                         getHintColor(guess.hints.age)
