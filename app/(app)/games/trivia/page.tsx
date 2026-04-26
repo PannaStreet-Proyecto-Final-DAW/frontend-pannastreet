@@ -1,11 +1,12 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
-import { SurrenderButton } from "@/components/surrender-button"
+
+import { GameLayout } from "@/components/game-layout"
+import { GameIntroCard } from "@/components/game-intro-card"
 
 // Sample trivia questions - in production, fetch from API
 const TRIVIA_QUESTIONS = [
@@ -145,61 +146,33 @@ export default function TriviaPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="mb-6">
-        <Link href="/games" className="text-white hover:text-primary text-sm flex items-center gap-1">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-          </svg>
-          Back to Games
-        </Link>
-      </div>
-
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Football Trivia</h1>
-        <p className="text-white font-medium">
-          Prove your status as a football historian with our daily knowledge test.
-        </p>
-      </div>
-
+    <GameLayout
+      backHref="/games"
+      backText="Back to Games"
+      showSurrender={isStarted && !gameState.isComplete}
+      onSurrender={() => console.log("Surrender")}
+    >
       {!isStarted ? (
-        <Card className="border-border bg-card overflow-hidden">
-          <CardContent className="p-0">
-            <div className="flex flex-col md:flex-row items-stretch">
-              <div className="w-full md:w-1/3 aspect-video md:aspect-[4/3] relative flex items-center justify-center p-8 bg-muted/5">
-                <div className="absolute inset-0 opacity-10 bg-gradient-to-br from-game-3 to-transparent" />
-                <img
-                  src="/images/games/trivia.png"
-                  alt="Football Trivia"
-                  className="relative z-10 max-h-full max-w-full object-contain rounded-2xl shadow-2xl"
-                />
-              </div>
-              <div className="p-6 md:p-8 flex-1 flex flex-col justify-center text-center md:text-left">
-                <h2 className="text-2xl font-bold text-card-foreground mb-4">The Ultimate Knowledge Test</h2>
-
-                <div className="flex flex-col gap-6">
-                  <p className="text-black/80 dark:text-muted-foreground leading-relaxed">
-                    Face a curated set of <strong>5 challenging questions</strong> covering everything from World Cup records and Champions League legends to iconic stadiums and Premier League history.
-                  </p>
-                  
-                  <div className="flex flex-col md:flex-row gap-8 items-center bg-muted/5 p-4 rounded-2xl border border-border/50 backdrop-blur-sm">
-                    <div className="flex-1 text-xs text-muted-foreground font-medium italic">
-                      "Knowledge is the only tool that grows when you use it. Face today's challenge and prove your expertise."
-                    </div>
-                    <div className="w-full md:w-auto flex items-center justify-center md:pr-4">
-                      <Button 
-                        onClick={() => setIsStarted(true)} 
-                        className="w-full md:w-[180px] bg-primary text-primary-foreground font-black py-4 rounded-xl text-xs hover:scale-[1.05] transition-transform shadow-lg h-auto uppercase tracking-[0.2em]"
-                      >
-                        Start Trivia
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+        <GameIntroCard
+          gameId="trivia"
+          title={
+            <>
+              <span className="text-primary">FOOTBALL</span> <span className="text-black dark:text-white tracking-normal uppercase">TRIVIA</span>
+            </>
+          }
+          image="/images/games/trivia.png"
+          description={
+            <div className="space-y-4">
+              <p className="text-white font-medium">
+                Prove your status as a football historian with our daily knowledge test.
+              </p>
+              <p className="text-black/80 dark:text-muted-foreground leading-relaxed">
+                Face a curated set of <strong>5 challenging questions</strong> covering everything from World Cup records and Champions League legends to iconic stadiums and Premier League history.
+              </p>
             </div>
-          </CardContent>
-        </Card>
+          }
+          onStart={() => setIsStarted(true)}
+        />
       ) : gameState.isComplete ? (
         <Card className="border-border bg-card">
           <CardContent className="pt-6 text-center">
@@ -258,10 +231,6 @@ export default function TriviaPage() {
               <span className="text-sm font-medium text-primary">
                 Score: {gameState.score}
               </span>
-              <SurrenderButton 
-                onClick={() => console.log("Surrender")} 
-                title="Surrender / Rendirse"
-              />
             </div>
           </div>
           <div className="w-full h-2 bg-secondary rounded-full mb-6 overflow-hidden">
@@ -328,12 +297,12 @@ export default function TriviaPage() {
           <Button
             onClick={handleSubmitAnswer}
             disabled={selectedAnswer === null || showResult}
-            className="w-full bg-primary text-primary-foreground"
+            className="w-full bg-primary text-primary-foreground h-12 rounded-xl font-bold uppercase tracking-wider"
           >
             {showResult ? "Loading next question..." : "Submit Answer"}
           </Button>
         </>
       )}
-    </div>
+    </GameLayout>
   )
 }
