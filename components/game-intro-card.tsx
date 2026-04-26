@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
+import { DifficultySelector } from "./difficulty-selector"
 
 interface GameIntroCardProps {
   title: React.ReactNode
@@ -54,26 +55,11 @@ export function GameIntroCard({
 
               <div className="flex flex-col md:flex-row gap-8 items-center bg-muted/5 p-4 rounded-2xl border border-border/50 backdrop-blur-sm">
                 <div className="flex flex-col gap-4 flex-1 w-full">
-                  {setDifficulty && (
-                    <div>
-                      <p className="text-black dark:text-white text-[11px] font-bold mb-2 uppercase tracking-wider">Select difficulty:</p>
-                      <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
-                        {["Easy", "Intermediate", "Hard"].map((opt) => (
-                          <Button
-                            key={opt}
-                            variant={difficulty === opt ? "default" : "secondary"}
-                            onClick={() => setDifficulty(opt)}
-                            className={cn(
-                              "rounded-full px-4 h-7 text-[11px] transition-all duration-300",
-                              difficulty === opt ? "bg-primary text-primary-foreground shadow-sm" : "bg-primary/10 hover:bg-primary/20 text-black/70 dark:text-white/70"
-                            )}
-                            size="sm"
-                          >
-                            {opt}
-                          </Button>
-                        ))}
-                      </div>
-                    </div>
+                  {setDifficulty && difficulty && (
+                    <DifficultySelector 
+                      value={difficulty} 
+                      onChange={setDifficulty} 
+                    />
                   )}
 
                   {setMode && (
