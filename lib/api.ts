@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
+import { fetchApi } from "./httpClient"
 
 export interface UserLeague {
   id: string
@@ -31,144 +31,59 @@ export interface Team {
   leagueId: string
 }
 
-// Helper to check if mocks are enabled
-const useMocks = () => process.env.NEXT_PUBLIC_USE_MOCKS === "true"
-
 // User Leagues API
 export async function createUserLeague(name: string): Promise<UserLeague> {
-  if (useMocks()) {
-    const { MOCK_LEAGUES } = await import("./mocks")
-    const newLeague = { id: Math.random().toString(), name, inviteCode: "NEWCODE", createdAt: new Date().toISOString() }
-    MOCK_LEAGUES.push(newLeague)
-    return newLeague
-  }
-  const response = await fetch(`${API_BASE_URL}/api/user-league`, {
+  return fetchApi("/user-league", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ name })
   })
-  if (!response.ok) throw new Error("Failed to create league")
-  return response.json()
 }
 
 export async function getAllUserLeagues(): Promise<UserLeague[]> {
-  if (useMocks()) {
-    const { MOCK_LEAGUES } = await import("./mocks")
-    return MOCK_LEAGUES
-  }
-  const response = await fetch(`${API_BASE_URL}/api/user-league`)
-  if (!response.ok) throw new Error("Failed to fetch leagues")
-  return response.json()
+  return fetchApi("/user-league")
 }
 
 export async function getUserLeagueById(id: string): Promise<UserLeague> {
-  if (useMocks()) {
-    const { MOCK_LEAGUES } = await import("./mocks")
-    return MOCK_LEAGUES.find(l => l.id === id) || MOCK_LEAGUES[0]
-  }
-  const response = await fetch(`${API_BASE_URL}/api/user-league/id/${id}`)
-  if (!response.ok) throw new Error("Failed to fetch league")
-  return response.json()
+  return fetchApi(`/user-league/id/${id}`)
 }
 
 // User League Membership API
 export async function joinLeague(userId: string, leagueId: string): Promise<UserLeagueMembership> {
-  if (useMocks()) {
-    const { MOCK_MEMBERSHIPS, MOCK_LEAGUES } = await import("./mocks")
-    const membership = { 
-      id: "m" + Math.random(), 
-      userId, 
-      leagueId, 
-      score: 0, 
-      joinedAt: new Date().toISOString(),
-      league: MOCK_LEAGUES.find(l => l.id === leagueId) || MOCK_LEAGUES[0]
-    }
-    MOCK_MEMBERSHIPS.push(membership)
-    return membership
-  }
-  const response = await fetch(`${API_BASE_URL}/api/user-league-membership`, {
+  return fetchApi("/user-league-membership", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ userId, leagueId })
   })
-  if (!response.ok) throw new Error("Failed to join league")
-  return response.json()
 }
 
 export async function getUserMemberships(userId: string): Promise<UserLeagueMembership[]> {
-  if (useMocks()) {
-    const { MOCK_MEMBERSHIPS } = await import("./mocks")
-    return MOCK_MEMBERSHIPS.filter(m => m.userId === userId)
-  }
-  const response = await fetch(`${API_BASE_URL}/api/user-league-membership/user/${userId}`)
-  if (!response.ok) throw new Error("Failed to fetch memberships")
-  return response.json()
+  return fetchApi(`/user-league-membership/user/${userId}`)
 }
 
 export async function getLeagueMembers(leagueId: string): Promise<UserLeagueMembership[]> {
-  if (useMocks()) {
-    const { MOCK_MEMBERSHIPS } = await import("./mocks")
-    return MOCK_MEMBERSHIPS.filter(m => m.leagueId === leagueId)
-  }
-  const response = await fetch(`${API_BASE_URL}/api/user-league-membership/league/${leagueId}`)
-  if (!response.ok) throw new Error("Failed to fetch league members")
-  return response.json()
+  return fetchApi(`/user-league-membership/league/${leagueId}`)
 }
 
 export async function incrementScore(membershipId: string, points: number): Promise<UserLeagueMembership> {
-  if (useMocks()) {
-    const { MOCK_MEMBERSHIPS } = await import("./mocks")
-    const membership = MOCK_MEMBERSHIPS.find(m => m.id === membershipId)
-    if (membership) membership.score += points
-    return membership || MOCK_MEMBERSHIPS[0]
-  }
-  const response = await fetch(`${API_BASE_URL}/api/user-league-membership/increment-score/${membershipId}`, {
+  return fetchApi(`/user-league-membership/increment-score/${membershipId}`, {
     method: "PATCH",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ points })
   })
-  if (!response.ok) throw new Error("Failed to increment score")
-  return response.json()
 }
 
 // Players API
 export async function getAllPlayers(): Promise<Player[]> {
-  if (useMocks()) {
-    const { MOCK_PLAYERS } = await import("./mocks")
-    return MOCK_PLAYERS
-  }
-  const response = await fetch(`${API_BASE_URL}/api/player`)
-  if (!response.ok) throw new Error("Failed to fetch players")
-  return response.json()
+  return fetchApi("/player")
 }
 
 export async function getPlayerById(id: string): Promise<Player> {
-  if (useMocks()) {
-    const { MOCK_PLAYERS } = await import("./mocks")
-    return MOCK_PLAYERS.find(p => p.id === id) || MOCK_PLAYERS[0]
-  }
-  const response = await fetch(`${API_BASE_URL}/api/player/id/${id}`)
-  if (!response.ok) throw new Error("Failed to fetch player")
-  return response.json()
+  return fetchApi(`/player/id/${id}`)
 }
 
 // Teams API
 export async function getAllTeams(): Promise<Team[]> {
-  if (useMocks()) {
-    const { MOCK_TEAMS } = await import("./mocks")
-    return MOCK_TEAMS
-  }
-  const response = await fetch(`${API_BASE_URL}/api/team`)
-  if (!response.ok) throw new Error("Failed to fetch teams")
-  return response.json()
+  return fetchApi("/team")
 }
 
 export async function getTeamById(id: string): Promise<Team> {
-  if (useMocks()) {
-    const { MOCK_TEAMS } = await import("./mocks")
-    return MOCK_TEAMS.find(t => t.id === id) || MOCK_TEAMS[0]
-  }
-  const response = await fetch(`${API_BASE_URL}/api/team/id/${id}`)
-  if (!response.ok) throw new Error("Failed to fetch team")
-  return response.json()
+  return fetchApi(`/team/id/${id}`)
 }
