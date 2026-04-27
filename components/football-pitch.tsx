@@ -75,6 +75,7 @@ export function FootballPitch({
               !player && !gameComplete && "cursor-pointer"
             )}
             style={{
+              // Calculate percentage position: (pos / max) * usable_area + initial_margin
               left: `${(pos.col / 4) * 80 + 10}%`,
               top: `${(pos.row / 5) * 85 + 7.5}%`,
             }}
