@@ -7,6 +7,8 @@
 import { useState } from "react"
 import { GameEngine } from "@/components/game-engine"
 import { GuessThePlayerGame } from "@/components/games/guess-the-player-game"
+import { useAuth } from "@/lib/auth-context"
+import { getUserMemberships, incrementScore } from "@/lib/api"
 
 export default function GuessThePlayerPage() {
   // 1. Settings state (Difficulty and Mode)
@@ -22,6 +24,11 @@ export default function GuessThePlayerPage() {
     key: 0 // Key to force re-mounting the game logic component on reset
   })
 
+  // 3. Backend synchronization status
+  const [syncStatus, setSyncStatus] = useState<"idle" | "syncing" | "success" | "error">("idle")
+
+  const { user } = useAuth()
+
   /**
    * Callback triggered when the user surrenders
    */
@@ -33,14 +40,33 @@ export default function GuessThePlayerPage() {
   /**
    * Callback triggered by the Game Cartridge when the match ends
    */
-  const handleGameOver = (won: boolean, target: any, score: number) => {
+  const handleGameOver = async (won: boolean, target: any, score: number) => {
     setGameState(prev => ({ ...prev, gameOver: true, won, target, score }))
+
+    // If the user won points and is logged in, sync with backend
+    if (won && score > 0 && user) {
+      setSyncStatus("syncing")
+      try {
+        // 1. Get all leagues the user belongs to
+        const memberships = await getUserMemberships(user.id)
+        
+        // 2. Increment score in each league
+        const updatePromises = memberships.map(m => incrementScore(m.id, score))
+        await Promise.all(updatePromises)
+        
+        setSyncStatus("success")
+      } catch (error) {
+        console.error("Error syncing score:", error)
+        setSyncStatus("error")
+      }
+    }
   }
 
   /**
    * Resets the game state to start a new round
    */
   const resetGame = () => {
+    setSyncStatus("idle")
     setGameState({
       gameOver: false,
       won: false,
@@ -101,6 +127,21 @@ export default function GuessThePlayerPage() {
         )
       }
     >
+      {/* Synchronization Status Toast-like message */}
+      {syncStatus !== "idle" && (
+        <div className="fixed bottom-6 right-6 z-50 animate-in fade-in slide-in-from-right-4">
+          <div className={`px-4 py-2 rounded-xl shadow-lg text-xs font-bold border ${
+            syncStatus === "syncing" ? "bg-primary/10 border-primary text-primary" :
+            syncStatus === "success" ? "bg-green-500/10 border-green-500 text-green-500" :
+            "bg-destructive/10 border-destructive text-destructive"
+          }`}>
+            {syncStatus === "syncing" && "Syncing score..."}
+            {syncStatus === "success" && "Points saved!"}
+            {syncStatus === "error" && "Error saving points"}
+          </div>
+        </div>
+      )}
+
       {/* The Game Cartridge: Contains all the specific logic for this game */}
       <GuessThePlayerGame
         key={gameState.key}
