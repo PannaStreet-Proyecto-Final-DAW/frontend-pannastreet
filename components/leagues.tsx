@@ -25,7 +25,6 @@ export function Leagues() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState("")
 
-  // Create league state
   const [newLeagueName, setNewLeagueName] = useState("")
   const [isCreating, setIsCreating] = useState(false)
   const [createDialogOpen, setCreateDialogOpen] = useState(false)
