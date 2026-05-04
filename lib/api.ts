@@ -66,7 +66,7 @@ export async function getLeagueMembers(leagueId: string): Promise<UserLeagueMemb
 export async function incrementScore(membershipId: string, points: number): Promise<UserLeagueMembership> {
   return fetchApi(`/user-league-membership/increment-score/${membershipId}`, {
     method: "PATCH",
-    body: JSON.stringify({ points })
+    body: JSON.stringify({ pointsToAdd: points })
   })
 }
 
