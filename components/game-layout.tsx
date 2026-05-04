@@ -1,15 +1,19 @@
+/**
+ * GameLayout: A wrapper component that provides a consistent header with
+ * navigation (Back button) and gameplay controls (Surrender button).
+ */
 "use client"
 
 import Link from "next/link"
 import { SurrenderButton } from "./surrender-button"
 
 interface GameLayoutProps {
-  backHref?: string
-  backOnClick?: () => void
-  backText: string
-  showSurrender?: boolean
-  onSurrender?: () => void
-  children: React.ReactNode
+  backHref?: string       // Destination URL for the back button
+  backOnClick?: () => void // Optional custom click handler for navigation
+  backText: string         // Label for the back button (e.g., "Back to Games")
+  showSurrender?: boolean  // Controls visibility of the Red Card/Surrender button
+  onSurrender?: () => void // Function triggered when surrendering
+  children: React.ReactNode // The actual game content to be displayed
 }
 
 export function GameLayout({ 

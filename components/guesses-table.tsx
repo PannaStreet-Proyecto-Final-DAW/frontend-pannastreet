@@ -1,3 +1,7 @@
+/**
+ * GuessesTable: Renders the history of the user's attempts in a table format,
+ * providing color-coded visual feedback for each guessed attribute.
+ */
 "use client"
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -6,6 +10,9 @@ import { cn } from "@/lib/utils"
 
 export type Hint = "correct" | "partial" | "wrong"
 
+/**
+ * Represents a single guess attempt with the player's name and the calculated hints.
+ */
 export interface Guess {
   name: string
   hints: {
@@ -17,6 +24,9 @@ export interface Guess {
   }
 }
 
+/**
+ * Basic player data structure for comparison.
+ */
 interface Player {
   name: string
   team: string
@@ -27,11 +37,17 @@ interface Player {
 }
 
 interface GuessesTableProps {
-  guesses: Guess[]
-  players: Player[]
+  guesses: Guess[] // Array of all attempts made by the user
+  players: Player[] // Full list of players to pull display data from
 }
 
 export function GuessesTable({ guesses, players }: GuessesTableProps) {
+  /**
+   * Helper function to determine the CSS color classes based on the hint value.
+   * - correct: Green (Primary)
+   * - partial: Amber (Used for "almost" matches if applicable)
+   * - default/wrong: Grey (Secondary)
+   */
   const getHintColor = (hint: Hint | "higher" | "lower") => {
     switch (hint) {
       case "correct":
@@ -43,6 +59,7 @@ export function GuessesTable({ guesses, players }: GuessesTableProps) {
     }
   }
 
+  // Don't render the table if there are no guesses yet
   if (guesses.length === 0) return null
 
   return (
@@ -78,7 +95,9 @@ export function GuessesTable({ guesses, players }: GuessesTableProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
+              {/* Map through each guess and render a row */}
               {guesses.map((guess, index) => {
+                // Find the full player details to display team, league, etc.
                 const player = players.find((p) => p.name === guess.name)
                 if (!player) return null
 
@@ -93,6 +112,7 @@ export function GuessesTable({ guesses, players }: GuessesTableProps) {
                       </span>
                     </TableCell>
 
+                    {/* Team Column: Highlighted Green if correct */}
                     <TableCell className="py-4 px-4 text-center">
                       <span className={cn(
                         "inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider min-w-[80px] shadow-sm transition-transform group-hover:scale-105 duration-300",
@@ -102,6 +122,7 @@ export function GuessesTable({ guesses, players }: GuessesTableProps) {
                       </span>
                     </TableCell>
 
+                    {/* League Column: Highlighted Green if correct */}
                     <TableCell className="py-4 px-4 text-center">
                       <span className={cn(
                         "inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider min-w-[80px] shadow-sm transition-transform group-hover:scale-105 duration-300",
@@ -111,6 +132,7 @@ export function GuessesTable({ guesses, players }: GuessesTableProps) {
                       </span>
                     </TableCell>
 
+                    {/* Nationality Column: Highlighted Green if correct */}
                     <TableCell className="py-4 px-4 text-center">
                       <span className={cn(
                         "inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider min-w-[80px] shadow-sm transition-transform group-hover:scale-105 duration-300",
@@ -120,6 +142,7 @@ export function GuessesTable({ guesses, players }: GuessesTableProps) {
                       </span>
                     </TableCell>
 
+                    {/* Position Column: Highlighted Green if correct */}
                     <TableCell className="py-4 px-4 text-center">
                       <span className={cn(
                         "inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider min-w-[80px] shadow-sm transition-transform group-hover:scale-105 duration-300",
@@ -129,17 +152,20 @@ export function GuessesTable({ guesses, players }: GuessesTableProps) {
                       </span>
                     </TableCell>
 
+                    {/* Age Column: Correct color + Arrows to indicate higher/lower */}
                     <TableCell className="py-4 px-4 text-center">
                       <span className={cn(
                         "inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider min-w-[60px] shadow-sm transition-transform group-hover:scale-105 duration-300",
                         getHintColor(guess.hints.age)
                       )}>
                         {player.age}
+                        {/* Render UP arrow if the target player is OLDER than the guess */}
                         {guess.hints.age === "higher" && (
                           <svg className="w-3.5 h-3.5 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
                           </svg>
                         )}
+                        {/* Render DOWN arrow if the target player is YOUNGER than the guess */}
                         {guess.hints.age === "lower" && (
                           <svg className="w-3.5 h-3.5 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
