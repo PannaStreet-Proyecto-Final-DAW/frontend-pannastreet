@@ -5,10 +5,10 @@
 "use client"
 
 import { useState } from "react"
-import { GameEngine } from "@/components/games/generic-games/game-engine"
+import { GameEngine } from "@/components/game-engine"
 import { GuessThePlayerGame } from "@/components/games/guess-the-player-game"
 import { useScoreSync } from "@/hooks/use-score-sync"
-import { SyncStatusIndicator } from "@/components/games/generic-games/sync-status-indicator"
+import { SyncStatusIndicator } from "@/components/sync-status-indicator"
 
 export default function GuessThePlayerPage() {
   // 1. Settings state (Difficulty and Mode)
