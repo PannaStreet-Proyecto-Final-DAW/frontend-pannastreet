@@ -18,17 +18,17 @@ const CLUBS = [
 
 /** Mock mapping of clubs to their top players */
 const PLAYERS_BY_CLUB: Record<string, string[]> = {
-  "Real Madrid": ["Bellingham", "Vinicius", "Mbappe", "Rodrygo", "Valverde"],
-  "Barcelona": ["Pedri", "Gavi", "Yamal", "Raphinha", "Lewandowski"],
-  "Bayern Munich": ["Sane", "Musiala", "Kane", "Kimmich", "Muller"],
-  "Man City": ["Haaland", "De Bruyne", "Foden", "Rodri", "Grealish"],
-  "Liverpool": ["Salah", "Nunez", "Mac Allister", "Szoboszlai", "Van Dijk"],
-  "PSG": ["Dembele", "Barcola", "Asensio", "Vitinha", "Hakimi"],
+  "Real Madrid": ["Bellingham", "Jude Bellingham", "Vinicius", "Vinicius Junior", "Mbappe", "Kylian Mbappe", "Rodrygo", "Valverde"],
+  "Barcelona": ["Pedri", "Gavi", "Yamal", "Lamine Yamal", "Raphinha", "Lewandowski", "Robert Lewandowski"],
+  "Bayern Munich": ["Sane", "Musiala", "Kane", "Harry Kane", "Kimmich", "Muller", "Thomas Muller"],
+  "Man City": ["Haaland", "Erling Haaland", "De Bruyne", "Kevin De Bruyne", "Foden", "Rodri", "Grealish"],
+  "Liverpool": ["Salah", "Mohamed Salah", "Nunez", "Darwin Nunez", "Mac Allister", "Szoboszlai", "Van Dijk"],
+  "PSG": ["Dembele", "Ousmane Dembele", "Barcola", "Asensio", "Vitinha", "Hakimi"],
   "Juventus": ["Vlahovic", "Chiesa", "Locatelli", "Yildiz", "Bremer"],
-  "Inter Milan": ["Lautaro", "Thuram", "Barella", "Calhanoglu", "Bastoni"],
-  "Chelsea": ["Palmer", "Mudryk", "Jackson", "Enzo", "Caicedo"],
-  "Arsenal": ["Saka", "Odegaard", "Rice", "Havertz", "Martinelli"],
-  "Man United": ["Rashford", "Bruno", "Hojlund", "Mainoo", "Garnacho"]
+  "Inter Milan": ["Lautaro", "Lautaro Martinez", "Thuram", "Marcus Thuram", "Barella", "Calhanoglu", "Bastoni"],
+  "Chelsea": ["Palmer", "Cole Palmer", "Mudryk", "Jackson", "Nicolas Jackson", "Enzo", "Enzo Fernandez", "Caicedo"],
+  "Arsenal": ["Saka", "Bukayo Saka", "Odegaard", "Martin Odegaard", "Rice", "Declan Rice", "Havertz", "Martinelli"],
+  "Man United": ["Rashford", "Marcus Rashford", "Bruno", "Bruno Fernandes", "Hojlund", "Mainoo", "Garnacho"]
 }
 
 /**

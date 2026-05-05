@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 import { FootballPitch, type SelectedPlayer } from "@/components/football-pitch"
+import { PlayerSearchInput } from "@/components/player-search-input"
 
 /** Standard football positions labels used for the selection UI title */
 const POSITIONS = ["GK", "LB", "CB", "CB", "RB", "CM", "CM", "CM", "LW", "ST", "RW"]
@@ -135,6 +136,8 @@ export function ElevenLineupGame({
    * Excludes groups already present in the current lineup.
    */
   const getFilteredResults = () => {
+    if (searchQuery.length < 3) return []
+
     const usedGroups = new Set(lineup.filter(Boolean).map((l) => l!.club))
     const results: { group: string; item: string }[] = []
 
@@ -143,12 +146,15 @@ export function ElevenLineupGame({
       if (usedGroups.has(group)) return
 
       itemsByGroup[group]?.forEach((item) => {
-        // Search by player name or group name
-        if (
-          searchQuery === "" ||
-          item.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          group.toLowerCase().includes(searchQuery.toLowerCase())
-        ) {
+        // Search by player name or group name starting with the query
+        const itemLower = item.toLowerCase()
+        const groupLower = group.toLowerCase()
+        const searchLower = searchQuery.toLowerCase()
+        
+        const matchesItem = itemLower.startsWith(searchLower) || itemLower.split(" ").some(w => w.startsWith(searchLower))
+        const matchesGroup = groupLower.startsWith(searchLower) || groupLower.split(" ").some(w => w.startsWith(searchLower))
+
+        if (searchQuery === "" || matchesItem || matchesGroup) {
           results.push({ group, item })
         }
       })
@@ -225,43 +231,19 @@ export function ElevenLineupGame({
 
         <CardContent className="p-4 pt-0">
           {currentPosition !== null ? (
-            <>
-              {/* Search input for quick player/group lookup */}
-              <Input
-                type="text"
-                placeholder={`Search ${groupLabel.toLowerCase()} or player...`}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="bg-primary/5 dark:bg-input border-primary/20 dark:border-border h-9 text-sm mb-3 rounded-xl focus-visible:ring-primary/30 text-primary dark:text-foreground placeholder:text-primary/40 dark:placeholder:text-muted-foreground"
-                autoComplete="off"
-                autoFocus
-              />
-
-              {/* Scrollable list of matches */}
-              <div className="space-y-1 max-h-56 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-primary/20">
-                {getFilteredResults().map(({ group, item }) => (
-                  <button
-                    key={`${group}-${item}`}
-                    onClick={() => handlePlayerSelect(group, item)}
-                    className={cn(
-                      "w-full flex items-center justify-between p-2.5 rounded-xl transition-all duration-300 border shadow-sm group",
-                      "bg-primary/5 border-primary/20 text-primary hover:bg-primary/10 hover:border-primary/30",
-                      "dark:bg-secondary/40 dark:border-secondary/20 dark:text-card-foreground dark:hover:bg-secondary/60 dark:hover:border-primary/50"
-                    )}
-                  >
-                    <span className="text-[10px] font-black uppercase tracking-widest opacity-70 group-hover:opacity-100 group-hover:text-primary transition-all">
-                      {item}
-                    </span>
-                    <span className="text-[10px] font-bold opacity-50 group-hover:opacity-100 transition-all">
-                      {group}
-                    </span>
-                  </button>
-                ))}
-                {getFilteredResults().length === 0 && (
-                  <p className="text-center text-xs text-muted-foreground py-4 italic">No results found</p>
-                )}
-              </div>
-            </>
+            <PlayerSearchInput
+              value={searchQuery}
+              onChange={setSearchQuery}
+              onSelect={(result) => handlePlayerSelect(result.originalData.group, result.originalData.item)}
+              results={getFilteredResults().map(({ group, item }) => ({
+                id: `${group}-${item}`,
+                primaryText: item,
+                originalData: { group, item },
+              }))}
+              placeholder={`Search ${groupLabel.toLowerCase()} or player...`}
+              mode="inline"
+              autoFocus
+            />
           ) : (
             /* Empty state when no position is selected */
             <div className="text-center py-10 text-muted-foreground border-2 border-dashed border-border/50 rounded-2xl">
