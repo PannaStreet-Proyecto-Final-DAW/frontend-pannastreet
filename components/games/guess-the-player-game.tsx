@@ -8,6 +8,7 @@ import { useState, useEffect } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { GuessesTable, type Guess } from "@/components/guesses-table"
+import { PlayerSearchInput } from "@/components/player-search-input"
 
 const SCORE_CONFIG = {
   base: { Easy: 10, Medium: 20, Hard: 30 },
@@ -15,16 +16,27 @@ const SCORE_CONFIG = {
   attempts: { Male: 10, Female: 10, Both: 15 }
 } as const
 
-// Sample players for the game - in production, fetch from cache or API
 const PLAYERS = [
   { name: "Messi", team: "Inter Miami", league: "MLS", nationality: "Argentina", position: "Forward", age: 36 },
+  { name: "Lionel Messi", team: "Inter Miami", league: "MLS", nationality: "Argentina", position: "Forward", age: 36 },
   { name: "Ronaldo", team: "Al Nassr", league: "Saudi Pro League", nationality: "Portugal", position: "Forward", age: 39 },
+  { name: "Cristiano Ronaldo", team: "Al Nassr", league: "Saudi Pro League", nationality: "Portugal", position: "Forward", age: 39 },
+  { name: "Ronaldinho", team: "Retired", league: "Icons", nationality: "Brazil", position: "Midfielder", age: 44 },
+  { name: "Ronaldo Nazario", team: "Retired", league: "Icons", nationality: "Brazil", position: "Forward", age: 47 },
   { name: "Mbappe", team: "Real Madrid", league: "La Liga", nationality: "France", position: "Forward", age: 25 },
+  { name: "Kylian Mbappe", team: "Real Madrid", league: "La Liga", nationality: "France", position: "Forward", age: 25 },
   { name: "Haaland", team: "Man City", league: "Premier League", nationality: "Norway", position: "Forward", age: 23 },
+  { name: "Erling Haaland", team: "Man City", league: "Premier League", nationality: "Norway", position: "Forward", age: 23 },
   { name: "Bellingham", team: "Real Madrid", league: "La Liga", nationality: "England", position: "Midfielder", age: 20 },
+  { name: "Jude Bellingham", team: "Real Madrid", league: "La Liga", nationality: "England", position: "Midfielder", age: 20 },
   { name: "Vinicius", team: "Real Madrid", league: "La Liga", nationality: "Brazil", position: "Forward", age: 23 },
+  { name: "Vinicius Junior", team: "Real Madrid", league: "La Liga", nationality: "Brazil", position: "Forward", age: 23 },
   { name: "Salah", team: "Liverpool", league: "Premier League", nationality: "Egypt", position: "Forward", age: 31 },
+  { name: "Mohamed Salah", team: "Liverpool", league: "Premier League", nationality: "Egypt", position: "Forward", age: 31 },
   { name: "De Bruyne", team: "Man City", league: "Premier League", nationality: "Belgium", position: "Midfielder", age: 32 },
+  { name: "Kevin De Bruyne", team: "Man City", league: "Premier League", nationality: "Belgium", position: "Midfielder", age: 32 },
+  { name: "Bruno Fernandes", team: "Man United", league: "Premier League", nationality: "Portugal", position: "Midfielder", age: 29 },
+  { name: "Enzo Fernandez", team: "Chelsea", league: "Premier League", nationality: "Argentina", position: "Midfielder", age: 23 },
 ]
 
 interface GuessThePlayerGameProps {
@@ -61,13 +73,14 @@ export function GuessThePlayerGame({
   const handleInputChange = (value: string) => {
     setCurrentGuess(value)
     setError(null) // Clear error when user types again
-    if (value.length > 0) {
-      // Search for players matching the input that have NOT been guessed yet
-      const filtered = PLAYERS.filter(
-        (p) =>
-          p.name.toLowerCase().includes(value.toLowerCase()) &&
-          !guesses.some((g) => g.name.toLowerCase() === p.name.toLowerCase())
-      )
+    if (value.length >= 3) {
+      const filtered = PLAYERS.filter((p) => {
+        const nameLower = p.name.toLowerCase()
+        const searchLower = value.toLowerCase()
+        const matchesSearch = nameLower.startsWith(searchLower) || nameLower.split(" ").some(w => w.startsWith(searchLower))
+        const notGuessed = !guesses.some((g) => g.name.toLowerCase() === p.name.toLowerCase())
+        return matchesSearch && notGuessed
+      })
       setSuggestions(filtered.slice(0, 5)) // Show a maximum of 5 suggestions
     } else {
       setSuggestions([])
@@ -138,8 +151,7 @@ export function GuessThePlayerGame({
     }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = () => {
     makeGuess(currentGuess)
   }
 
@@ -149,35 +161,20 @@ export function GuessThePlayerGame({
       {!isGameOver && (
         <Card className="border-border bg-card mb-6">
           <CardContent className="pt-6">
-            <form onSubmit={handleSubmit} className="relative">
-              <Input
-                type="text"
-                placeholder="Enter player name..."
-                value={currentGuess}
-                onChange={(e) => handleInputChange(e.target.value)}
-                className="bg-input border-border"
-                autoComplete="off"
-              />
-              {error && (
-                <p className="text-destructive text-[10px] font-bold mt-1 animate-pulse">
-                  {error}
-                </p>
-              )}
-              {suggestions.length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-popover border border-border rounded-lg shadow-lg z-10 overflow-hidden">
-                  {suggestions.map((player) => (
-                    <button
-                      key={player.name}
-                      type="button"
-                      onClick={() => makeGuess(player.name)}
-                      className="w-full px-4 py-2 text-left text-popover-foreground hover:bg-secondary transition-colors"
-                    >
-                      {player.name}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </form>
+            <PlayerSearchInput
+              value={currentGuess}
+              onChange={handleInputChange}
+              onSelect={(result) => makeGuess(result.primaryText)}
+              results={suggestions.map((p) => ({
+                id: p.name,
+                primaryText: p.name,
+                originalData: p,
+              }))}
+              placeholder="Enter player name..."
+              error={error}
+              mode="floating"
+              onSubmit={handleSubmit}
+            />
             <p className="text-xs text-black dark:text-white mt-2 text-center font-bold uppercase tracking-wider">
               Attempts: {guesses.length}/{SCORE_CONFIG.attempts[mode as keyof typeof SCORE_CONFIG.attempts] || 10}
             </p>
