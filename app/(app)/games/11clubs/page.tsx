@@ -17,62 +17,62 @@ const CLUBS = [
 ]
 
 /** Mock mapping of clubs to their top players */
-const PLAYERS_BY_CLUB: Record<string, { name: string; position: string }[]> = {
+const PLAYERS_BY_CLUB: Record<string, { name: string; positions: string[] }[]> = {
   "Real Madrid": [
-    { name: "Bellingham", position: "CM" }, { name: "Jude Bellingham", position: "CM" },
-    { name: "Vinicius", position: "LW" }, { name: "Vinicius Junior", position: "LW" },
-    { name: "Mbappe", position: "ST" }, { name: "Kylian Mbappe", position: "ST" },
-    { name: "Rodrygo", position: "RW" }, { name: "Valverde", position: "CM" }
+    { name: "Bellingham", positions: ["CM"] }, { name: "Jude Bellingham", positions: ["CM"] },
+    { name: "Vinicius", positions: ["LW"] }, { name: "Vinicius Junior", positions: ["LW", "ST"] },
+    { name: "Mbappe", positions: ["ST", "LW", "RW"] }, { name: "Kylian Mbappe", positions: ["ST", "LW", "RW"] },
+    { name: "Rodrygo", positions: ["RW", "LW"] }, { name: "Valverde", positions: ["CM", "RW"] }
   ],
   "Barcelona": [
-    { name: "Pedri", position: "CM" }, { name: "Gavi", position: "CM" },
-    { name: "Yamal", position: "RW" }, { name: "Lamine Yamal", position: "RW" },
-    { name: "Raphinha", position: "LW" }, { name: "Lewandowski", position: "ST" }, { name: "Robert Lewandowski", position: "ST" }
+    { name: "Pedri", positions: ["CM"] }, { name: "Gavi", positions: ["CM", "LW"] },
+    { name: "Yamal", positions: ["RW"] }, { name: "Lamine Yamal", positions: ["RW"] },
+    { name: "Raphinha", positions: ["LW", "RW"] }, { name: "Lewandowski", positions: ["ST"] }, { name: "Robert Lewandowski", positions: ["ST"] }
   ],
   "Bayern Munich": [
-    { name: "Sane", position: "LW" }, { name: "Musiala", position: "CM" },
-    { name: "Kane", position: "ST" }, { name: "Harry Kane", position: "ST" },
-    { name: "Kimmich", position: "CM" }, { name: "Muller", position: "CM" }, { name: "Thomas Muller", position: "CM" }
+    { name: "Sane", positions: ["LW", "RW"] }, { name: "Musiala", positions: ["CM", "LW"] },
+    { name: "Kane", positions: ["ST"] }, { name: "Harry Kane", positions: ["ST"] },
+    { name: "Kimmich", positions: ["CM", "RB"] }, { name: "Muller", positions: ["CM", "ST"] }, { name: "Thomas Muller", positions: ["CM", "ST"] }
   ],
   "Man City": [
-    { name: "Haaland", position: "ST" }, { name: "Erling Haaland", position: "ST" },
-    { name: "De Bruyne", position: "CM" }, { name: "Kevin De Bruyne", position: "CM" },
-    { name: "Foden", position: "RW" }, { name: "Rodri", position: "CM" }, { name: "Grealish", position: "LW" }
+    { name: "Haaland", positions: ["ST"] }, { name: "Erling Haaland", positions: ["ST"] },
+    { name: "De Bruyne", positions: ["CM"] }, { name: "Kevin De Bruyne", positions: ["CM"] },
+    { name: "Foden", positions: ["RW", "LW", "CM"] }, { name: "Rodri", positions: ["CM"] }, { name: "Grealish", positions: ["LW", "CM"] }
   ],
   "Liverpool": [
-    { name: "Salah", position: "RW" }, { name: "Mohamed Salah", position: "RW" },
-    { name: "Nunez", position: "ST" }, { name: "Darwin Nunez", position: "ST" },
-    { name: "Mac Allister", position: "CM" }, { name: "Szoboszlai", position: "CM" }, { name: "Van Dijk", position: "CB" }
+    { name: "Salah", positions: ["RW", "ST"] }, { name: "Mohamed Salah", positions: ["RW", "ST"] },
+    { name: "Nunez", positions: ["ST", "LW"] }, { name: "Darwin Nunez", positions: ["ST", "LW"] },
+    { name: "Mac Allister", positions: ["CM"] }, { name: "Szoboszlai", positions: ["CM", "RW"] }, { name: "Van Dijk", positions: ["CB"] }
   ],
   "PSG": [
-    { name: "Dembele", position: "RW" }, { name: "Ousmane Dembele", position: "RW" },
-    { name: "Barcola", position: "LW" }, { name: "Asensio", position: "ST" },
-    { name: "Vitinha", position: "CM" }, { name: "Hakimi", position: "RB" }
+    { name: "Dembele", positions: ["RW", "LW"] }, { name: "Ousmane Dembele", positions: ["RW", "LW"] },
+    { name: "Barcola", positions: ["LW", "RW"] }, { name: "Asensio", positions: ["ST", "RW"] },
+    { name: "Vitinha", positions: ["CM"] }, { name: "Hakimi", positions: ["RB", "RW"] }
   ],
   "Juventus": [
-    { name: "Vlahovic", position: "ST" }, { name: "Chiesa", position: "LW" },
-    { name: "Locatelli", position: "CM" }, { name: "Yildiz", position: "ST" }, { name: "Bremer", position: "CB" }
+    { name: "Vlahovic", positions: ["ST"] }, { name: "Chiesa", positions: ["LW", "RW"] },
+    { name: "Locatelli", positions: ["CM"] }, { name: "Yildiz", positions: ["ST", "LW"] }, { name: "Bremer", positions: ["CB"] }
   ],
   "Inter Milan": [
-    { name: "Lautaro", position: "ST" }, { name: "Lautaro Martinez", position: "ST" },
-    { name: "Thuram", position: "ST" }, { name: "Marcus Thuram", position: "ST" },
-    { name: "Barella", position: "CM" }, { name: "Calhanoglu", position: "CM" }, { name: "Bastoni", position: "CB" }
+    { name: "Lautaro", positions: ["ST"] }, { name: "Lautaro Martinez", positions: ["ST"] },
+    { name: "Thuram", positions: ["ST", "LW"] }, { name: "Marcus Thuram", positions: ["ST", "LW"] },
+    { name: "Barella", positions: ["CM"] }, { name: "Calhanoglu", positions: ["CM"] }, { name: "Bastoni", positions: ["CB", "LB"] }
   ],
   "Chelsea": [
-    { name: "Palmer", position: "RW" }, { name: "Cole Palmer", position: "RW" },
-    { name: "Mudryk", position: "LW" }, { name: "Jackson", position: "ST" }, { name: "Nicolas Jackson", position: "ST" },
-    { name: "Enzo", position: "CM" }, { name: "Enzo Fernandez", position: "CM" }, { name: "Caicedo", position: "CM" }
+    { name: "Palmer", positions: ["RW", "CM"] }, { name: "Cole Palmer", positions: ["RW", "CM"] },
+    { name: "Mudryk", positions: ["LW"] }, { name: "Jackson", positions: ["ST"] }, { name: "Nicolas Jackson", positions: ["ST"] },
+    { name: "Enzo", positions: ["CM"] }, { name: "Enzo Fernandez", positions: ["CM"] }, { name: "Caicedo", positions: ["CM"] }
   ],
   "Arsenal": [
-    { name: "Saka", position: "RW" }, { name: "Bukayo Saka", position: "RW" },
-    { name: "Odegaard", position: "CM" }, { name: "Martin Odegaard", position: "CM" },
-    { name: "Rice", position: "CM" }, { name: "Declan Rice", position: "CM" },
-    { name: "Havertz", position: "ST" }, { name: "Martinelli", position: "LW" }
+    { name: "Saka", positions: ["RW", "LB"] }, { name: "Bukayo Saka", positions: ["RW", "LB"] },
+    { name: "Odegaard", positions: ["CM"] }, { name: "Martin Odegaard", positions: ["CM"] },
+    { name: "Rice", positions: ["CM", "CB"] }, { name: "Declan Rice", positions: ["CM", "CB"] },
+    { name: "Havertz", positions: ["ST", "CM"] }, { name: "Martinelli", positions: ["LW", "ST"] }
   ],
   "Man United": [
-    { name: "Rashford", position: "LW" }, { name: "Marcus Rashford", position: "LW" },
-    { name: "Bruno", position: "CM" }, { name: "Bruno Fernandes", position: "CM" },
-    { name: "Hojlund", position: "ST" }, { name: "Mainoo", position: "CM" }, { name: "Garnacho", position: "RW" }
+    { name: "Rashford", positions: ["LW", "ST"] }, { name: "Marcus Rashford", positions: ["LW", "ST"] },
+    { name: "Bruno", positions: ["CM", "RW"] }, { name: "Bruno Fernandes", positions: ["CM", "RW"] },
+    { name: "Hojlund", positions: ["ST"] }, { name: "Mainoo", positions: ["CM"] }, { name: "Garnacho", positions: ["RW", "LW"] }
   ]
 }
 
