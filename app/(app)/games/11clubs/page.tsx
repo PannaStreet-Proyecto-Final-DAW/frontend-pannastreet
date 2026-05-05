@@ -17,18 +17,63 @@ const CLUBS = [
 ]
 
 /** Mock mapping of clubs to their top players */
-const PLAYERS_BY_CLUB: Record<string, string[]> = {
-  "Real Madrid": ["Bellingham", "Jude Bellingham", "Vinicius", "Vinicius Junior", "Mbappe", "Kylian Mbappe", "Rodrygo", "Valverde"],
-  "Barcelona": ["Pedri", "Gavi", "Yamal", "Lamine Yamal", "Raphinha", "Lewandowski", "Robert Lewandowski"],
-  "Bayern Munich": ["Sane", "Musiala", "Kane", "Harry Kane", "Kimmich", "Muller", "Thomas Muller"],
-  "Man City": ["Haaland", "Erling Haaland", "De Bruyne", "Kevin De Bruyne", "Foden", "Rodri", "Grealish"],
-  "Liverpool": ["Salah", "Mohamed Salah", "Nunez", "Darwin Nunez", "Mac Allister", "Szoboszlai", "Van Dijk"],
-  "PSG": ["Dembele", "Ousmane Dembele", "Barcola", "Asensio", "Vitinha", "Hakimi"],
-  "Juventus": ["Vlahovic", "Chiesa", "Locatelli", "Yildiz", "Bremer"],
-  "Inter Milan": ["Lautaro", "Lautaro Martinez", "Thuram", "Marcus Thuram", "Barella", "Calhanoglu", "Bastoni"],
-  "Chelsea": ["Palmer", "Cole Palmer", "Mudryk", "Jackson", "Nicolas Jackson", "Enzo", "Enzo Fernandez", "Caicedo"],
-  "Arsenal": ["Saka", "Bukayo Saka", "Odegaard", "Martin Odegaard", "Rice", "Declan Rice", "Havertz", "Martinelli"],
-  "Man United": ["Rashford", "Marcus Rashford", "Bruno", "Bruno Fernandes", "Hojlund", "Mainoo", "Garnacho"]
+const PLAYERS_BY_CLUB: Record<string, { name: string; position: string }[]> = {
+  "Real Madrid": [
+    { name: "Bellingham", position: "CM" }, { name: "Jude Bellingham", position: "CM" },
+    { name: "Vinicius", position: "LW" }, { name: "Vinicius Junior", position: "LW" },
+    { name: "Mbappe", position: "ST" }, { name: "Kylian Mbappe", position: "ST" },
+    { name: "Rodrygo", position: "RW" }, { name: "Valverde", position: "CM" }
+  ],
+  "Barcelona": [
+    { name: "Pedri", position: "CM" }, { name: "Gavi", position: "CM" },
+    { name: "Yamal", position: "RW" }, { name: "Lamine Yamal", position: "RW" },
+    { name: "Raphinha", position: "LW" }, { name: "Lewandowski", position: "ST" }, { name: "Robert Lewandowski", position: "ST" }
+  ],
+  "Bayern Munich": [
+    { name: "Sane", position: "LW" }, { name: "Musiala", position: "CM" },
+    { name: "Kane", position: "ST" }, { name: "Harry Kane", position: "ST" },
+    { name: "Kimmich", position: "CM" }, { name: "Muller", position: "CM" }, { name: "Thomas Muller", position: "CM" }
+  ],
+  "Man City": [
+    { name: "Haaland", position: "ST" }, { name: "Erling Haaland", position: "ST" },
+    { name: "De Bruyne", position: "CM" }, { name: "Kevin De Bruyne", position: "CM" },
+    { name: "Foden", position: "RW" }, { name: "Rodri", position: "CM" }, { name: "Grealish", position: "LW" }
+  ],
+  "Liverpool": [
+    { name: "Salah", position: "RW" }, { name: "Mohamed Salah", position: "RW" },
+    { name: "Nunez", position: "ST" }, { name: "Darwin Nunez", position: "ST" },
+    { name: "Mac Allister", position: "CM" }, { name: "Szoboszlai", position: "CM" }, { name: "Van Dijk", position: "CB" }
+  ],
+  "PSG": [
+    { name: "Dembele", position: "RW" }, { name: "Ousmane Dembele", position: "RW" },
+    { name: "Barcola", position: "LW" }, { name: "Asensio", position: "ST" },
+    { name: "Vitinha", position: "CM" }, { name: "Hakimi", position: "RB" }
+  ],
+  "Juventus": [
+    { name: "Vlahovic", position: "ST" }, { name: "Chiesa", position: "LW" },
+    { name: "Locatelli", position: "CM" }, { name: "Yildiz", position: "ST" }, { name: "Bremer", position: "CB" }
+  ],
+  "Inter Milan": [
+    { name: "Lautaro", position: "ST" }, { name: "Lautaro Martinez", position: "ST" },
+    { name: "Thuram", position: "ST" }, { name: "Marcus Thuram", position: "ST" },
+    { name: "Barella", position: "CM" }, { name: "Calhanoglu", position: "CM" }, { name: "Bastoni", position: "CB" }
+  ],
+  "Chelsea": [
+    { name: "Palmer", position: "RW" }, { name: "Cole Palmer", position: "RW" },
+    { name: "Mudryk", position: "LW" }, { name: "Jackson", position: "ST" }, { name: "Nicolas Jackson", position: "ST" },
+    { name: "Enzo", position: "CM" }, { name: "Enzo Fernandez", position: "CM" }, { name: "Caicedo", position: "CM" }
+  ],
+  "Arsenal": [
+    { name: "Saka", position: "RW" }, { name: "Bukayo Saka", position: "RW" },
+    { name: "Odegaard", position: "CM" }, { name: "Martin Odegaard", position: "CM" },
+    { name: "Rice", position: "CM" }, { name: "Declan Rice", position: "CM" },
+    { name: "Havertz", position: "ST" }, { name: "Martinelli", position: "LW" }
+  ],
+  "Man United": [
+    { name: "Rashford", position: "LW" }, { name: "Marcus Rashford", position: "LW" },
+    { name: "Bruno", position: "CM" }, { name: "Bruno Fernandes", position: "CM" },
+    { name: "Hojlund", position: "ST" }, { name: "Mainoo", position: "CM" }, { name: "Garnacho", position: "RW" }
+  ]
 }
 
 /**

@@ -8,7 +8,7 @@ import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
-import { FootballPitch, type SelectedPlayer } from "@/components/football-pitch"
+import { FootballPitch, DEFAULT_FORMATION, type SelectedPlayer } from "@/components/football-pitch"
 import { PlayerSearchInput } from "@/components/player-search-input"
 
 /** Standard football positions labels used for the selection UI title */
@@ -23,7 +23,7 @@ interface ElevenLineupGameProps {
   /** The specific 11 groups (clubs/countries) allowed for the current game session */
   availableGroups: string[]
   /** Data mapping: category name -> list of player names */
-  itemsByGroup: Record<string, string[]>
+  itemsByGroup: Record<string, { name: string; position: string }[]>
   /** Difficulty setting (Easy, Intermediate, Hard) */
   difficulty: string
   /** Mode setting (Male, Female, Both) */
@@ -55,11 +55,11 @@ export function ElevenLineupGame({
   /** The lineup array: null means the position is empty */
   const [lineup, setLineup] = useState<(SelectedPlayer | null)[]>(Array(11).fill(null))
 
-  /** The ID of the position currently being edited (0-10) */
-  const [currentPosition, setCurrentPosition] = useState<number | null>(null)
-
   /** User input for filtering players in the selection list */
   const [searchQuery, setSearchQuery] = useState("")
+
+  /** Error message to display when a slot is full */
+  const [searchError, setSearchError] = useState<string | null>(null)
 
   // --- Scoring Logic ---
 
@@ -93,34 +93,35 @@ export function ElevenLineupGame({
   // --- Handlers ---
 
   /**
-   * Activates a position for player selection. 
+   * Assigns a player to the first available slot matching their position.
    */
-  const handlePositionClick = (positionId: number) => {
-    if (isGameOver || completedCount === 11) return
-    if (lineup[positionId]) return
-    setCurrentPosition(positionId)
-    setSearchQuery("")
-  }
+  const handlePlayerSelect = (group: string, playerItem: { name: string; position: string }) => {
+    // 1. Find all pitch positions that match the player's position requirement
+    const matchingPositions = DEFAULT_FORMATION.filter(pos => pos.label === playerItem.position)
+    
+    // 2. Find the first empty slot among those matching positions
+    const targetSlot = matchingPositions.find(pos => lineup[pos.id] === null)
 
-  /**
-   * Assigns a player and calculates the new score.
-   */
-  const handlePlayerSelect = (group: string, item: string) => {
-    if (currentPosition === null) return
+    if (!targetSlot) {
+      // No empty slot available for this position
+      setSearchError(`No empty slots available for position: ${playerItem.position}`)
+      setTimeout(() => setSearchError(null), 3000)
+      return
+    }
 
     // Enforce unique category constraint
     const groupAlreadyUsed = lineup.some((l) => l && l.club === group)
     if (groupAlreadyUsed) return
 
     const newLineup = [...lineup]
-    newLineup[currentPosition] = { positionId: currentPosition, club: group, player: item }
+    newLineup[targetSlot.id] = { positionId: targetSlot.id, club: group, player: playerItem.name }
 
     const nextCount = newLineup.filter(Boolean).length
     const currentScore = calculateScore(nextCount)
 
     setLineup(newLineup)
-    setCurrentPosition(null)
     setSearchQuery("")
+    setSearchError(null)
 
     // Notify parent of the new score
     onProgressUpdate?.(currentScore)
@@ -139,7 +140,7 @@ export function ElevenLineupGame({
     if (searchQuery.length < 3) return []
 
     const usedGroups = new Set(lineup.filter(Boolean).map((l) => l!.club))
-    const results: { group: string; item: string }[] = []
+    const results: { group: string; item: { name: string; position: string } }[] = []
 
     availableGroups.forEach((group) => {
       // Don't show players from groups that are already in the lineup
@@ -147,7 +148,7 @@ export function ElevenLineupGame({
 
       itemsByGroup[group]?.forEach((item) => {
         // Search by player name or group name starting with the query
-        const itemLower = item.toLowerCase()
+        const itemLower = item.name.toLowerCase()
         const groupLower = group.toLowerCase()
         const searchLower = searchQuery.toLowerCase()
         
@@ -199,8 +200,8 @@ export function ElevenLineupGame({
       <Card className="border-border bg-card overflow-hidden h-full flex flex-col">
         <FootballPitch
           lineup={lineup}
-          currentPosition={currentPosition}
-          onPositionClick={handlePositionClick}
+          currentPosition={null}
+          onPositionClick={() => {}}
           gameComplete={isGameOver || completedCount === 11}
         />
       </Card>
@@ -210,11 +211,9 @@ export function ElevenLineupGame({
         <CardHeader className="p-4 pb-2">
           <div className="flex items-center justify-between">
             <CardTitle className="text-sm font-bold text-card-foreground">
-              {currentPosition !== null
-                ? `Select for ${POSITIONS[currentPosition]}`
-                : isGameOver || completedCount === 11
-                  ? "Game Over!"
-                  : "Choose Position"}
+              {isGameOver || completedCount === 11
+                ? "Game Over!"
+                : "Search Player"}
             </CardTitle>
 
             {/* Progress Counter Badge: 0/11 -> 11/11 */}
@@ -230,30 +229,20 @@ export function ElevenLineupGame({
         </CardHeader>
 
         <CardContent className="p-4 pt-0">
-          {currentPosition !== null ? (
-            <PlayerSearchInput
-              value={searchQuery}
-              onChange={setSearchQuery}
-              onSelect={(result) => handlePlayerSelect(result.originalData.group, result.originalData.item)}
-              results={getFilteredResults().map(({ group, item }) => ({
-                id: `${group}-${item}`,
-                primaryText: item,
-                originalData: { group, item },
-              }))}
-              placeholder={`Search ${groupLabel.toLowerCase()} or player...`}
-              mode="inline"
-              autoFocus
-            />
-          ) : (
-            /* Empty state when no position is selected */
-            <div className="text-center py-10 text-muted-foreground border-2 border-dashed border-border/50 rounded-2xl">
-              <p className="text-xs font-medium px-4">
-                {isGameOver || completedCount === 11
-                  ? "Lineup finalized. Click 'Play Again' to restart."
-                  : "Click a position on the pitch to start building your lineup"}
-              </p>
-            </div>
-          )}
+          <PlayerSearchInput
+            value={searchQuery}
+            onChange={setSearchQuery}
+            onSelect={(result) => handlePlayerSelect(result.originalData.group, result.originalData.item)}
+            results={getFilteredResults().map(({ group, item }) => ({
+              id: `${group}-${item.name}`,
+              primaryText: item.name,
+              originalData: { group, item },
+            }))}
+            placeholder={`Search ${groupLabel.toLowerCase()} or player...`}
+            error={searchError}
+            mode="inline"
+            autoFocus
+          />
         </CardContent>
       </Card>
     </div>
