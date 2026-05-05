@@ -6,8 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
 import { GameLayout } from "@/components/game-layout"
-import { GameIntroCard } from "@/components/game-intro-card"
-import { GameResultCard } from "@/components/game-result-card"
+import { GameIntroCard } from "@/components/games/generic-games/game-intro-card"
+import { GameResultCard } from "@/components/games/generic-games/game-result-card"
 
 // Sample trivia questions - in production, fetch from API
 const TRIVIA_QUESTIONS = [

@@ -5,7 +5,7 @@
 "use client"
 
 import React, { useState, ReactNode } from "react"
-import { GameLayout } from "./game-layout"
+import { GameLayout } from "../../game-layout"
 import { GameIntroCard } from "./game-intro-card"
 import { GameResultCard } from "./game-result-card"
 import { cn } from "@/lib/utils"

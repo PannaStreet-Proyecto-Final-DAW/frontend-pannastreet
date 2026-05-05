@@ -1,5 +1,8 @@
 import { fetchApi } from "./httpClient"
 
+/**
+ * Represents a user-created league in the system.
+ */
 export interface UserLeague {
   id: string
   name: string
@@ -7,13 +10,23 @@ export interface UserLeague {
   createdAt: string
 }
 
+/**
+ * Represents a user's participation in a league.
+ * Note: userId and leagueId are optional because the current backend response 
+ * might only include the full 'league' and 'user' objects.
+ */
 export interface UserLeagueMembership {
   id: string
-  userId: string
-  leagueId: string
+  userId?: string
+  leagueId?: string
   score: number
   joinedAt: string
   league?: UserLeague
+  user?: {
+    id: string
+    userName: string
+    email: string
+  }
 }
 
 export interface Player {
@@ -63,10 +76,18 @@ export async function getLeagueMembers(leagueId: string): Promise<UserLeagueMemb
   return fetchApi(`/user-league-membership/league/${leagueId}`)
 }
 
+/**
+ * Increments the score for a specific league membership.
+ * Note: We send both 'pointsToAdd' and 'amount' to satisfy the backend's
+ * current validation schema requirements while matching the controller's logic.
+ */
 export async function incrementScore(membershipId: string, points: number): Promise<UserLeagueMembership> {
   return fetchApi(`/user-league-membership/increment-score/${membershipId}`, {
     method: "PATCH",
-    body: JSON.stringify({ pointsToAdd: points })
+    body: JSON.stringify({ 
+      pointsToAdd: points,
+      amount: points // Fallback for backend validation schema mismatch
+    })
   })
 }
 

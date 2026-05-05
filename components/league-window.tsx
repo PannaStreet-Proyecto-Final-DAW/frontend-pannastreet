@@ -39,8 +39,8 @@ export function LeagueWindow({
         <div className="mb-4">
           <div className="flex items-center gap-3 pb-2">
             <h2 className="text-3xl font-black italic tracking-tighter uppercase text-primary">
-              {selectedLeague.league?.name && selectedLeague.league.name !== "" 
-                ? selectedLeague.league.name 
+              {selectedLeague.league?.name && selectedLeague.league.name !== ""
+                ? selectedLeague.league.name
                 : `League ${selectedLeague.league?.id?.substring(0, 8) || selectedLeague.id.substring(0, 8)}`}
             </h2>
             <button className="text-muted-foreground hover:text-primary transition-colors opacity-50 cursor-default" title="Edit league">
@@ -82,18 +82,26 @@ export function LeagueWindow({
                       <TableCell className="font-medium py-4 px-4">
                         <span className={cn(
                           "text-base",
-                          member.userId === currentUserId ? "text-primary font-bold" : "text-card-foreground"
+                          (member.user?.id || member.userId) === currentUserId ? "text-primary font-bold" : "text-card-foreground"
                         )}>
-                          {member.userId === currentUserId ? "You" : `User ${member.userId.substring(0, 8)}`}
+                          {/**
+                           * Identification logic for the user.
+                           * Shows "You" for the current user, or the userName/short-ID for others.
+                           */}
+                          {(member.user?.id || member.userId) === currentUserId ? "You" : (member.user?.userName || `User ${(member.user?.id || member.userId || member.id).substring(0, 8)}`)}
                         </span>
                       </TableCell>
                       <TableCell className="text-center font-bold text-primary py-4 text-lg px-4">{member.score}</TableCell>
                       <TableCell className="text-center text-primary/80 py-4 font-medium px-4">
+                        {/**
+                         * Placeholder calculation for "Today's Score".
+                         * Currently calculated as 10% of the total score until the backend supports daily tracking.
+                         */}
                         +{Math.floor(member.score / 10)}
                       </TableCell>
                       <TableCell className="text-right text-muted-foreground py-4 text-sm pr-10">
-                        {member.joinedAt 
-                          ? new Date(member.joinedAt).toLocaleDateString() 
+                        {member.joinedAt
+                          ? new Date(member.joinedAt).toLocaleDateString()
                           : "N/A"}
                       </TableCell>
                     </TableRow>

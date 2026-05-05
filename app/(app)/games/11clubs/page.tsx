@@ -5,10 +5,10 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { GameEngine } from "@/components/game-engine"
+import { GameEngine } from "@/components/games/generic-games/game-engine"
 import { ElevenLineupGame } from "@/components/games/eleven-lineup-game"
 import { useScoreSync } from "@/hooks/use-score-sync"
-import { SyncStatusIndicator } from "@/components/sync-status-indicator"
+import { SyncStatusIndicator } from "@/components/games/generic-games/sync-status-indicator"
 
 /** Mock list of football clubs to select from */
 const CLUBS = [

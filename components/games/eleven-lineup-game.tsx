@@ -8,8 +8,8 @@ import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
-import { FootballPitch, type SelectedPlayer } from "@/components/football-pitch"
-import { PlayerSearchInput } from "@/components/player-search-input"
+import { FootballPitch, type SelectedPlayer } from "./generic-games/football-pitch"
+import { PlayerSearchInput } from "./generic-games/player-search-input"
 
 /** Standard football positions labels used for the selection UI title */
 const POSITIONS = ["GK", "LB", "CB", "CB", "RB", "CM", "CM", "CM", "LW", "ST", "RW"]
