@@ -7,6 +7,8 @@
 import { useState, useEffect } from "react"
 import { GameEngine } from "@/components/game-engine"
 import { ElevenLineupGame } from "@/components/games/eleven-lineup-game"
+import { useScoreSync } from "@/hooks/use-score-sync"
+import { SyncStatusIndicator } from "@/components/sync-status-indicator"
 
 /** Mock list of football clubs to select from */
 const CLUBS = [
@@ -41,13 +43,19 @@ export default function ElevenClubsPage() {
   const [won, setWon] = useState(false)
   const [score, setScore] = useState(0)
 
+  // --- Score Synchronization Hook ---
+  const { syncStatus, syncPoints, resetSync } = useScoreSync()
+
   // --- Game Session Data ---
-  
+
   /** The 11 clubs picked for the current attempt */
   const [selectedClubs, setSelectedClubs] = useState<string[]>([])
-  
+
+  /** Track current calculated score for real-time reporting (useful for surrender) */
+  const [currentCalculatedScore, setCurrentCalculatedScore] = useState(0)
+
   /** Unique key to force a clean remount of the game component when starting over */
-  const [key, setKey] = useState(0) 
+  const [key, setKey] = useState(0)
 
   /**
    * Initializes or resets the game session.
@@ -59,6 +67,8 @@ export default function ElevenClubsPage() {
     setGameOver(false)
     setWon(false)
     setScore(0)
+    setCurrentCalculatedScore(0)
+    resetSync()
     setKey(prev => prev + 1) // Trigger React to create a fresh instance of the game component
   }
 
@@ -69,21 +79,25 @@ export default function ElevenClubsPage() {
 
   /**
    * Finalizes the game session when the lineup is complete.
-   * Updates state to trigger the GameEngine result screen.
+   * Receives the final score from the game component.
    */
-  const handleGameOver = (success: boolean) => {
-    setWon(success)
-    setScore(success ? 11 : 0) // Basic scoring: 1 point per player
+  const handleGameOver = async (finalScore: number) => {
+    setWon(true)
+    setScore(finalScore)
     setGameOver(true)
+    await syncPoints(finalScore)
   }
 
   /**
    * Handles the surrender action from the GameEngine header.
+   * Uses the last calculated score from the component.
    */
-  const handleSurrender = () => {
+  const handleSurrender = async () => {
+    const finalScore = currentCalculatedScore
     setWon(false)
-    setScore(0)
+    setScore(finalScore)
     setGameOver(true)
+    await syncPoints(finalScore)
   }
 
   return (
@@ -121,12 +135,19 @@ export default function ElevenClubsPage() {
       backHref="/games"
       backText="Back to Games"
     >
+      {/* Visual indicator of backend synchronization status */}
+      <SyncStatusIndicator status={syncStatus} />
+
       {/* The "Cartridge" Component: Encapsulates the specific game UI and logic */}
       <ElevenLineupGame
         key={key}
         groupLabel="Clubs"
         availableGroups={selectedClubs}
         itemsByGroup={PLAYERS_BY_CLUB}
+        difficulty={difficulty}
+        mode={mode}
+        isGameOver={gameOver}
+        onProgressUpdate={setCurrentCalculatedScore}
         onGameOver={handleGameOver}
       />
     </GameEngine>

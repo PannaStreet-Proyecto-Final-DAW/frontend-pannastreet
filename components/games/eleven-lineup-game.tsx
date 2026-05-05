@@ -23,35 +23,69 @@ interface ElevenLineupGameProps {
   availableGroups: string[]
   /** Data mapping: category name -> list of player names */
   itemsByGroup: Record<string, string[]>
-  /** Callback triggered when all 11 positions are successfully filled */
-  onGameOver: (success: boolean) => void
-  /** Optional callback for handling the surrender action */
-  onSurrender?: () => void
+  /** Difficulty setting (Easy, Intermediate, Hard) */
+  difficulty: string
+  /** Mode setting (Male, Female, Both) */
+  mode: string
+  /** Triggered when the lineup is complete (passes final score) */
+  onGameOver: (score: number) => void
+  /** Triggered whenever a player is added (passes current calculated score) */
+  onProgressUpdate?: (score: number) => void
+  /** Flag to disable all interactions once the game has ended */
+  isGameOver?: boolean
 }
 
 /**
  * This component handles the core gameplay loop for building an 11-player lineup.
- * It enforces the rule of one player per category (club/country).
+ * It enforces the rule of one player per category (club/country) and calculates scores.
  */
 export function ElevenLineupGame({
   groupLabel,
   availableGroups,
   itemsByGroup,
+  difficulty,
+  mode,
   onGameOver,
+  onProgressUpdate,
+  isGameOver = false,
 }: ElevenLineupGameProps) {
   // --- Internal State ---
-  
+
   /** The lineup array: null means the position is empty */
   const [lineup, setLineup] = useState<(SelectedPlayer | null)[]>(Array(11).fill(null))
-  
+
   /** The ID of the position currently being edited (0-10) */
   const [currentPosition, setCurrentPosition] = useState<number | null>(null)
-  
+
   /** User input for filtering players in the selection list */
   const [searchQuery, setSearchQuery] = useState("")
 
+  // --- Scoring Logic ---
+
+  /**
+   * Helper to calculate the score based on the number of players, difficulty and mode.
+   */
+  const calculateScore = (count: number) => {
+    const difficultyPoints: Record<string, number> = {
+      "Easy": 1,
+      "Intermediate": 2,
+      "Hard": 3
+    }
+
+    const modeMultipliers: Record<string, number> = {
+      "Male": 1,
+      "Female": 1.5,
+      "Both": 2
+    }
+
+    const basePoints = difficultyPoints[difficulty] || 1
+    const multiplier = modeMultipliers[mode] || 1
+
+    return Math.floor(count * basePoints * multiplier)
+  }
+
   // --- Derived State ---
-  
+
   /** Dynamic count of how many players have been assigned to the pitch */
   const completedCount = lineup.filter(Boolean).length
 
@@ -59,18 +93,16 @@ export function ElevenLineupGame({
 
   /**
    * Activates a position for player selection. 
-   * Prevents interaction if the game is over or the position is already filled.
    */
   const handlePositionClick = (positionId: number) => {
-    if (completedCount === 11) return
-    if (lineup[positionId]) return 
+    if (isGameOver || completedCount === 11) return
+    if (lineup[positionId]) return
     setCurrentPosition(positionId)
     setSearchQuery("")
   }
 
   /**
-   * Assigns a player to the active position and updates the global lineup state.
-   * Validates that the category (club) hasn't been used yet.
+   * Assigns a player and calculates the new score.
    */
   const handlePlayerSelect = (group: string, item: string) => {
     if (currentPosition === null) return
@@ -81,15 +113,20 @@ export function ElevenLineupGame({
 
     const newLineup = [...lineup]
     newLineup[currentPosition] = { positionId: currentPosition, club: group, player: item }
-    
+
     const nextCount = newLineup.filter(Boolean).length
+    const currentScore = calculateScore(nextCount)
+
     setLineup(newLineup)
     setCurrentPosition(null)
     setSearchQuery("")
 
+    // Notify parent of the new score
+    onProgressUpdate?.(currentScore)
+
     // Trigger game over if the final slot (11th) is filled
     if (nextCount === 11) {
-      onGameOver(true)
+      onGameOver(currentScore)
     }
   }
 
@@ -104,7 +141,7 @@ export function ElevenLineupGame({
     availableGroups.forEach((group) => {
       // Don't show players from groups that are already in the lineup
       if (usedGroups.has(group)) return
-      
+
       itemsByGroup[group]?.forEach((item) => {
         // Search by player name or group name
         if (
@@ -122,7 +159,7 @@ export function ElevenLineupGame({
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[1fr_1.8fr_1fr] gap-6 items-stretch">
-      
+
       {/* COLUMN 1: List of mandatory categories to use (Clubs/Countries) */}
       <Card className="border-border bg-card sticky top-6 md:h-full flex flex-col">
         <CardHeader className="p-3 pb-1">
@@ -158,7 +195,7 @@ export function ElevenLineupGame({
           lineup={lineup}
           currentPosition={currentPosition}
           onPositionClick={handlePositionClick}
-          gameComplete={completedCount === 11}
+          gameComplete={isGameOver || completedCount === 11}
         />
       </Card>
 
@@ -169,11 +206,11 @@ export function ElevenLineupGame({
             <CardTitle className="text-sm font-bold text-card-foreground">
               {currentPosition !== null
                 ? `Select for ${POSITIONS[currentPosition]}`
-                : completedCount === 11
-                  ? "Lineup Complete!"
+                : isGameOver || completedCount === 11
+                  ? "Game Over!"
                   : "Choose Position"}
             </CardTitle>
-            
+
             {/* Progress Counter Badge: 0/11 -> 11/11 */}
             <div className={cn(
               "px-2 py-0.5 rounded-full text-[10px] font-black tracking-tighter transition-all",
@@ -185,7 +222,7 @@ export function ElevenLineupGame({
             </div>
           </div>
         </CardHeader>
-        
+
         <CardContent className="p-4 pt-0">
           {currentPosition !== null ? (
             <>
@@ -199,7 +236,7 @@ export function ElevenLineupGame({
                 autoComplete="off"
                 autoFocus
               />
-              
+
               {/* Scrollable list of matches */}
               <div className="space-y-1 max-h-56 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-primary/20">
                 {getFilteredResults().map(({ group, item }) => (
@@ -228,9 +265,9 @@ export function ElevenLineupGame({
           ) : (
             /* Empty state when no position is selected */
             <div className="text-center py-10 text-muted-foreground border-2 border-dashed border-border/50 rounded-2xl">
-              <p className="text-xs font-medium">
-                {completedCount === 11 
-                  ? "Lineup complete!" 
+              <p className="text-xs font-medium px-4">
+                {isGameOver || completedCount === 11
+                  ? "Lineup finalized. Click 'Play Again' to restart."
                   : "Click a position on the pitch to start building your lineup"}
               </p>
             </div>
