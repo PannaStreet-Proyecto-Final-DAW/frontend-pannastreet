@@ -4,6 +4,7 @@
  */
 "use client"
 
+import { useState, useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 
@@ -37,6 +38,33 @@ export function PlayerSearchInput({
   onSubmit,
   autoFocus
 }: PlayerSearchInputProps) {
+  const [selectedIndex, setSelectedIndex] = useState(-1)
+
+  // Reset selected index when search changes or results update
+  useEffect(() => {
+    setSelectedIndex(-1)
+  }, [value, results.length])
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (results.length === 0) return
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault()
+      setSelectedIndex((prev) => (prev < results.length - 1 ? prev + 1 : prev))
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault()
+      setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev))
+    } else if (e.key === "Enter") {
+      e.preventDefault()
+      if (selectedIndex >= 0 && selectedIndex < results.length) {
+        onSelect(results[selectedIndex])
+        setSelectedIndex(-1)
+      } else if (onSubmit) {
+        onSubmit()
+      }
+    }
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     onSubmit?.()
@@ -57,6 +85,7 @@ export function PlayerSearchInput({
           placeholder={placeholder}
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          onKeyDown={handleKeyDown}
           className={inputClassNames}
           autoComplete="off"
           autoFocus={autoFocus}
@@ -70,17 +99,33 @@ export function PlayerSearchInput({
 
       {/* Floating Mode: Used by Guess the Player */}
       {mode === "floating" && results.length > 0 && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-popover border border-border rounded-lg shadow-lg z-10 overflow-hidden">
-          {results.map((result) => (
+        <div className="absolute top-full left-0 right-0 mt-1 bg-popover border border-border rounded-lg shadow-lg z-10 overflow-hidden p-2 space-y-1">
+          {results.map((result, index) => (
             <button
               key={result.id}
               type="button"
               onClick={() => onSelect(result)}
-              className="w-full px-4 py-2 text-left text-popover-foreground hover:bg-secondary transition-colors flex items-center justify-between"
+              onMouseEnter={() => setSelectedIndex(index)}
+              className={cn(
+                "w-full flex items-center justify-between p-2.5 rounded-xl transition-all duration-300 border shadow-sm group",
+                "bg-primary/5 border-primary/20 text-primary hover:bg-primary/10 hover:border-primary/30",
+                "dark:bg-secondary/40 dark:border-secondary/20 dark:text-card-foreground dark:hover:bg-secondary/60 dark:hover:border-primary/50",
+                index === selectedIndex && "bg-primary/10 border-primary/30 dark:bg-secondary/60 dark:border-primary/50"
+              )}
             >
-              <span>{result.primaryText}</span>
+              <span className={cn(
+                "text-[10px] font-black uppercase tracking-widest opacity-70 group-hover:opacity-100 group-hover:text-primary transition-all",
+                index === selectedIndex && "opacity-100 text-primary"
+              )}>
+                {result.primaryText}
+              </span>
               {result.secondaryText && (
-                <span className="text-xs opacity-50 font-medium ml-2">{result.secondaryText}</span>
+                <span className={cn(
+                  "text-[10px] font-bold opacity-50 group-hover:opacity-100 transition-all",
+                  index === selectedIndex && "opacity-100"
+                )}>
+                  {result.secondaryText}
+                </span>
               )}
             </button>
           ))}
@@ -90,22 +135,30 @@ export function PlayerSearchInput({
       {/* Inline Mode: Used by 11 Clubs */}
       {mode === "inline" && (
         <div className="space-y-1 max-h-56 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-primary/20">
-          {results.map((result) => (
+          {results.map((result, index) => (
             <button
               key={result.id}
               type="button"
               onClick={() => onSelect(result)}
+              onMouseEnter={() => setSelectedIndex(index)}
               className={cn(
                 "w-full flex items-center justify-between p-2.5 rounded-xl transition-all duration-300 border shadow-sm group",
                 "bg-primary/5 border-primary/20 text-primary hover:bg-primary/10 hover:border-primary/30",
-                "dark:bg-secondary/40 dark:border-secondary/20 dark:text-card-foreground dark:hover:bg-secondary/60 dark:hover:border-primary/50"
+                "dark:bg-secondary/40 dark:border-secondary/20 dark:text-card-foreground dark:hover:bg-secondary/60 dark:hover:border-primary/50",
+                index === selectedIndex && "bg-primary/10 border-primary/30 dark:bg-secondary/60 dark:border-primary/50"
               )}
             >
-              <span className="text-[10px] font-black uppercase tracking-widest opacity-70 group-hover:opacity-100 group-hover:text-primary transition-all">
+              <span className={cn(
+                "text-[10px] font-black uppercase tracking-widest opacity-70 group-hover:opacity-100 group-hover:text-primary transition-all",
+                index === selectedIndex && "opacity-100 text-primary"
+              )}>
                 {result.primaryText}
               </span>
               {result.secondaryText && (
-                <span className="text-[10px] font-bold opacity-50 group-hover:opacity-100 transition-all">
+                <span className={cn(
+                  "text-[10px] font-bold opacity-50 group-hover:opacity-100 transition-all",
+                  index === selectedIndex && "opacity-100"
+                )}>
                   {result.secondaryText}
                 </span>
               )}
