@@ -39,7 +39,9 @@ export function LeagueWindow({
         <div className="mb-4">
           <div className="flex items-center gap-3 pb-2">
             <h2 className="text-3xl font-black italic tracking-tighter uppercase text-primary">
-              {selectedLeague.league?.name}
+              {selectedLeague.league?.name && selectedLeague.league.name !== "" 
+                ? selectedLeague.league.name 
+                : `League ${selectedLeague.league?.id?.substring(0, 8) || selectedLeague.id.substring(0, 8)}`}
             </h2>
             <button className="text-muted-foreground hover:text-primary transition-colors opacity-50 cursor-default" title="Edit league">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -90,7 +92,9 @@ export function LeagueWindow({
                         +{Math.floor(member.score / 10)}
                       </TableCell>
                       <TableCell className="text-right text-muted-foreground py-4 text-sm pr-10">
-                        {new Date(member.joinedAt).toLocaleDateString()}
+                        {member.joinedAt 
+                          ? new Date(member.joinedAt).toLocaleDateString() 
+                          : "N/A"}
                       </TableCell>
                     </TableRow>
                   ))

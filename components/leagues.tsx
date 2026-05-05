@@ -258,7 +258,9 @@ export function Leagues() {
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-lg text-primary transition-colors group-hover:text-primary/80">
-                        {membership.league?.name || `League ${membership.leagueId}`}
+                        {membership.league?.name && membership.league.name !== "" 
+                          ? membership.league.name 
+                          : `League ${membership.league?.id?.substring(0, 8) || membership.id.substring(0, 8)}`}
                       </CardTitle>
                       <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
                         Member
@@ -274,7 +276,9 @@ export function Leagues() {
                       <div className="text-right">
                         <p className="text-sm text-muted-foreground">Joined</p>
                         <p className="text-sm text-primary">
-                          {new Date(membership.joinedAt).toLocaleDateString()}
+                          {membership.joinedAt 
+                            ? new Date(membership.joinedAt).toLocaleDateString() 
+                            : "N/A"}
                         </p>
                       </div>
                     </div>
