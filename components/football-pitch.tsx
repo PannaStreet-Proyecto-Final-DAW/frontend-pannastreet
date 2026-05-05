@@ -2,13 +2,19 @@
 
 import { cn } from "@/lib/utils"
 
+/**
+ * Interface representing a clickable position on the pitch
+ */
 export interface Position {
   id: number
-  label: string
-  row: number
-  col: number
+  label: string // e.g., "GK", "ST"
+  row: number // Vertical position (0 to 5)
+  col: number // Horizontal position (0 to 4)
 }
 
+/**
+ * Interface for a player assigned to a position
+ */
 export interface SelectedPlayer {
   positionId: number
   club: string
@@ -16,14 +22,17 @@ export interface SelectedPlayer {
 }
 
 interface FootballPitchProps {
-  lineup: (SelectedPlayer | null)[]
-  currentPosition: number | null
-  onPositionClick: (id: number) => void
+  lineup: (SelectedPlayer | null)[] // Array of 11 slots
+  currentPosition: number | null // Currently active slot being edited
+  onPositionClick: (id: number) => void // Handler for slot clicks
   gameComplete?: boolean
   positions?: Position[]
   className?: string
 }
 
+/**
+ * Standard 4-3-3 formation coordinates
+ */
 export const DEFAULT_FORMATION: Position[] = [
   { id: 0, label: "GK", row: 4, col: 2 },
   { id: 1, label: "LB", row: 3, col: 0 },
@@ -38,6 +47,9 @@ export const DEFAULT_FORMATION: Position[] = [
   { id: 10, label: "RW", row: 1, col: 3.5 },
 ]
 
+/**
+ * Component that renders a visual football pitch with interactive player positions
+ */
 export function FootballPitch({
   lineup,
   currentPosition,
@@ -48,18 +60,22 @@ export function FootballPitch({
 }: FootballPitchProps) {
   return (
     <div className={cn("relative bg-gradient-to-b from-primary/20 to-primary/10 flex-1 p-2 min-h-[320px]", className)}>
-      {/* Field lines */}
+      {/* Field Decorations: Lines, boxes, and center circle */}
       <div className="absolute inset-4 border-2 border-primary/30 rounded-lg">
+        {/* Goal boxes */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-1/6 border-2 border-t-0 border-primary/30"></div>
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/3 h-1/6 border-2 border-b-0 border-primary/30"></div>
+        {/* Halfway line */}
         <div className="absolute top-1/2 left-0 right-0 border-t-2 border-primary/30"></div>
+        {/* Center circle */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full border-2 border-primary/30"></div>
       </div>
 
-      {/* Positions */}
+      {/* Render interactive player position buttons */}
       {positions.map((pos) => {
         const player = lineup[pos.id]
         const isSelected = currentPosition === pos.id
+
         return (
           <button
             key={pos.id}
@@ -67,6 +83,7 @@ export function FootballPitch({
             className={cn(
               "absolute w-12 h-12 -translate-x-1/2 -translate-y-1/2 rounded-full",
               "flex flex-col items-center justify-center text-xs font-medium transition-all",
+              // Styling based on state: Occupied, Selected, or Empty
               player
                 ? "bg-primary text-primary-foreground"
                 : isSelected
@@ -75,17 +92,19 @@ export function FootballPitch({
               !player && !gameComplete && "cursor-pointer"
             )}
             style={{
-              // Calculate percentage position: (pos / max) * usable_area + initial_margin
+              // Position mapping: converts coordinate values to percentage-based CSS positions
               left: `${(pos.col / 4) * 80 + 10}%`,
               top: `${(pos.row / 5) * 85 + 7.5}%`,
             }}
             disabled={!!player || gameComplete}
           >
             {player ? (
+              // Show player name (shortened) if slot is filled
               <>
                 <span className="truncate max-w-[44px]">{player.player.split(" ")[0]}</span>
               </>
             ) : (
+              // Show position label (e.g. "GK") if slot is empty
               <span>{pos.label}</span>
             )}
           </button>
