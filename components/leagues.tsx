@@ -53,7 +53,7 @@ export function Leagues() {
       setMemberships(membershipData)
 
       // Filter out leagues user is already a member of
-      const memberLeagueIds = new Set(membershipData.map(m => m.leagueId))
+      const memberLeagueIds = new Set(membershipData.map(m => m.league?.id || m.leagueId))
       setAvailableLeagues(leaguesData.filter(l => !memberLeagueIds.has(l.id)))
     } catch {
       setError("Failed to load data. Make sure your backend is running.")
@@ -103,7 +103,16 @@ export function Leagues() {
     setSelectedLeague(membership)
     setIsLoadingMembers(true)
     try {
-      const members = await getLeagueMembers(membership.leagueId)
+      /**
+       * Fetch members for the selected league.
+       * We attempt to find the league ID first in the 'league' object,
+       * then fall back to the top-level 'leagueId' if the object is missing.
+       */
+      const currentLeagueId = membership.league?.id || membership.leagueId;
+      if (!currentLeagueId || currentLeagueId === "undefined") {
+        throw new Error("Invalid League ID");
+      }
+      const members = await getLeagueMembers(currentLeagueId)
       setLeagueMembers(members)
     } catch {
       setError("Failed to load league members")
@@ -258,11 +267,14 @@ export function Leagues() {
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-lg text-primary transition-colors group-hover:text-primary/80">
-                        {membership.league?.name || `League ${membership.leagueId}`}
+                        {/**
+                         * Defensive display logic for the league name.
+                         * If the league object isn't populated, we show a shortened version of the ID.
+                         */}
+                        {membership.league?.name && membership.league.name !== ""
+                          ? membership.league.name
+                          : `League ${membership.league?.id?.substring(0, 8) || membership.id.substring(0, 8)}`}
                       </CardTitle>
-                      <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
-                        Member
-                      </span>
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -274,7 +286,13 @@ export function Leagues() {
                       <div className="text-right">
                         <p className="text-sm text-muted-foreground">Joined</p>
                         <p className="text-sm text-primary">
-                          {new Date(membership.joinedAt).toLocaleDateString()}
+                          {/**
+                           * Defensive check for the join date.
+                           * Prevents "Invalid Date" by showing "N/A" if the field is missing.
+                           */}
+                          {membership.joinedAt
+                            ? new Date(membership.joinedAt).toLocaleDateString()
+                            : "N/A"}
                         </p>
                       </div>
                     </div>
