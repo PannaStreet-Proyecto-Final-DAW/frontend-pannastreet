@@ -16,32 +16,19 @@ const SCORE_CONFIG = {
   attempts: { Male: 10, Female: 10, Both: 15 }
 } as const
 
-const PLAYERS = [
-  { name: "Messi", team: "Inter Miami", league: "MLS", nationality: "Argentina", position: "Forward", age: 36 },
-  { name: "Lionel Messi", team: "Inter Miami", league: "MLS", nationality: "Argentina", position: "Forward", age: 36 },
-  { name: "Ronaldo", team: "Al Nassr", league: "Saudi Pro League", nationality: "Portugal", position: "Forward", age: 39 },
-  { name: "Cristiano Ronaldo", team: "Al Nassr", league: "Saudi Pro League", nationality: "Portugal", position: "Forward", age: 39 },
-  { name: "Ronaldinho", team: "Retired", league: "Icons", nationality: "Brazil", position: "Midfielder", age: 44 },
-  { name: "Ronaldo Nazario", team: "Retired", league: "Icons", nationality: "Brazil", position: "Forward", age: 47 },
-  { name: "Mbappe", team: "Real Madrid", league: "La Liga", nationality: "France", position: "Forward", age: 25 },
-  { name: "Kylian Mbappe", team: "Real Madrid", league: "La Liga", nationality: "France", position: "Forward", age: 25 },
-  { name: "Haaland", team: "Man City", league: "Premier League", nationality: "Norway", position: "Forward", age: 23 },
-  { name: "Erling Haaland", team: "Man City", league: "Premier League", nationality: "Norway", position: "Forward", age: 23 },
-  { name: "Bellingham", team: "Real Madrid", league: "La Liga", nationality: "England", position: "Midfielder", age: 20 },
-  { name: "Jude Bellingham", team: "Real Madrid", league: "La Liga", nationality: "England", position: "Midfielder", age: 20 },
-  { name: "Vinicius", team: "Real Madrid", league: "La Liga", nationality: "Brazil", position: "Forward", age: 23 },
-  { name: "Vinicius Junior", team: "Real Madrid", league: "La Liga", nationality: "Brazil", position: "Forward", age: 23 },
-  { name: "Salah", team: "Liverpool", league: "Premier League", nationality: "Egypt", position: "Forward", age: 31 },
-  { name: "Mohamed Salah", team: "Liverpool", league: "Premier League", nationality: "Egypt", position: "Forward", age: 31 },
-  { name: "De Bruyne", team: "Man City", league: "Premier League", nationality: "Belgium", position: "Midfielder", age: 32 },
-  { name: "Kevin De Bruyne", team: "Man City", league: "Premier League", nationality: "Belgium", position: "Midfielder", age: 32 },
-  { name: "Bruno Fernandes", team: "Man United", league: "Premier League", nationality: "Portugal", position: "Midfielder", age: 29 },
-  { name: "Enzo Fernandez", team: "Chelsea", league: "Premier League", nationality: "Argentina", position: "Midfielder", age: 23 },
-]
+interface PlayerData {
+  name: string
+  team: string
+  league: string
+  nationality: string
+  position: string
+  age: number
+}
 
 interface GuessThePlayerGameProps {
   difficulty: string
   mode: string
+  players: PlayerData[]
   onGameOver: (won: boolean, targetPlayer: any, score: number) => void
   isGameOver: boolean
 }
@@ -49,22 +36,25 @@ interface GuessThePlayerGameProps {
 export function GuessThePlayerGame({
   difficulty,
   mode,
+  players,
   onGameOver,
   isGameOver
 }: GuessThePlayerGameProps) {
   // --- GAME STATES ---
-  const [targetPlayer, setTargetPlayer] = useState(PLAYERS[0]) // The player to guess
+  const [targetPlayer, setTargetPlayer] = useState<PlayerData>(players[0]) // The player to guess
   const [guesses, setGuesses] = useState<Guess[]>([])           // List of attempts made
   const [currentGuess, setCurrentGuess] = useState("")          // What the user types in the input
-  const [suggestions, setSuggestions] = useState<typeof PLAYERS>([]) // List of names appearing while typing
+  const [suggestions, setSuggestions] = useState<PlayerData[]>([]) // List of names appearing while typing
   const [error, setError] = useState<string | null>(null)       // Error message if player not found
 
   // --- INITIALIZATION ---
-  // Pick a random player when the component mounts
+  // Pick a random player when the component mounts or when players change
   useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * PLAYERS.length)
-    setTargetPlayer(PLAYERS[randomIndex])
-  }, [])
+    if (players && players.length > 0) {
+      const randomIndex = Math.floor(Math.random() * players.length)
+      setTargetPlayer(players[randomIndex])
+    }
+  }, [players])
 
   /**
    * Handles text input changes.
@@ -74,7 +64,7 @@ export function GuessThePlayerGame({
     setCurrentGuess(value)
     setError(null) // Clear error when user types again
     if (value.length >= 3) {
-      const filtered = PLAYERS.filter((p) => {
+      const filtered = players.filter((p) => {
         const nameLower = p.name.toLowerCase()
         const searchLower = value.toLowerCase()
         const matchesSearch = nameLower.startsWith(searchLower) || nameLower.split(" ").some(w => w.startsWith(searchLower))
@@ -97,7 +87,7 @@ export function GuessThePlayerGame({
 
     // Find the full data of the player the user typed/selected.
     // If the user types a name not in our PLAYERS list, 'find' returns undefined.
-    const player = PLAYERS.find((p) => p.name.toLowerCase() === playerName.toLowerCase())
+    const player = players.find((p) => p.name.toLowerCase() === playerName.toLowerCase())
     
     // SAFETY CHECK: If the player wasn't found, we notify the user and exit.
     if (!player) {
@@ -183,7 +173,7 @@ export function GuessThePlayerGame({
       )}
 
       {/* History table */}
-      <GuessesTable guesses={guesses} players={PLAYERS} />
+      <GuessesTable guesses={guesses} players={players} />
 
       {/* Legend for the colors */}
       <div className="mt-6 flex items-center justify-center gap-4 text-xs font-medium">

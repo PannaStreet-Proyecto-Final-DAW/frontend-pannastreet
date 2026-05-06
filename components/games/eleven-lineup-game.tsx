@@ -4,7 +4,7 @@
  */
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
@@ -69,6 +69,23 @@ export function ElevenLineupGame({
     positions: string[] // The valid position labels for this player that have slots
   } | null>(null)
 
+  /** Randomized queue of clubs to use for the sequential challenge */
+  const [clubQueue, setClubQueue] = useState<string[]>([])
+
+  /** Initialize the shuffled club queue on mount or when availableGroups change */
+  useEffect(() => {
+    if (availableGroups.length > 0) {
+      const shuffled = [...availableGroups].sort(() => Math.random() - 0.5)
+      setClubQueue(shuffled)
+    }
+  }, [availableGroups])
+
+  /** Dynamic count of how many players have been assigned to the pitch */
+  const completedCount = lineup.filter(Boolean).length
+
+  /** The currently active club for the challenge */
+  const currentClub = clubQueue[completedCount] || null
+
   // --- Scoring Logic ---
 
   /**
@@ -95,8 +112,6 @@ export function ElevenLineupGame({
 
   // --- Derived State ---
 
-  /** Dynamic count of how many players have been assigned to the pitch */
-  const completedCount = lineup.filter(Boolean).length
 
   // --- Handlers ---
 
@@ -104,19 +119,28 @@ export function ElevenLineupGame({
    * Evaluates and assigns a player based on available slots for their positions.
    */
   const handlePlayerSelect = (group: string, playerItem: { name: string; positions: string[] }) => {
-    // Find all empty pitch positions that match ANY of the player's possible positions
+    // 1. Enforce sequential club constraint (PRIORITY)
+    if (group !== currentClub) {
+      setSearchError(`You must select a player from ${currentClub}`)
+      setSearchQuery("")
+      setTimeout(() => setSearchError(null), 3000)
+      return
+    }
+
+    // 2. Find all empty pitch positions that match ANY of the player's possible positions
     const emptySlots = DEFAULT_FORMATION.filter(
       (pos) => playerItem.positions.includes(pos.label) && lineup[pos.id] === null
     )
 
     if (emptySlots.length === 0) {
       // No empty slots available for any of their positions
-      setSearchError(`No empty slots available for positions: ${playerItem.positions.join(", ")}`)
+      setSearchError(`No empty slots available`)
+      setSearchQuery("")
       setTimeout(() => setSearchError(null), 3000)
       return
     }
 
-    // Enforce unique category constraint
+    // Enforce unique category constraint (redundant with sequential but good for safety)
     const groupAlreadyUsed = lineup.some((l) => l && l.club === group)
     if (groupAlreadyUsed) return
 
@@ -181,7 +205,7 @@ export function ElevenLineupGame({
         const itemLower = item.name.toLowerCase()
         const groupLower = group.toLowerCase()
         const searchLower = searchQuery.toLowerCase()
-        
+
         const matchesItem = itemLower.startsWith(searchLower) || itemLower.split(" ").some(w => w.startsWith(searchLower))
         const matchesGroup = groupLower.startsWith(searchLower) || groupLower.split(" ").some(w => w.startsWith(searchLower))
 
@@ -197,32 +221,44 @@ export function ElevenLineupGame({
   return (
     <div className="grid grid-cols-1 md:grid-cols-[1fr_1.8fr_1fr] gap-6 items-stretch">
 
-      {/* COLUMN 1: List of mandatory categories to use (Clubs/Countries) */}
-      <Card className="border-border bg-card sticky top-6 md:h-full flex flex-col">
-        <CardHeader className="p-3 pb-1">
-          <CardTitle className="text-[11px] font-bold uppercase tracking-wider text-card-foreground">
-            {groupLabel} to Use
+      {/* COLUMN 1: Current Challenge Card */}
+      <Card className="border-border bg-card sticky top-6 md:h-full flex flex-col overflow-hidden">
+        <CardHeader className="p-4 pb-2">
+          <CardTitle className="text-[11px] font-black uppercase tracking-widest text-primary/60 italic">
+            Current Challenge
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-3 pt-0">
-          <div className="flex flex-wrap md:flex-col gap-1">
-            {availableGroups.map((group) => {
-              const isUsed = lineup.some((l) => l?.club === group)
-              return (
-                <span
-                  key={group}
-                  className={cn(
-                    "px-2.5 py-1 rounded-xl text-[11px] font-black uppercase tracking-wider transition-all border shadow-sm",
-                    isUsed
-                      ? "bg-black/5 dark:bg-white/5 border-transparent text-primary/30 dark:text-white/30 line-through"
-                      : "bg-primary/5 dark:bg-secondary/40 border-primary/20 dark:border-secondary/20 text-primary dark:text-card-foreground"
-                  )}
-                >
-                  {group}
-                </span>
-              )
-            })}
-          </div>
+        <CardContent className="p-4 flex-1 flex flex-col items-center justify-center text-center gap-6">
+          {currentClub ? (
+            <>
+              {/* Future Club Crest Placeholder */}
+              <div className="w-32 h-32 rounded-full bg-primary/5 border-4 border-dashed border-primary/20 flex items-center justify-center animate-pulse">
+                <div className="w-16 h-16 rounded-full bg-primary/10 border-2 border-primary/20" />
+              </div>
+
+              <div className="space-y-1">
+                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Target {groupLabel.slice(0, -1)}</p>
+                <h3 className="text-2xl font-black uppercase tracking-tighter text-card-foreground leading-none">
+                  {currentClub}
+                </h3>
+              </div>
+
+              <div className="mt-auto pt-6 border-t border-border/50 w-full">
+                <p className="text-[9px] font-medium text-muted-foreground leading-relaxed">
+                  Search and place any player that plays for <span className="text-primary font-bold">{currentClub}</span> to advance.
+                </p>
+              </div>
+            </>
+          ) : (
+            <div className="py-12 flex flex-col items-center gap-3">
+              <div className="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center">
+                <svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <p className="font-black uppercase italic tracking-tighter text-green-500">All Done!</p>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -274,26 +310,35 @@ export function ElevenLineupGame({
               </p>
               <button
                 onClick={() => setPendingPlayer(null)}
-                className="px-4 py-2 text-xs font-bold bg-background text-muted-foreground hover:text-foreground border rounded-lg hover:bg-muted transition-colors"
+                className="inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider shadow-sm transition-colors hover:bg-primary/90 duration-300 bg-primary text-primary-foreground mt-4"
               >
                 Cancel Selection
               </button>
             </div>
           ) : (
-            <PlayerSearchInput
-              value={searchQuery}
-              onChange={setSearchQuery}
-              onSelect={(result) => handlePlayerSelect(result.originalData.group, result.originalData.item)}
-              results={getFilteredResults().map(({ group, item }) => ({
-                id: `${group}-${item.name}`,
-                primaryText: item.name,
-                originalData: { group, item },
-              }))}
-              placeholder={`Search ${groupLabel.toLowerCase()} or player...`}
-              error={searchError}
-              mode="inline"
-              autoFocus
-            />
+            <div className="flex flex-col gap-4">
+              <PlayerSearchInput
+                value={searchQuery}
+                onChange={setSearchQuery}
+                onSelect={(result) => handlePlayerSelect(result.originalData.group, result.originalData.item)}
+                results={getFilteredResults().map(({ group, item }) => ({
+                  id: `${group}-${item.name}`,
+                  primaryText: item.name,
+                  originalData: { group, item },
+                }))}
+                placeholder={`Search ${groupLabel.toLowerCase()} or player...`}
+                mode="inline"
+                autoFocus
+              />
+
+              {searchError && (
+                <div className="animate-in fade-in slide-in-from-top-1 duration-300">
+                  <p className="text-[9px] font-bold text-red-500/80 text-center uppercase tracking-wider italic">
+                    {searchError}
+                  </p>
+                </div>
+              )}
+            </div>
           )}
         </CardContent>
       </Card>

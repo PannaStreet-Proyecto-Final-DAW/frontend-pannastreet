@@ -25,7 +25,7 @@ const PLAYERS_BY_CLUB: Record<string, { name: string; positions: string[] }[]> =
     { name: "Rodrygo", positions: ["RW", "LW"] }, { name: "Valverde", positions: ["CM", "RW"] }
   ],
   "Barcelona": [
-    { name: "Pedri", positions: ["CM"] }, { name: "Gavi", positions: ["CM", "LW"] },
+    { name: "Pedri", positions: ["CM"] }, { name: "Gavi", positions: ["LW"] },
     { name: "Yamal", positions: ["RW"] }, { name: "Lamine Yamal", positions: ["RW"] },
     { name: "Raphinha", positions: ["LW", "RW"] }, { name: "Lewandowski", positions: ["ST"] }, { name: "Robert Lewandowski", positions: ["ST"] }
   ],
