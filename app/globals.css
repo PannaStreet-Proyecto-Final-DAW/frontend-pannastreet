@@ -7,65 +7,71 @@
   /* Pitch Grass Stripes Base */
   --background: oklch(0.45 0.12 145);
   --foreground: oklch(1 0 0);
-  
+
   /* Gold Definition */
   --gold: oklch(0.70 0.15 85);
   --gold-foreground: oklch(0.20 0.05 30);
-  
+
   /* Light Mode: White Cards/Navbar (More Pronounced) */
   --card: oklch(1 0 0 / 0.95);
   --card-foreground: var(--gold);
-  
+
   --popover: oklch(1 0 0 / 0.95);
   --popover-foreground: var(--gold);
-  
+
   --primary: var(--gold);
   --primary-foreground: var(--gold-foreground);
-  
+
   --secondary: oklch(0.30 0.05 145);
   --secondary-foreground: oklch(1 0 0);
-  
+
   --muted: oklch(1 0 0 / 0.1);
   --muted-foreground: oklch(0.60 0.02 240);
-  
+
   --accent: oklch(1 0 0 / 0.2);
   --accent-foreground: var(--gold);
-  
+
   --destructive: oklch(0.55 0.22 25);
   --destructive-foreground: oklch(1 0 0);
-  
+
   --border: oklch(1 0 0 / 0.1);
   --input: oklch(1 0 0 / 0.05);
   --ring: var(--gold);
-  
+
   --radius: 0.75rem;
 
   /* Game Card Slot Colors (Light Mode) */
-  --game-1: oklch(1 0 0 / 0.95); /* Solid White */
-  --game-2: oklch(0.80 0.15 85 / 0.9); /* Solid Gold - Very clearly marked */
-  --game-3: oklch(1 0 0 / 0.95); /* Solid White */
+  --game-1: oklch(1 0 0 / 0.95);
+  /* Solid White */
+  --game-2: oklch(0.80 0.15 85 / 0.9);
+  /* Solid Gold - Very clearly marked */
+  --game-3: oklch(1 0 0 / 0.95);
+  /* Solid White */
 }
 
 .dark {
   /* Dark Mode: Gray Cards/Navbar */
   --background: oklch(0.35 0.10 145);
   --gold: oklch(0.75 0.18 85);
-  
+
   --card: oklch(0.20 0.01 250 / 0.8);
   --card-foreground: var(--gold);
-  
+
   --popover: oklch(0.20 0.01 250 / 0.9);
   --popover-foreground: var(--gold);
-  
+
   --primary: var(--gold);
   --primary-foreground: var(--gold-foreground);
-  
+
   --border: oklch(1 0 0 / 0.05);
 
   /* Game Card Slot Colors (Dark Mode) */
-  --game-1: oklch(0.35 0.10 145 / 0.7); /* Deeper Green Glass */
-  --game-2: oklch(0.70 0.15 85 / 0.7);  /* More marked Gold Glass */
-  --game-3: oklch(0.35 0.10 145 / 0.7); /* Deeper Green Glass */
+  --game-1: oklch(0.35 0.10 145 / 0.7);
+  /* Deeper Green Glass */
+  --game-2: oklch(0.70 0.15 85 / 0.7);
+  /* More marked Gold Glass */
+  --game-3: oklch(0.35 0.10 145 / 0.7);
+  /* Deeper Green Glass */
 }
 
 @theme inline {
@@ -101,15 +107,14 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground transition-colors duration-500 min-h-screen relative;
-    background-image: repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 10%,
-      oklch(0 0 0 / 0.05) 10%,
-      oklch(0 0 0 / 0.05) 20%
-    );
+    background-image: repeating-linear-gradient(90deg,
+        transparent,
+        transparent 10%,
+        oklch(0 0 0 / 0.05) 10%,
+        oklch(0 0 0 / 0.05) 20%);
   }
 
   body::before {
@@ -118,7 +123,7 @@
     inset: 0;
     pointer-events: none;
     z-index: -1;
-    background-image: 
+    background-image:
       /* Halfway line */
       linear-gradient(to bottom, transparent calc(50% - 1px), oklch(1 0 0 / 0.1) calc(50% - 1px), oklch(1 0 0 / 0.1) calc(50% + 1px), transparent calc(50% + 1px)),
       /* Center circle */
