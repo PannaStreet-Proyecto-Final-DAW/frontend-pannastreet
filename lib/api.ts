@@ -1,7 +1,12 @@
 import { fetchApi } from "./httpClient"
 
 /**
- * Represents a user-created league in the system.
+ * --- LEAGUE DATA MODELS ---
+ */
+
+/**
+ * UserLeague: Represents a competitive league created by a user.
+ * Each league has a unique name and a private invite code used for secure joining.
  */
 export interface UserLeague {
   id: string
@@ -11,9 +16,9 @@ export interface UserLeague {
 }
 
 /**
- * Represents a user's participation in a league.
- * Note: userId and leagueId are optional because the current backend response 
- * might only include the full 'league' and 'user' objects.
+ * UserLeagueMembership: Represents the link between a user and a league.
+ * It tracks the user's performance (score) and when they joined the competition.
+ * Note: Includes optional league and user objects for enriched leaderboard displays.
  */
 export interface UserLeagueMembership {
   id: string
@@ -29,6 +34,9 @@ export interface UserLeagueMembership {
   }
 }
 
+/**
+ * Player: Represents a professional player in the system database.
+ */
 export interface Player {
   id: string
   name: string
@@ -37,6 +45,9 @@ export interface Player {
   teamId: string
 }
 
+/**
+ * Team: Represents a professional club/team.
+ */
 export interface Team {
   id: string
   name: string
@@ -44,7 +55,15 @@ export interface Team {
   leagueId: string
 }
 
-// User Leagues API
+/**
+ * --- LEAGUE MANAGEMENT API ---
+ */
+
+/**
+ * createUserLeague: Creates a new competitive arena in the system.
+ * @param name - The desired name for the new league.
+ * @returns A promise resolving to the created league object.
+ */
 export async function createUserLeague(name: string): Promise<UserLeague> {
   return fetchApi("/user-league", {
     method: "POST",
@@ -52,15 +71,44 @@ export async function createUserLeague(name: string): Promise<UserLeague> {
   })
 }
 
+/**
+ * getAllUserLeagues: Fetches every user-created league in the system.
+ * Useful for building discovery lists or public league browsers.
+ */
 export async function getAllUserLeagues(): Promise<UserLeague[]> {
   return fetchApi("/user-league")
 }
 
+/**
+ * updateUserLeague: Modifies an existing league's metadata.
+ * Primarily used to rename a league by its owner/manager.
+ * @param id - Unique identifier of the target league.
+ * @param name - The new name to apply.
+ */
+export async function updateUserLeague(id: string, name: string): Promise<UserLeague> {
+  return fetchApi(`/user-league/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify({ name })
+  })
+}
+
+/**
+ * getUserLeagueById: Retrieves full details of a specific league.
+ */
 export async function getUserLeagueById(id: string): Promise<UserLeague> {
   return fetchApi(`/user-league/id/${id}`)
 }
 
-// User League Membership API
+/**
+ * --- MEMBERSHIP & LEADERBOARD API ---
+ */
+
+/**
+ * joinLeague: Grants a user access to a specific league.
+ * This establishes a membership relationship in the database.
+ * @param userId - ID of the user who wants to join.
+ * @param leagueId - ID of the league they are entering.
+ */
 export async function joinLeague(userId: string, leagueId: string): Promise<UserLeagueMembership> {
   return fetchApi("/user-league-membership", {
     method: "POST",
@@ -68,43 +116,76 @@ export async function joinLeague(userId: string, leagueId: string): Promise<User
   })
 }
 
+/**
+ * getUserMemberships: Retrieves all leagues that a specific user has joined.
+ * Crucial for populating the user's personal dashboard.
+ */
 export async function getUserMemberships(userId: string): Promise<UserLeagueMembership[]> {
   return fetchApi(`/user-league-membership/user/${userId}`)
 }
 
+/**
+ * getLeagueMembers: Fetches all participants within a specific league.
+ * Used to calculate and display the real-time leaderboard rankings.
+ */
 export async function getLeagueMembers(leagueId: string): Promise<UserLeagueMembership[]> {
   return fetchApi(`/user-league-membership/league/${leagueId}`)
 }
 
 /**
- * Increments the score for a specific league membership.
- * Note: We send both 'pointsToAdd' and 'amount' to satisfy the backend's
- * current validation schema requirements while matching the controller's logic.
+ * incrementScore: Updates a user's points for a specific league entry.
+ * Logic: Adds 'points' to the existing score.
+ * Note: Both 'pointsToAdd' and 'amount' are sent to satisfy diverse backend schema versions.
  */
 export async function incrementScore(membershipId: string, points: number): Promise<UserLeagueMembership> {
   return fetchApi(`/user-league-membership/increment-score/${membershipId}`, {
     method: "PATCH",
     body: JSON.stringify({ 
       pointsToAdd: points,
-      amount: points // Fallback for backend validation schema mismatch
+      amount: points 
     })
   })
 }
 
-// Players API
+/**
+ * deleteMembership: Performs the "Leave League" action.
+ * Permanently removes the user's presence and score from a specific league.
+ * @param id - The membership record ID to be deleted.
+ */
+export async function deleteMembership(id: string): Promise<{ message: string }> {
+  return fetchApi(`/user-league-membership/${id}`, {
+    method: "DELETE"
+  })
+}
+
+/**
+ * --- CORE ENTITIES API ---
+ */
+
+/**
+ * getAllPlayers: Fetches the complete database of professional players.
+ */
 export async function getAllPlayers(): Promise<Player[]> {
   return fetchApi("/player")
 }
 
+/**
+ * getPlayerById: Retrieves detailed information for a single player.
+ */
 export async function getPlayerById(id: string): Promise<Player> {
   return fetchApi(`/player/id/${id}`)
 }
 
-// Teams API
+/**
+ * getAllTeams: Fetches the complete list of teams/clubs.
+ */
 export async function getAllTeams(): Promise<Team[]> {
   return fetchApi("/team")
 }
 
+/**
+ * getTeamById: Retrieves detailed information for a specific team.
+ */
 export async function getTeamById(id: string): Promise<Team> {
   return fetchApi(`/team/id/${id}`)
 }

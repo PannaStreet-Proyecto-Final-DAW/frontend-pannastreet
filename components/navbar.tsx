@@ -20,10 +20,28 @@ const navLinks = [
   { href: "/leagues", label: "Leagues" },
 ]
 
+/**
+ * Navbar Component
+ * 
+ * This is the main navigation header for the application.
+ * It provides links to different modules, a theme toggle, and a user profile dropdown.
+ */
 export function Navbar() {
+  /**
+   * Access authentication context for user data and logout functionality.
+   */
   const { user, logout } = useAuth()
+  
+  /**
+   * usePathname: Hook to get the current URL path.
+   * Used to highlight the active link in the navigation menu.
+   */
   const pathname = usePathname()
 
+  /**
+   * handleLogout: Handles the sign-out process.
+   * Clears session data and redirects the user to the landing page.
+   */
   const handleLogout = () => {
     logout()
     window.location.href = "/"
@@ -32,7 +50,7 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-card/90 backdrop-blur-md shadow-sm">
       <div className="container mx-auto flex h-[72px] items-center justify-between px-6">
-        {/* Logo */}
+        {/* --- LOGO SECTION --- */}
         <Link href="/games" className="flex items-center gap-3">
           <div className="flex items-center justify-center shrink-0">
             <Image 
@@ -47,17 +65,23 @@ export function Navbar() {
           <span className="font-bold text-lg text-primary tracking-tight">PannaMaster</span>
         </Link>
 
-        {/* Navigation */}
+        {/* --- NAVIGATION LINKS --- */}
         <nav className="flex items-center gap-2">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
+              /**
+               * Dynamic Styling:
+               * 1. If active: Apply primary background/text and a subtle shadow.
+               * 2. If inactive: Use muted colors with a hover effect.
+               * 3. Mode awareness: In dark mode, inactive links turn white as per user preference.
+               */
               className={cn(
                 "px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200",
                 pathname === link.href || pathname.startsWith(link.href + "/")
                   ? "bg-primary/10 text-primary shadow-sm"
-                  : "text-muted-foreground hover:text-primary hover:bg-primary/5"
+                  : "text-muted-foreground dark:text-white hover:text-primary hover:bg-primary/5"
               )}
             >
               {link.label}
@@ -65,25 +89,29 @@ export function Navbar() {
           ))}
         </nav>
 
-        {/* Actions */}
+        {/* --- USER ACTIONS & SETTINGS --- */}
         <div className="flex items-center gap-2">
+          {/* ThemeToggle: Component to switch between Light and Dark modes */}
           <ThemeToggle />
           
-          {/* User Menu */}
+          {/* User Profile Dropdown Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
                 className="flex items-center gap-3 py-4 px-3 h-auto text-muted-foreground hover:bg-primary/5 hover:text-primary rounded-xl transition-all"
               >
+                {/* User Avatar: Displays the first letter of the username */}
                 <div className="w-9 h-9 rounded-full bg-primary/20 flex items-center justify-center border border-primary/10 shadow-inner">
                   <span className="text-sm font-bold text-primary">
                     {user?.userName?.charAt(0).toUpperCase()}
                   </span>
                 </div>
+                {/* Username label (hidden on small mobile screens) */}
                 <span className="hidden md:inline text-sm font-semibold">
                   {user?.userName}
                 </span>
+                {/* Downward arrow icon for the dropdown */}
                 <svg
                   className="w-4 h-4 text-muted-foreground"
                   fill="none"
@@ -94,12 +122,16 @@ export function Navbar() {
                 </svg>
               </Button>
             </DropdownMenuTrigger>
+            
+            {/* Dropdown Content */}
             <DropdownMenuContent align="end" className="w-48 bg-popover border-border">
+              {/* User Identity Header */}
               <div className="px-3 py-2">
                 <p className="text-sm font-medium text-popover-foreground">{user?.userName}</p>
                 <p className="text-xs text-muted-foreground">{user?.email}</p>
               </div>
               <DropdownMenuSeparator />
+              {/* Sign Out Action */}
               <DropdownMenuItem
                 onClick={handleLogout}
                 className="text-destructive cursor-pointer focus:text-destructive"
