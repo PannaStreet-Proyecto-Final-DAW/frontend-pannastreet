@@ -10,6 +10,29 @@ import { GuessThePlayerGame } from "@/components/games/guess-the-player-game"
 import { useScoreSync } from "@/hooks/use-score-sync"
 import { SyncStatusIndicator } from "@/components/sync-status-indicator"
 
+const PLAYERS = [
+  { name: "Messi", team: "Inter Miami", league: "MLS", nationality: "Argentina", position: "Forward", age: 36 },
+  { name: "Lionel Messi", team: "Inter Miami", league: "MLS", nationality: "Argentina", position: "Forward", age: 36 },
+  { name: "Ronaldo", team: "Al Nassr", league: "Saudi Pro League", nationality: "Portugal", position: "Forward", age: 39 },
+  { name: "Cristiano Ronaldo", team: "Al Nassr", league: "Saudi Pro League", nationality: "Portugal", position: "Forward", age: 39 },
+  { name: "Ronaldinho", team: "Retired", league: "Icons", nationality: "Brazil", position: "Midfielder", age: 44 },
+  { name: "Ronaldo Nazario", team: "Retired", league: "Icons", nationality: "Brazil", position: "Forward", age: 47 },
+  { name: "Mbappe", team: "Real Madrid", league: "La Liga", nationality: "France", position: "Forward", age: 25 },
+  { name: "Kylian Mbappe", team: "Real Madrid", league: "La Liga", nationality: "France", position: "Forward", age: 25 },
+  { name: "Haaland", team: "Man City", league: "Premier League", nationality: "Norway", position: "Forward", age: 23 },
+  { name: "Erling Haaland", team: "Man City", league: "Premier League", nationality: "Norway", position: "Forward", age: 23 },
+  { name: "Bellingham", team: "Real Madrid", league: "La Liga", nationality: "England", position: "Midfielder", age: 20 },
+  { name: "Jude Bellingham", team: "Real Madrid", league: "La Liga", nationality: "England", position: "Midfielder", age: 20 },
+  { name: "Vinicius", team: "Real Madrid", league: "La Liga", nationality: "Brazil", position: "Forward", age: 23 },
+  { name: "Vinicius Junior", team: "Real Madrid", league: "La Liga", nationality: "Brazil", position: "Forward", age: 23 },
+  { name: "Salah", team: "Liverpool", league: "Premier League", nationality: "Egypt", position: "Forward", age: 31 },
+  { name: "Mohamed Salah", team: "Liverpool", league: "Premier League", nationality: "Egypt", position: "Forward", age: 31 },
+  { name: "De Bruyne", team: "Man City", league: "Premier League", nationality: "Belgium", position: "Midfielder", age: 32 },
+  { name: "Kevin De Bruyne", team: "Man City", league: "Premier League", nationality: "Belgium", position: "Midfielder", age: 32 },
+  { name: "Bruno Fernandes", team: "Man United", league: "Premier League", nationality: "Portugal", position: "Midfielder", age: 29 },
+  { name: "Enzo Fernandez", team: "Chelsea", league: "Premier League", nationality: "Argentina", position: "Midfielder", age: 23 },
+]
+
 export default function GuessThePlayerPage() {
   // 1. Settings state (Difficulty and Mode)
   const [difficulty, setDifficulty] = useState("Easy")
@@ -120,6 +143,7 @@ export default function GuessThePlayerPage() {
         key={gameState.key}
         difficulty={difficulty}
         mode={mode}
+        players={PLAYERS}
         onGameOver={handleGameOver}
         isGameOver={gameState.gameOver}
       />

@@ -9,6 +9,7 @@ import { GameEngine } from "@/components/game-engine"
 import { ElevenLineupGame } from "@/components/games/eleven-lineup-game"
 import { useScoreSync } from "@/hooks/use-score-sync"
 import { SyncStatusIndicator } from "@/components/sync-status-indicator"
+import { FORMATIONS } from "@/lib/formations"
 
 /** Mock list of football clubs to select from */
 const CLUBS = [
@@ -17,18 +18,63 @@ const CLUBS = [
 ]
 
 /** Mock mapping of clubs to their top players */
-const PLAYERS_BY_CLUB: Record<string, string[]> = {
-  "Real Madrid": ["Bellingham", "Jude Bellingham", "Vinicius", "Vinicius Junior", "Mbappe", "Kylian Mbappe", "Rodrygo", "Valverde"],
-  "Barcelona": ["Pedri", "Gavi", "Yamal", "Lamine Yamal", "Raphinha", "Lewandowski", "Robert Lewandowski"],
-  "Bayern Munich": ["Sane", "Musiala", "Kane", "Harry Kane", "Kimmich", "Muller", "Thomas Muller"],
-  "Man City": ["Haaland", "Erling Haaland", "De Bruyne", "Kevin De Bruyne", "Foden", "Rodri", "Grealish"],
-  "Liverpool": ["Salah", "Mohamed Salah", "Nunez", "Darwin Nunez", "Mac Allister", "Szoboszlai", "Van Dijk"],
-  "PSG": ["Dembele", "Ousmane Dembele", "Barcola", "Asensio", "Vitinha", "Hakimi"],
-  "Juventus": ["Vlahovic", "Chiesa", "Locatelli", "Yildiz", "Bremer"],
-  "Inter Milan": ["Lautaro", "Lautaro Martinez", "Thuram", "Marcus Thuram", "Barella", "Calhanoglu", "Bastoni"],
-  "Chelsea": ["Palmer", "Cole Palmer", "Mudryk", "Jackson", "Nicolas Jackson", "Enzo", "Enzo Fernandez", "Caicedo"],
-  "Arsenal": ["Saka", "Bukayo Saka", "Odegaard", "Martin Odegaard", "Rice", "Declan Rice", "Havertz", "Martinelli"],
-  "Man United": ["Rashford", "Marcus Rashford", "Bruno", "Bruno Fernandes", "Hojlund", "Mainoo", "Garnacho"]
+const PLAYERS_BY_CLUB: Record<string, { name: string; positions: string[] }[]> = {
+  "Real Madrid": [
+    { name: "Bellingham", positions: ["CM"] }, { name: "Jude Bellingham", positions: ["CM"] },
+    { name: "Vinicius", positions: ["LW"] }, { name: "Vinicius Junior", positions: ["LW", "ST"] },
+    { name: "Mbappe", positions: ["ST", "LW", "RW"] }, { name: "Kylian Mbappe", positions: ["ST", "LW", "RW"] },
+    { name: "Rodrygo", positions: ["RW", "LW"] }, { name: "Valverde", positions: ["CM", "RW"] }
+  ],
+  "Barcelona": [
+    { name: "Pedri", positions: ["CM"] }, { name: "Gavi", positions: ["LW"] },
+    { name: "Yamal", positions: ["RW"] }, { name: "Lamine Yamal", positions: ["RW"] },
+    { name: "Raphinha", positions: ["LW", "RW"] }, { name: "Lewandowski", positions: ["ST"] }, { name: "Robert Lewandowski", positions: ["ST"] }
+  ],
+  "Bayern Munich": [
+    { name: "Sane", positions: ["LW", "RW"] }, { name: "Musiala", positions: ["CM", "LW"] },
+    { name: "Kane", positions: ["ST"] }, { name: "Harry Kane", positions: ["ST"] },
+    { name: "Kimmich", positions: ["CM", "RB"] }, { name: "Muller", positions: ["CM", "ST"] }, { name: "Thomas Muller", positions: ["CM", "ST"] }
+  ],
+  "Man City": [
+    { name: "Haaland", positions: ["ST"] }, { name: "Erling Haaland", positions: ["ST"] },
+    { name: "De Bruyne", positions: ["CM"] }, { name: "Kevin De Bruyne", positions: ["CM"] },
+    { name: "Foden", positions: ["RW", "LW", "CM"] }, { name: "Rodri", positions: ["CM"] }, { name: "Grealish", positions: ["LW", "CM"] }
+  ],
+  "Liverpool": [
+    { name: "Salah", positions: ["RW", "ST"] }, { name: "Mohamed Salah", positions: ["RW", "ST"] },
+    { name: "Nunez", positions: ["ST", "LW"] }, { name: "Darwin Nunez", positions: ["ST", "LW"] },
+    { name: "Mac Allister", positions: ["CM"] }, { name: "Szoboszlai", positions: ["CM", "RW"] }, { name: "Van Dijk", positions: ["CB"] }
+  ],
+  "PSG": [
+    { name: "Dembele", positions: ["RW", "LW"] }, { name: "Ousmane Dembele", positions: ["RW", "LW"] },
+    { name: "Barcola", positions: ["LW", "RW"] }, { name: "Asensio", positions: ["ST", "RW"] },
+    { name: "Vitinha", positions: ["CM"] }, { name: "Hakimi", positions: ["RB", "RW"] }
+  ],
+  "Juventus": [
+    { name: "Vlahovic", positions: ["ST"] }, { name: "Chiesa", positions: ["LW", "RW"] },
+    { name: "Locatelli", positions: ["CM"] }, { name: "Yildiz", positions: ["ST", "LW"] }, { name: "Bremer", positions: ["CB"] }
+  ],
+  "Inter Milan": [
+    { name: "Lautaro", positions: ["ST"] }, { name: "Lautaro Martinez", positions: ["ST"] },
+    { name: "Thuram", positions: ["ST", "LW"] }, { name: "Marcus Thuram", positions: ["ST", "LW"] },
+    { name: "Barella", positions: ["CM"] }, { name: "Calhanoglu", positions: ["CM"] }, { name: "Bastoni", positions: ["CB", "LB"] }
+  ],
+  "Chelsea": [
+    { name: "Palmer", positions: ["RW", "CM"] }, { name: "Cole Palmer", positions: ["RW", "CM"] },
+    { name: "Mudryk", positions: ["LW"] }, { name: "Jackson", positions: ["ST"] }, { name: "Nicolas Jackson", positions: ["ST"] },
+    { name: "Enzo", positions: ["CM"] }, { name: "Enzo Fernandez", positions: ["CM"] }, { name: "Caicedo", positions: ["CM"] }
+  ],
+  "Arsenal": [
+    { name: "Saka", positions: ["RW", "LB"] }, { name: "Bukayo Saka", positions: ["RW", "LB"] },
+    { name: "Odegaard", positions: ["CM"] }, { name: "Martin Odegaard", positions: ["CM"] },
+    { name: "Rice", positions: ["CM", "CB"] }, { name: "Declan Rice", positions: ["CM", "CB"] },
+    { name: "Havertz", positions: ["ST", "CM"] }, { name: "Martinelli", positions: ["LW", "ST"] }
+  ],
+  "Man United": [
+    { name: "Rashford", positions: ["LW", "ST"] }, { name: "Marcus Rashford", positions: ["LW", "ST"] },
+    { name: "Bruno", positions: ["CM", "RW"] }, { name: "Bruno Fernandes", positions: ["CM", "RW"] },
+    { name: "Hojlund", positions: ["ST"] }, { name: "Mainoo", positions: ["CM"] }, { name: "Garnacho", positions: ["RW", "LW"] }
+  ]
 }
 
 /**
@@ -51,6 +97,9 @@ export default function ElevenClubsPage() {
   /** The 11 clubs picked for the current attempt */
   const [selectedClubs, setSelectedClubs] = useState<string[]>([])
 
+  /** The formation picked for the current attempt */
+  const [currentFormation, setCurrentFormation] = useState(FORMATIONS["4-3-3"])
+
   /** Track current calculated score for real-time reporting (useful for surrender) */
   const [currentCalculatedScore, setCurrentCalculatedScore] = useState(0)
 
@@ -62,8 +111,12 @@ export default function ElevenClubsPage() {
    * Randomizes the clubs and resets all scoring/status indicators.
    */
   const initializeGame = () => {
-    const shuffled = [...CLUBS].sort(() => Math.random() - 0.5)
-    setSelectedClubs(shuffled.slice(0, 11))
+    const shuffledClubs = [...CLUBS].sort(() => Math.random() - 0.5)
+    setSelectedClubs(shuffledClubs.slice(0, 11))
+    
+    const formationKeys = Object.keys(FORMATIONS)
+    const randomFormationKey = formationKeys[Math.floor(Math.random() * formationKeys.length)]
+    setCurrentFormation(FORMATIONS[randomFormationKey])
     setGameOver(false)
     setWon(false)
     setScore(0)
@@ -146,6 +199,7 @@ export default function ElevenClubsPage() {
         itemsByGroup={PLAYERS_BY_CLUB}
         difficulty={difficulty}
         mode={mode}
+        formation={currentFormation}
         isGameOver={gameOver}
         onProgressUpdate={setCurrentCalculatedScore}
         onGameOver={handleGameOver}

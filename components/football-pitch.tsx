@@ -27,6 +27,7 @@ interface FootballPitchProps {
   onPositionClick: (id: number) => void // Handler for slot clicks
   gameComplete?: boolean
   positions?: Position[]
+  highlightedPositions?: number[] // Array of slot IDs that should be highlighted/clickable
   className?: string
 }
 
@@ -56,6 +57,7 @@ export function FootballPitch({
   onPositionClick,
   gameComplete = false,
   positions = DEFAULT_FORMATION,
+  highlightedPositions = [],
   className
 }: FootballPitchProps) {
   return (
@@ -75,6 +77,7 @@ export function FootballPitch({
       {positions.map((pos) => {
         const player = lineup[pos.id]
         const isSelected = currentPosition === pos.id
+        const isHighlighted = highlightedPositions.includes(pos.id)
 
         return (
           <button
@@ -82,21 +85,22 @@ export function FootballPitch({
             onClick={() => onPositionClick(pos.id)}
             className={cn(
               "absolute w-12 h-12 -translate-x-1/2 -translate-y-1/2 rounded-full",
-              "flex flex-col items-center justify-center text-xs font-medium transition-all",
-              // Styling based on state: Occupied, Selected, or Empty
+              "flex flex-col items-center justify-center text-xs font-medium transition-all duration-300",
+              // Styling based on state: Occupied, Selected, Highlighted, or Empty
               player
                 ? "bg-primary text-primary-foreground"
                 : isSelected
                   ? "bg-primary/50 text-primary-foreground ring-2 ring-primary"
-                  : "bg-secondary/40 dark:bg-secondary/80 text-secondary-foreground hover:bg-secondary/60 dark:hover:bg-secondary",
-              !player && !gameComplete && "cursor-pointer"
+                  : isHighlighted
+                    ? "bg-primary/20 text-primary ring-2 ring-primary ring-offset-2 ring-offset-background animate-pulse cursor-pointer hover:bg-primary/40"
+                    : "bg-secondary/40 dark:bg-secondary/80 text-secondary-foreground cursor-default"
             )}
             style={{
               // Position mapping: converts coordinate values to percentage-based CSS positions
               left: `${(pos.col / 4) * 80 + 10}%`,
               top: `${(pos.row / 5) * 85 + 7.5}%`,
             }}
-            disabled={!!player || gameComplete}
+            disabled={!!player || gameComplete || (!isHighlighted && highlightedPositions.length > 0)}
           >
             {player ? (
               // Show player name (shortened) if slot is filled
