@@ -8,7 +8,7 @@ import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
-import { FootballPitch, DEFAULT_FORMATION, type SelectedPlayer } from "@/components/football-pitch"
+import { FootballPitch, type Position, type SelectedPlayer } from "@/components/football-pitch"
 import { PlayerSearchInput } from "@/components/player-search-input"
 
 /** Standard football positions labels used for the selection UI title */
@@ -28,6 +28,8 @@ interface ElevenLineupGameProps {
   difficulty: string
   /** Mode setting (Male, Female, Both) */
   mode: string
+  /** The specific 11 positions (coordinates and labels) for the pitch */
+  formation: Position[]
   /** Triggered when the lineup is complete (passes final score) */
   onGameOver: (score: number) => void
   /** Triggered whenever a player is added (passes current calculated score) */
@@ -46,6 +48,7 @@ export function ElevenLineupGame({
   itemsByGroup,
   difficulty,
   mode,
+  formation,
   onGameOver,
   onProgressUpdate,
   isGameOver = false,
@@ -128,7 +131,7 @@ export function ElevenLineupGame({
     }
 
     // 2. Find all empty pitch positions that match ANY of the player's possible positions
-    const emptySlots = DEFAULT_FORMATION.filter(
+    const emptySlots = formation.filter(
       (pos) => playerItem.positions.includes(pos.label) && lineup[pos.id] === null
     )
 
@@ -272,6 +275,7 @@ export function ElevenLineupGame({
               insertPlayer(pendingPlayer.group, pendingPlayer.name, id)
             }
           }}
+          positions={formation}
           highlightedPositions={pendingPlayer ? pendingPlayer.availableSlots : []}
           gameComplete={isGameOver || completedCount === 11}
         />

@@ -9,6 +9,7 @@ import { GameEngine } from "@/components/game-engine"
 import { ElevenLineupGame } from "@/components/games/eleven-lineup-game"
 import { useScoreSync } from "@/hooks/use-score-sync"
 import { SyncStatusIndicator } from "@/components/sync-status-indicator"
+import { FORMATIONS } from "@/lib/formations"
 
 /** Mock list of football clubs to select from */
 const CLUBS = [
@@ -96,6 +97,9 @@ export default function ElevenClubsPage() {
   /** The 11 clubs picked for the current attempt */
   const [selectedClubs, setSelectedClubs] = useState<string[]>([])
 
+  /** The formation picked for the current attempt */
+  const [currentFormation, setCurrentFormation] = useState(FORMATIONS["4-3-3"])
+
   /** Track current calculated score for real-time reporting (useful for surrender) */
   const [currentCalculatedScore, setCurrentCalculatedScore] = useState(0)
 
@@ -107,8 +111,12 @@ export default function ElevenClubsPage() {
    * Randomizes the clubs and resets all scoring/status indicators.
    */
   const initializeGame = () => {
-    const shuffled = [...CLUBS].sort(() => Math.random() - 0.5)
-    setSelectedClubs(shuffled.slice(0, 11))
+    const shuffledClubs = [...CLUBS].sort(() => Math.random() - 0.5)
+    setSelectedClubs(shuffledClubs.slice(0, 11))
+    
+    const formationKeys = Object.keys(FORMATIONS)
+    const randomFormationKey = formationKeys[Math.floor(Math.random() * formationKeys.length)]
+    setCurrentFormation(FORMATIONS[randomFormationKey])
     setGameOver(false)
     setWon(false)
     setScore(0)
@@ -191,6 +199,7 @@ export default function ElevenClubsPage() {
         itemsByGroup={PLAYERS_BY_CLUB}
         difficulty={difficulty}
         mode={mode}
+        formation={currentFormation}
         isGameOver={gameOver}
         onProgressUpdate={setCurrentCalculatedScore}
         onGameOver={handleGameOver}
