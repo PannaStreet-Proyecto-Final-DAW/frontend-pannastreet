@@ -11,26 +11,26 @@ import { useScoreSync } from "@/hooks/use-score-sync"
 import { SyncStatusIndicator } from "@/components/sync-status-indicator"
 
 const PLAYERS = [
-  { name: "Messi", team: "Inter Miami", league: "MLS", nationality: "Argentina", position: "Forward", age: 36 },
-  { name: "Lionel Messi", team: "Inter Miami", league: "MLS", nationality: "Argentina", position: "Forward", age: 36 },
-  { name: "Ronaldo", team: "Al Nassr", league: "Saudi Pro League", nationality: "Portugal", position: "Forward", age: 39 },
-  { name: "Cristiano Ronaldo", team: "Al Nassr", league: "Saudi Pro League", nationality: "Portugal", position: "Forward", age: 39 },
-  { name: "Ronaldinho", team: "Retired", league: "Icons", nationality: "Brazil", position: "Midfielder", age: 44 },
-  { name: "Ronaldo Nazario", team: "Retired", league: "Icons", nationality: "Brazil", position: "Forward", age: 47 },
-  { name: "Mbappe", team: "Real Madrid", league: "La Liga", nationality: "France", position: "Forward", age: 25 },
-  { name: "Kylian Mbappe", team: "Real Madrid", league: "La Liga", nationality: "France", position: "Forward", age: 25 },
-  { name: "Haaland", team: "Man City", league: "Premier League", nationality: "Norway", position: "Forward", age: 23 },
-  { name: "Erling Haaland", team: "Man City", league: "Premier League", nationality: "Norway", position: "Forward", age: 23 },
-  { name: "Bellingham", team: "Real Madrid", league: "La Liga", nationality: "England", position: "Midfielder", age: 20 },
-  { name: "Jude Bellingham", team: "Real Madrid", league: "La Liga", nationality: "England", position: "Midfielder", age: 20 },
-  { name: "Vinicius", team: "Real Madrid", league: "La Liga", nationality: "Brazil", position: "Forward", age: 23 },
-  { name: "Vinicius Junior", team: "Real Madrid", league: "La Liga", nationality: "Brazil", position: "Forward", age: 23 },
-  { name: "Salah", team: "Liverpool", league: "Premier League", nationality: "Egypt", position: "Forward", age: 31 },
-  { name: "Mohamed Salah", team: "Liverpool", league: "Premier League", nationality: "Egypt", position: "Forward", age: 31 },
-  { name: "De Bruyne", team: "Man City", league: "Premier League", nationality: "Belgium", position: "Midfielder", age: 32 },
-  { name: "Kevin De Bruyne", team: "Man City", league: "Premier League", nationality: "Belgium", position: "Midfielder", age: 32 },
-  { name: "Bruno Fernandes", team: "Man United", league: "Premier League", nationality: "Portugal", position: "Midfielder", age: 29 },
-  { name: "Enzo Fernandez", team: "Chelsea", league: "Premier League", nationality: "Argentina", position: "Midfielder", age: 23 },
+  { name: "Messi", team: "Inter Miami", league: "MLS", nationality: "Argentina", position: "Forward", age: 36, tier: 1 },
+  { name: "Lionel Messi", team: "Inter Miami", league: "MLS", nationality: "Argentina", position: "Forward", age: 36, tier: 1 },
+  { name: "Ronaldo", team: "Al Nassr", league: "Saudi Pro League", nationality: "Portugal", position: "Forward", age: 39, tier: 1 },
+  { name: "Cristiano Ronaldo", team: "Al Nassr", league: "Saudi Pro League", nationality: "Portugal", position: "Forward", age: 39, tier: 1 },
+  { name: "Ronaldinho", team: "Retired", league: "Icons", nationality: "Brazil", position: "Midfielder", age: 44, tier: 3 },
+  { name: "Ronaldo Nazario", team: "Retired", league: "Icons", nationality: "Brazil", position: "Forward", age: 47, tier: 3 },
+  { name: "Mbappe", team: "Real Madrid", league: "La Liga", nationality: "France", position: "Forward", age: 25, tier: 1 },
+  { name: "Kylian Mbappe", team: "Real Madrid", league: "La Liga", nationality: "France", position: "Forward", age: 25, tier: 1 },
+  { name: "Haaland", team: "Man City", league: "Premier League", nationality: "Norway", position: "Forward", age: 23, tier: 1 },
+  { name: "Erling Haaland", team: "Man City", league: "Premier League", nationality: "Norway", position: "Forward", age: 23, tier: 1 },
+  { name: "Bellingham", team: "Real Madrid", league: "La Liga", nationality: "England", position: "Midfielder", age: 20, tier: 2 },
+  { name: "Jude Bellingham", team: "Real Madrid", league: "La Liga", nationality: "England", position: "Midfielder", age: 20, tier: 2 },
+  { name: "Vinicius", team: "Real Madrid", league: "La Liga", nationality: "Brazil", position: "Forward", age: 23, tier: 2 },
+  { name: "Vinicius Junior", team: "Real Madrid", league: "La Liga", nationality: "Brazil", position: "Forward", age: 23, tier: 2 },
+  { name: "Salah", team: "Liverpool", league: "Premier League", nationality: "Egypt", position: "Forward", age: 31, tier: 2 },
+  { name: "Mohamed Salah", team: "Liverpool", league: "Premier League", nationality: "Egypt", position: "Forward", age: 31, tier: 2 },
+  { name: "De Bruyne", team: "Man City", league: "Premier League", nationality: "Belgium", position: "Midfielder", age: 32, tier: 2 },
+  { name: "Kevin De Bruyne", team: "Man City", league: "Premier League", nationality: "Belgium", position: "Midfielder", age: 32, tier: 2 },
+  { name: "Bruno Fernandes", team: "Man United", league: "Premier League", nationality: "Portugal", position: "Midfielder", age: 29, tier: 3 },
+  { name: "Enzo Fernandez", team: "Chelsea", league: "Premier League", nationality: "Argentina", position: "Midfielder", age: 23, tier: 3 },
 ]
 
 export default function GuessThePlayerPage() {
@@ -49,6 +49,19 @@ export default function GuessThePlayerPage() {
 
   // 3. Score Synchronization Hook
   const { syncStatus, syncPoints, resetSync } = useScoreSync()
+
+  /**
+   * Filter players based on difficulty tier requirements:
+   * - Easy: Tier 1 only
+   * - Medium: Tiers 1 and 2
+   * - Hard: Tiers 2 and 3
+   */
+  const filteredPlayers = PLAYERS.filter((player: any) => {
+    if (difficulty === "Easy") return player.tier === 1;
+    if (difficulty === "Medium") return player.tier === 1 || player.tier === 2;
+    if (difficulty === "Hard") return player.tier === 2 || player.tier === 3;
+    return true;
+  });
 
   /**
    * Callback triggered when the user surrenders
@@ -143,7 +156,7 @@ export default function GuessThePlayerPage() {
         key={gameState.key}
         difficulty={difficulty}
         mode={mode}
-        players={PLAYERS}
+        players={filteredPlayers}
         onGameOver={handleGameOver}
         isGameOver={gameState.gameOver}
       />

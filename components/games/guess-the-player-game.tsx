@@ -23,6 +23,7 @@ interface PlayerData {
   nationality: string
   position: string
   age: number
+  tier: number
 }
 
 interface GuessThePlayerGameProps {
