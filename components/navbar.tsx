@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { cn } from "@/lib/utils"
+import { useRouter } from "next/navigation"
 
 const navLinks = [
   { href: "/games", label: "Games" },
@@ -37,6 +38,12 @@ export function Navbar() {
    * Used to highlight the active link in the navigation menu.
    */
   const pathname = usePathname()
+
+  /**
+   * handleLogout: Handles the sign-out process.
+   * Clears session data and redirects the user to the landing page.
+   */
+  const router = useRouter()
 
   /**
    * handleLogout: Handles the sign-out process.
@@ -67,26 +74,32 @@ export function Navbar() {
 
         {/* --- NAVIGATION LINKS --- */}
         <nav className="flex items-center gap-2">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              /**
-               * Dynamic Styling:
-               * 1. If active: Apply primary background/text and a subtle shadow.
-               * 2. If inactive: Use muted colors with a hover effect.
-               * 3. Mode awareness: In dark mode, inactive links turn white as per user preference.
-               */
-              className={cn(
-                "px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200",
-                pathname === link.href || pathname.startsWith(link.href + "/")
-                  ? "bg-primary/10 text-primary shadow-sm"
-                  : "text-muted-foreground dark:text-white hover:text-primary hover:bg-primary/5"
-              )}
-            >
-              {link.label}
-            </Link>
-          ))}
+          {pathname === "/profile" ? (
+            <div className="px-4 py-2 rounded-xl text-sm font-bold bg-primary/10 text-primary shadow-sm">
+              Edit Profile
+            </div>
+          ) : (
+            navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                /**
+                 * Dynamic Styling:
+                 * 1. If active: Apply primary background/text and a subtle shadow.
+                 * 2. If inactive: Use muted colors with a hover effect.
+                 * 3. Mode awareness: In dark mode, inactive links turn white as per user preference.
+                 */
+                className={cn(
+                  "px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200",
+                  pathname === link.href || pathname.startsWith(link.href + "/")
+                    ? "bg-primary/10 text-primary shadow-sm"
+                    : "text-muted-foreground dark:text-white hover:text-primary hover:bg-primary/5"
+                )}
+              >
+                {link.label}
+              </Link>
+            ))
+          )}
         </nav>
 
         {/* --- USER ACTIONS & SETTINGS --- */}
@@ -130,6 +143,27 @@ export function Navbar() {
                 <p className="text-sm font-medium text-popover-foreground">{user?.userName}</p>
                 <p className="text-xs text-muted-foreground">{user?.email}</p>
               </div>
+              <DropdownMenuSeparator />
+              {/* Edit Profile Action */}
+              <DropdownMenuItem
+                onClick={() => router.push("/profile")}
+                className="cursor-pointer"
+              >
+                <svg
+                  className="w-4 h-4 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
+                </svg>
+                Edit Profile
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               {/* Sign Out Action */}
               <DropdownMenuItem

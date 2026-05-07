@@ -32,15 +32,13 @@ export function LeagueLayout({
       <div className="flex flex-col gap-6">
         {/* Navigation & Header Section */}
         <header className="flex flex-col gap-4">
-          <Button
-            variant="ghost"
-            size="sm"
+          <button
             onClick={backOnClick}
-            className="w-fit -ml-2 text-white hover:text-primary hover:bg-primary/5 transition-all group"
+            className="w-fit -ml-2 text-white hover:text-primary transition-colors text-sm flex items-center gap-1 bg-transparent border-none p-0"
           >
-            <ChevronLeft className="w-4 h-4 mr-1 group-hover:-translate-x-1 transition-transform" />
+            <ChevronLeft className="w-4 h-4" />
             {backText}
-          </Button>
+          </button>
 
           <div className="relative bg-card border border-border rounded-2xl p-4 md:p-6 shadow-xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 group/header">
             {/* Subtle decorative background glow */}
