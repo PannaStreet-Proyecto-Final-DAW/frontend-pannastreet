@@ -28,6 +28,16 @@ export default function AuthPage() {
     }
   }, [isLoading, user, router])
 
+  const validatePassword = (pass: string) => {
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/
+    return regex.test(pass)
+  }
+
+  const validateEmail = (emailStr: string) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return regex.test(emailStr)
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
@@ -46,6 +56,19 @@ export default function AuthPage() {
         setIsSubmitting(false)
         return
       }
+
+      if (!validateEmail(email)) {
+        setError("Please enter a valid email address")
+        setIsSubmitting(false)
+        return
+      }
+
+      if (!validatePassword(password)) {
+        setError("Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, and a number.")
+        setIsSubmitting(false)
+        return
+      }
+
       const result = await register(userName, email, password)
       if (result.success) {
         router.push("/games")
@@ -137,10 +160,14 @@ export default function AuthPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    minLength={6}
                     autoComplete={isLogin ? "current-password" : "new-password"}
                     className="bg-input border-border"
                   />
+                  {!isLogin && (
+                    <p className="text-[10px] text-muted-foreground mt-1">
+                      Min 8 characters, with uppercase, lowercase and a number.
+                    </p>
+                  )}
                 </Field>
               </FieldGroup>
 
