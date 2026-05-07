@@ -74,26 +74,32 @@ export function Navbar() {
 
         {/* --- NAVIGATION LINKS --- */}
         <nav className="flex items-center gap-2">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              /**
-               * Dynamic Styling:
-               * 1. If active: Apply primary background/text and a subtle shadow.
-               * 2. If inactive: Use muted colors with a hover effect.
-               * 3. Mode awareness: In dark mode, inactive links turn white as per user preference.
-               */
-              className={cn(
-                "px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200",
-                pathname === link.href || pathname.startsWith(link.href + "/")
-                  ? "bg-primary/10 text-primary shadow-sm"
-                  : "text-muted-foreground dark:text-white hover:text-primary hover:bg-primary/5"
-              )}
-            >
-              {link.label}
-            </Link>
-          ))}
+          {pathname === "/profile" ? (
+            <div className="px-4 py-2 rounded-xl text-sm font-bold bg-primary/10 text-primary shadow-sm">
+              Edit Profile
+            </div>
+          ) : (
+            navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                /**
+                 * Dynamic Styling:
+                 * 1. If active: Apply primary background/text and a subtle shadow.
+                 * 2. If inactive: Use muted colors with a hover effect.
+                 * 3. Mode awareness: In dark mode, inactive links turn white as per user preference.
+                 */
+                className={cn(
+                  "px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200",
+                  pathname === link.href || pathname.startsWith(link.href + "/")
+                    ? "bg-primary/10 text-primary shadow-sm"
+                    : "text-muted-foreground dark:text-white hover:text-primary hover:bg-primary/5"
+                )}
+              >
+                {link.label}
+              </Link>
+            ))
+          )}
         </nav>
 
         {/* --- USER ACTIONS & SETTINGS --- */}

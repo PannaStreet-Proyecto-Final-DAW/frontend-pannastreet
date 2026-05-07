@@ -16,13 +16,13 @@ interface GameLayoutProps {
   children: React.ReactNode // The actual game content to be displayed
 }
 
-export function GameLayout({ 
-  backHref, 
-  backOnClick, 
-  backText, 
-  showSurrender, 
-  onSurrender, 
-  children 
+export function GameLayout({
+  backHref,
+  backOnClick,
+  backText,
+  showSurrender,
+  onSurrender,
+  children
 }: GameLayoutProps) {
   return (
     <div className="max-w-5xl mx-auto">
@@ -51,7 +51,7 @@ export function GameLayout({
         {showSurrender && (
           <div className="absolute right-0 top-0">
             <SurrenderButton
-              onClick={onSurrender || (() => {})}
+              onClick={onSurrender || (() => { })}
               title="Surrender"
             />
           </div>

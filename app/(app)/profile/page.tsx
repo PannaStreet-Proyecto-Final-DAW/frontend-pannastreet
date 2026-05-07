@@ -2,15 +2,14 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import Image from "next/image"
 import { useAuth } from "@/lib/auth-context"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { FieldGroup, Field, FieldLabel } from "@/components/ui/field"
-import { ThemeToggle } from "@/components/theme-toggle"
 import { Spinner } from "@/components/ui/spinner"
 import { toast } from "sonner"
+import { ChevronLeft } from "lucide-react"
 
 /**
  * ProfilePage Component
@@ -27,12 +26,6 @@ export default function ProfilePage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
 
-  // Redirect if not logged in
-  useEffect(() => {
-    if (!isLoading && !user) {
-      router.push("/")
-    }
-  }, [isLoading, user, router])
 
   // Initialize fields with current user data
   useEffect(() => {
@@ -100,42 +93,32 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-transparent p-4 relative">
-      <div className="absolute top-6 right-6 z-10">
-        <ThemeToggle />
-      </div>
+    <div className="max-w-md mx-auto py-4 px-4 animate-in fade-in slide-in-from-top-4 duration-700">
+      {/* Back Button */}
+      <button
+        onClick={() => router.push("/games")}
+        className="w-fit -ml-2 mb-6 text-white hover:text-primary transition-colors text-sm flex items-center gap-1 bg-transparent border-none p-0"
+      >
+        <ChevronLeft className="w-4 h-4" />
+        Back to PannaMaster
+      </button>
 
-      <div className="w-full max-w-md">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center mb-4">
-            <Image
-              src="/icon.jpg"
-              alt="PannaMaster Logo"
-              width={80}
-              height={80}
-              className="rounded-full shadow-lg"
-              priority
-            />
-          </div>
-          <h1 className="text-3xl font-bold text-foreground">PannaMaster</h1>
-          <p className="text-white mt-1">Edit Your Profile</p>
-        </div>
+      <div className="w-full">
 
-        <Card className="border-border bg-card">
-          <CardHeader className="text-center">
-            <CardTitle className="text-xl text-card-foreground">
+        <Card className="border-border bg-card shadow-xl overflow-hidden">
+          <CardHeader className="text-center pb-2 pt-4">
+            <CardTitle className="text-lg text-card-foreground">
               Update Information
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-[10px]">
               Modify your account details below
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pb-4 pt-0">
             <form onSubmit={handleSubmit}>
-              <FieldGroup>
-                <Field>
-                  <FieldLabel htmlFor="profile-username">Username</FieldLabel>
+              <FieldGroup className="gap-3">
+                <Field className="gap-1">
+                  <FieldLabel htmlFor="profile-username" className="text-xs">Username</FieldLabel>
                   <Input
                     id="profile-username"
                     type="text"
@@ -147,8 +130,8 @@ export default function ProfilePage() {
                     className="bg-input border-border"
                   />
                 </Field>
-                <Field>
-                  <FieldLabel htmlFor="profile-email">Email</FieldLabel>
+                <Field className="gap-1">
+                  <FieldLabel htmlFor="profile-email" className="text-xs">Email</FieldLabel>
                   <Input
                     id="profile-email"
                     type="email"
@@ -160,8 +143,8 @@ export default function ProfilePage() {
                     className="bg-input border-border"
                   />
                 </Field>
-                <Field>
-                  <FieldLabel htmlFor="profile-password">New Password (optional)</FieldLabel>
+                <Field className="gap-1">
+                  <FieldLabel htmlFor="profile-password" className="text-xs">New Password (optional)</FieldLabel>
                   <Input
                     id="profile-password"
                     type="password"
@@ -171,7 +154,7 @@ export default function ProfilePage() {
                     autoComplete="new-password"
                     className="bg-input border-border"
                   />
-                  <p className="text-[10px] text-muted-foreground mt-1">
+                  <p className="text-[9px] text-muted-foreground mt-0">
                     Min 8 characters, with uppercase, lowercase and a number.
                   </p>
                 </Field>
@@ -181,25 +164,25 @@ export default function ProfilePage() {
                 <p className="text-destructive text-sm mt-4 text-center">{error}</p>
               )}
 
-              <div className="flex gap-3 mt-6">
+              <div className="flex gap-3 mt-4">
                 <Button
                   type="button"
-                  variant="outline"
-                  className="flex-1"
+                  variant="ghost"
+                  className="flex-1 rounded-xl font-bold uppercase text-[10px] tracking-widest h-10 px-6 border border-black/10 dark:border-border/20 text-black/60 dark:text-muted-foreground hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
                   onClick={() => router.back()}
                   disabled={isSubmitting}
                 >
-                  Back
+                  Don't Save
                 </Button>
                 <Button
                   type="submit"
-                  className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90"
+                  className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl font-black italic uppercase text-[10px] tracking-widest h-10 px-6 shadow-lg shadow-primary/20 transition-all active:scale-[0.98]"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
                     <Spinner className="h-4 w-4" />
                   ) : (
-                    "Save Changes"
+                    "Save"
                   )}
                 </Button>
               </div>
@@ -207,7 +190,7 @@ export default function ProfilePage() {
           </CardContent>
         </Card>
 
-        <p className="text-center text-xs text-white mt-6">
+        <p className="text-center text-xs text-muted-foreground mt-6 italic">
           Your data is securely stored and protected.
         </p>
       </div>
