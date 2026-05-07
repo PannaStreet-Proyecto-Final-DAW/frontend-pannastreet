@@ -16,20 +16,12 @@ const SCORE_CONFIG = {
   attempts: { Male: 10, Female: 10, Both: 15 }
 } as const
 
-interface PlayerData {
-  name: string
-  team: string
-  league: string
-  nationality: string
-  position: string
-  age: number
-  tier: number
-}
+import { Player } from "@/lib/api"
 
 interface GuessThePlayerGameProps {
   difficulty: string
   mode: string
-  players: PlayerData[]
+  players: Player[]
   onGameOver: (won: boolean, targetPlayer: any, score: number) => void
   isGameOver: boolean
 }
@@ -42,10 +34,10 @@ export function GuessThePlayerGame({
   isGameOver
 }: GuessThePlayerGameProps) {
   // --- GAME STATES ---
-  const [targetPlayer, setTargetPlayer] = useState<PlayerData>(players[0]) // The player to guess
+  const [targetPlayer, setTargetPlayer] = useState<Player>(players[0]) // The player to guess
   const [guesses, setGuesses] = useState<Guess[]>([])           // List of attempts made
   const [currentGuess, setCurrentGuess] = useState("")          // What the user types in the input
-  const [suggestions, setSuggestions] = useState<PlayerData[]>([]) // List of names appearing while typing
+  const [suggestions, setSuggestions] = useState<Player[]>([]) // List of names appearing while typing
   const [error, setError] = useState<string | null>(null)       // Error message if player not found
 
   // --- INITIALIZATION ---
@@ -101,12 +93,14 @@ export function GuessThePlayerGame({
 
     // --- HINT CALCULATION ---
     // Compare each field. If it matches -> "correct", otherwise -> "wrong".
-    // For age, we indicate if it's "higher" or "lower" than the target.
+    // For Guess the Player, we only compare the generalPosition.
+    const isCorrectPosition = player.generalPosition === targetPlayer.generalPosition;
+
     const hints: Guess["hints"] = {
       team: player.team === targetPlayer.team ? "correct" : "wrong",
       league: player.league === targetPlayer.league ? "correct" : "wrong",
       nationality: player.nationality === targetPlayer.nationality ? "correct" : "wrong",
-      position: player.position === targetPlayer.position ? "correct" : "wrong",
+      position: isCorrectPosition ? "correct" : "wrong",
       age: player.age === targetPlayer.age ? "correct" : player.age > targetPlayer.age ? "lower" : "higher",
     }
 

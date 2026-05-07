@@ -35,24 +35,55 @@ export interface UserLeagueMembership {
 }
 
 /**
- * Player: Represents a professional player in the system database.
+ * Player: Represents a professional player in the system database (Standardized DTO).
  */
 export interface Player {
   id: string
   name: string
-  position: string
+  age: number
+  tier: number
+  team: string
   nationality: string
-  teamId: string
+  position: string[]
+  generalPosition: "GOALKEEPER" | "DEFENDER" | "MIDFIELDER" | "FORWARD"
+  pictureUrl: string | null
+  gender: "male" | "female"
+  league: string
 }
 
 /**
- * Team: Represents a professional club/team.
+ * Team: Represents a professional club/team (Standardized DTO).
  */
 export interface Team {
   id: string
   name: string
+  tier: number
+  pictureUrl: string | null
+  league: string
   country: string
-  leagueId: string
+}
+
+/**
+ * League: Represents a professional league (Standardized DTO).
+ */
+export interface League {
+  id: string
+  name: string
+  category: "male" | "female"
+  country: string
+  pictureUrl: string | null
+}
+
+/**
+ * Formation: Represents a tactical formation (Standardized DTO).
+ */
+export interface Formation {
+  id: string
+  name: string
+  goalkeeper: string
+  defenders: string[]
+  midfielders: string[]
+  forwards: string[]
 }
 
 /**
@@ -188,4 +219,18 @@ export async function getAllTeams(): Promise<Team[]> {
  */
 export async function getTeamById(id: string): Promise<Team> {
   return fetchApi(`/team/id/${id}`)
+}
+
+/**
+ * getAllLeagues: Fetches all professional leagues.
+ */
+export async function getAllLeagues(): Promise<League[]> {
+  return fetchApi("/league")
+}
+
+/**
+ * getAllFormations: Fetches all tactical formations.
+ */
+export async function getAllFormations(): Promise<Formation[]> {
+  return fetchApi("/formation")
 }

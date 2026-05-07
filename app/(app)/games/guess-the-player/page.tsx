@@ -4,44 +4,26 @@
  */
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { GameEngine } from "@/components/game-engine"
 import { GuessThePlayerGame } from "@/components/games/guess-the-player-game"
 import { useScoreSync } from "@/hooks/use-score-sync"
 import { SyncStatusIndicator } from "@/components/sync-status-indicator"
+import { getAllPlayers, Player } from "@/lib/api"
 
-const PLAYERS = [
-  { name: "Messi", team: "Inter Miami", league: "MLS", nationality: "Argentina", position: "Forward", age: 36, tier: 1 },
-  { name: "Lionel Messi", team: "Inter Miami", league: "MLS", nationality: "Argentina", position: "Forward", age: 36, tier: 1 },
-  { name: "Ronaldo", team: "Al Nassr", league: "Saudi Pro League", nationality: "Portugal", position: "Forward", age: 39, tier: 1 },
-  { name: "Cristiano Ronaldo", team: "Al Nassr", league: "Saudi Pro League", nationality: "Portugal", position: "Forward", age: 39, tier: 1 },
-  { name: "Ronaldinho", team: "Retired", league: "Icons", nationality: "Brazil", position: "Midfielder", age: 44, tier: 3 },
-  { name: "Ronaldo Nazario", team: "Retired", league: "Icons", nationality: "Brazil", position: "Forward", age: 47, tier: 3 },
-  { name: "Mbappe", team: "Real Madrid", league: "La Liga", nationality: "France", position: "Forward", age: 25, tier: 1 },
-  { name: "Kylian Mbappe", team: "Real Madrid", league: "La Liga", nationality: "France", position: "Forward", age: 25, tier: 1 },
-  { name: "Haaland", team: "Man City", league: "Premier League", nationality: "Norway", position: "Forward", age: 23, tier: 1 },
-  { name: "Erling Haaland", team: "Man City", league: "Premier League", nationality: "Norway", position: "Forward", age: 23, tier: 1 },
-  { name: "Bellingham", team: "Real Madrid", league: "La Liga", nationality: "England", position: "Midfielder", age: 20, tier: 2 },
-  { name: "Jude Bellingham", team: "Real Madrid", league: "La Liga", nationality: "England", position: "Midfielder", age: 20, tier: 2 },
-  { name: "Vinicius", team: "Real Madrid", league: "La Liga", nationality: "Brazil", position: "Forward", age: 23, tier: 2 },
-  { name: "Vinicius Junior", team: "Real Madrid", league: "La Liga", nationality: "Brazil", position: "Forward", age: 23, tier: 2 },
-  { name: "Salah", team: "Liverpool", league: "Premier League", nationality: "Egypt", position: "Forward", age: 31, tier: 2 },
-  { name: "Mohamed Salah", team: "Liverpool", league: "Premier League", nationality: "Egypt", position: "Forward", age: 31, tier: 2 },
-  { name: "De Bruyne", team: "Man City", league: "Premier League", nationality: "Belgium", position: "Midfielder", age: 32, tier: 2 },
-  { name: "Kevin De Bruyne", team: "Man City", league: "Premier League", nationality: "Belgium", position: "Midfielder", age: 32, tier: 2 },
-  { name: "Bruno Fernandes", team: "Man United", league: "Premier League", nationality: "Portugal", position: "Midfielder", age: 29, tier: 3 },
-  { name: "Enzo Fernandez", team: "Chelsea", league: "Premier League", nationality: "Argentina", position: "Midfielder", age: 23, tier: 3 },
-]
 
 export default function GuessThePlayerPage() {
+  const [players, setPlayers] = useState<Player[]>([])
+  const [loading, setLoading] = useState(true)
+
   // 1. Settings state (Difficulty and Mode)
   const [difficulty, setDifficulty] = useState("Easy")
   const [mode, setMode] = useState("Both")
-  
+
   // 2. High-level game status
-  const [gameState, setGameState] = useState({ 
-    gameOver: false, 
-    won: false, 
+  const [gameState, setGameState] = useState({
+    gameOver: false,
+    won: false,
     target: null as any,
     score: 0,
     key: 0 // Key to force re-mounting the game logic component on reset
@@ -50,17 +32,37 @@ export default function GuessThePlayerPage() {
   // 3. Score Synchronization Hook
   const { syncStatus, syncPoints, resetSync } = useScoreSync()
 
+  // 4. Fetch players from API
+  useEffect(() => {
+    async function loadPlayers() {
+      try {
+        const data = await getAllPlayers()
+        setPlayers(data)
+      } catch (error) {
+        console.error("Failed to fetch players:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadPlayers()
+  }, [])
+
   /**
-   * Filter players based on difficulty tier requirements:
-   * - Easy: Tier 1 only
-   * - Medium: Tiers 1 and 2
-   * - Hard: Tiers 2 and 3
+   * Filter players based on difficulty tier and gender mode requirements
    */
-  const filteredPlayers = PLAYERS.filter((player: any) => {
-    if (difficulty === "Easy") return player.tier === 1;
-    if (difficulty === "Medium") return player.tier === 1 || player.tier === 2;
-    if (difficulty === "Hard") return player.tier === 2 || player.tier === 3;
-    return true;
+  const filteredPlayers = players.filter((player: Player) => {
+    // Difficulty Match
+    const difficultyMatch =
+      difficulty === "Easy" ? player.tier === 1 :
+        difficulty === "Medium" ? (player.tier === 1 || player.tier === 2) :
+          difficulty === "Hard" ? (player.tier === 2 || player.tier === 3) : true;
+
+    // Mode/Gender Match
+    const modeMatch =
+      mode === "Men" ? player.gender === "male" :
+        mode === "Women" ? player.gender === "female" : true;
+
+    return difficultyMatch && modeMatch;
   });
 
   /**
@@ -95,6 +97,17 @@ export default function GuessThePlayerPage() {
       score: 0,
       key: Date.now() // Changing the key forces the Cartridge to reset its internal state
     })
+  }
+
+  //Loading messagge
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-xl font-bold animate-pulse text-primary">
+          Cargando jugadores desde el túnel de vestuarios...
+        </div>
+      </div>
+    )
   }
 
   return (

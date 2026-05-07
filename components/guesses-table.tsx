@@ -24,17 +24,7 @@ export interface Guess {
   }
 }
 
-/**
- * Basic player data structure for comparison.
- */
-interface Player {
-  name: string
-  team: string
-  league: string
-  nationality: string
-  position: string
-  age: number
-}
+import { Player } from "@/lib/api"
 
 interface GuessesTableProps {
   guesses: Guess[] // Array of all attempts made by the user
@@ -148,7 +138,7 @@ export function GuessesTable({ guesses, players }: GuessesTableProps) {
                         "inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider min-w-[80px] shadow-sm transition-transform group-hover:scale-105 duration-300",
                         getHintColor(guess.hints.position)
                       )}>
-                        {player.position}
+                        {player.generalPosition}
                       </span>
                     </TableCell>
 
