@@ -1,5 +1,5 @@
-import { Leagues } from "@/components/leagues"
+import { LeagueCode } from "@/components/league-code"
 
 export default function LeaguesPage() {
-  return <Leagues />
+  return <LeagueCode />
 }

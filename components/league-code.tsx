@@ -30,7 +30,7 @@ import { LeagueWindow } from "@/components/league-window"
 import { cn } from "@/lib/utils"
 
 /**
- * Leagues Component
+ * LeagueCode Component
  * 
  * This is the central hub for league management. It allows users to:
  * 1. View their active leagues and scores.
@@ -38,7 +38,7 @@ import { cn } from "@/lib/utils"
  * 3. Create their own leagues.
  * 4. Navigate into a detailed leaderboard view for a specific league.
  */
-export function Leagues() {
+export function LeagueCode() {
   const { user } = useAuth()
 
   // --- Dashboard Data States ---
@@ -52,14 +52,8 @@ export function Leagues() {
   const [isCreating, setIsCreating] = useState(false) // Loading state during league creation
   const [createDialogOpen, setCreateDialogOpen] = useState(false) // Controls visibility of the creation modal
 
-  // --- Secure Join Flow States ---
-  // We use a multi-step join flow: 
-  // 1. User sees list of available leagues.
-  // 2. User selects a league, triggering the 'joiningLeague' state.
-  // 3. User must enter the correct invite code to finalize.
   const [joinDialogOpen, setJoinDialogOpen] = useState(false)
   const [isJoining, setIsJoining] = useState(false)
-  const [joiningLeague, setJoiningLeague] = useState<UserLeague | null>(null)
   const [inviteCodeInput, setInviteCodeInput] = useState("")
   const [inviteCodeError, setInviteCodeError] = useState(false)
 
@@ -129,17 +123,21 @@ export function Leagues() {
   }
 
   /**
-   * handleJoinLeague: Finalizes the secure join process.
-   * Validates the invite code locally before making the API request.
+   * handleJoinLeague: Direct join process using an invite code.
+   * Searches the available leagues for a matching code before attempting to join.
    */
   const handleJoinLeague = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!user || !joiningLeague) return
+    if (!user || !inviteCodeInput.trim()) return
 
-    // Security Check: Invite code must match perfectly.
-    if (inviteCodeInput !== joiningLeague.inviteCode) {
+    // Find the league that matches the entered code
+    const leagueToJoin = availableLeagues.find(
+      (l) => l.inviteCode.toUpperCase() === inviteCodeInput.trim().toUpperCase()
+    )
+
+    if (!leagueToJoin) {
       setInviteCodeError(true)
-      toast.error("Invalid invite code")
+      toast.error("Invalid invite code or you are already a member")
       return
     }
 
@@ -147,12 +145,11 @@ export function Leagues() {
     setIsJoining(true)
 
     try {
-      await joinLeague(user.id, joiningLeague.id)
-      const leagueName = joiningLeague.name
+      await joinLeague(user.id, leagueToJoin.id)
+      const leagueName = leagueToJoin.name
 
       // Successful join cleanup
       setJoinDialogOpen(false)
-      setJoiningLeague(null)
       setInviteCodeInput("")
       setInviteCodeError(false)
 
@@ -221,9 +218,8 @@ export function Leagues() {
               {/* --- SECURE JOIN LEAGUE DIALOG --- */}
               <Dialog open={joinDialogOpen} onOpenChange={(open) => {
                 setJoinDialogOpen(open)
-                // Cleanup states if user closes the modal halfway through
+                // Cleanup states if user closes the modal
                 if (!open) {
-                  setJoiningLeague(null)
                   setInviteCodeInput("")
                   setInviteCodeError(false)
                 }
@@ -236,90 +232,46 @@ export function Leagues() {
 
                 <DialogContent className="bg-white dark:bg-[#071a0c] border-border/30 rounded-[2rem] p-8 max-w-[450px] shadow-2xl">
                   <DialogHeader className="space-y-3">
-                    <DialogTitle className="text-2xl font-bold">
-                      {joiningLeague ? `Join ${joiningLeague.name}` : "Join a League"}
+                    <DialogTitle className="text-2xl font-bold text-center text-primary">
+                      Join a League
                     </DialogTitle>
-                    <DialogDescription className="text-muted-foreground">
-                      {joiningLeague
-                        ? "Please enter the invite code to join this league."
-                        : "Choose a league to join or enter an invite code."}
+                    <DialogDescription className="text-muted-foreground text-center">
+                      Enter an invite code to join a competition.
                     </DialogDescription>
                   </DialogHeader>
 
-                  {/* UI Switch: Show list of leagues OR show the code input field */}
-                  {!joiningLeague ? (
-                    availableLeagues.length === 0 ? (
-                      <p className="text-muted-foreground text-center py-12 italic font-medium">
-                        No available leagues to join. Create your own legacy!
-                      </p>
-                    ) : (
-                      <div className="space-y-3 max-h-[300px] overflow-y-auto mt-6 pr-2">
-                        {availableLeagues.map((league) => (
-                          <div
-                            key={league.id}
-                            className="flex items-center justify-between p-4 rounded-2xl bg-black/5 dark:bg-black/20 border border-border/40 transition-all hover:border-primary/40 group"
-                          >
-                            <div className="flex flex-col">
-                              <p className="font-semibold text-foreground text-lg">{league.name}</p>
-                            </div>
-                            <Button
-                              size="sm"
-                              onClick={() => {
-                                setJoiningLeague(league)
-                                setInviteCodeInput("")
-                              }}
-                            >
-                              Join
-                            </Button>
-                          </div>
-                        ))}
-                      </div>
-                    )
-                  ) : (
-                    /* The actual code verification form */
-                    <form onSubmit={handleJoinLeague} className="mt-8 space-y-6">
-                      <Field>
-                        <FieldLabel className="text-sm font-semibold mb-2 block">Invite Code</FieldLabel>
-                        <Input
-                          value={inviteCodeInput}
-                          onChange={(e) => {
-                            setInviteCodeInput(e.target.value)
-                            if (inviteCodeError) setInviteCodeError(false)
-                          }}
-                          className={cn(
-                            "bg-muted/50 border-border h-12 rounded-lg text-center font-mono text-xl uppercase",
-                            inviteCodeError ? "border-destructive text-destructive" : ""
-                          )}
-                          placeholder="Enter code"
-                          autoFocus
-                          required
-                        />
-                        {inviteCodeError && (
-                          <p className="text-xs font-medium text-destructive mt-2 text-center">
-                            Invalid code
-                          </p>
+                  <form onSubmit={handleJoinLeague} className="mt-8 space-y-6">
+                    <Field>
+                      <Input
+                        id="league-code"
+                        value={inviteCodeInput}
+                        onChange={(e) => {
+                          setInviteCodeInput(e.target.value)
+                          if (inviteCodeError) setInviteCodeError(false)
+                        }}
+                        className={cn(
+                          "bg-muted/50 border-border h-12 rounded-lg text-center font-mono text-xl uppercase",
+                          inviteCodeError ? "border-destructive text-destructive" : ""
                         )}
-                      </Field>
+                        placeholder="Enter code"
+                        autoFocus
+                        required
+                      />
+                      {inviteCodeError && (
+                        <p className="text-xs font-medium text-destructive mt-2 text-center">
+                          Invalid code or already joined
+                        </p>
+                      )}
+                    </Field>
 
-                      <div className="flex gap-3 pt-4">
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          onClick={() => setJoiningLeague(null)}
-                          className="flex-1"
-                        >
-                          Back
-                        </Button>
-                        <Button
-                          type="submit"
-                          disabled={isJoining || !inviteCodeInput.trim()}
-                          className="flex-[2]"
-                        >
-                          {isJoining ? "Joining..." : "Join League"}
-                        </Button>
-                      </div>
-                    </form>
-                  )}
+                    <Button
+                      type="submit"
+                      disabled={isJoining || !inviteCodeInput.trim()}
+                      className="w-full h-12 rounded-xl font-bold uppercase text-xs tracking-widest transition-all"
+                    >
+                      {isJoining ? "Joining..." : "Join League"}
+                    </Button>
+                  </form>
                 </DialogContent>
               </Dialog>
 

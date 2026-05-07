@@ -102,7 +102,7 @@ export function LeagueWindow({
       await deleteMembership(selectedLeague.id)
       toast.success(`You have left the league`)
 
-      // onBack is passed from the parent component (Leagues.tsx) to return to the list view
+      // onBack is passed from the parent component (LeagueCode.tsx) to return to the list view
       onBack()
     } catch {
       toast.error("Failed to leave league")
