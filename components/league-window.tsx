@@ -378,7 +378,7 @@ export function LeagueWindow({
                       key={member.id}
                       className={cn(
                         "group transition-colors border-border/40",
-                        isCurrentUser ? "bg-primary/5 hover:bg-primary/10" : "hover:bg-muted/5"
+                        isCurrentUser ? "bg-primary/20 hover:bg-primary/30" : "hover:bg-primary/10 dark:hover:bg-white/5"
                       )}
                     >
                       {/* Rank Indicator: Visual medals for top 3 players */}

@@ -379,7 +379,7 @@ export function Leagues() {
 
           {/* Empty State: No leagues joined yet */}
           {!hasLeagues ? (
-            <Card className="border-border/40 bg-card/40 backdrop-blur-sm rounded-[2rem] overflow-hidden">
+            <Card className="border-border/40 bg-card/90 backdrop-blur-md rounded-[2rem] overflow-hidden">
               <CardContent className="flex flex-col items-center justify-center py-20">
                 <div className="w-24 h-24 rounded-full bg-primary/5 flex items-center justify-center mb-6 relative">
                   <div className="absolute inset-0 bg-primary/5 rounded-full animate-pulse" />
