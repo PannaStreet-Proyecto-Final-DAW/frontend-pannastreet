@@ -16,7 +16,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>
   register: (userName: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>
   logout: () => void
-  updateUser: (id: string, userName: string, email: string, password?: string) => Promise<{ success: boolean; error?: string }>
+  updateUser: (id: string, userName: string, email: string, password?: string, currentPassword?: string) => Promise<{ success: boolean; error?: string }>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -86,13 +86,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem("user")
   }
 
-  const updateUser = async (id: string, userName: string, email: string, password?: string): Promise<{ success: boolean; error?: string }> => {
+  const updateUser = async (id: string, userName: string, email: string, password?: string, currentPassword?: string): Promise<{ success: boolean; error?: string }> => {
     try {
       const body: any = { userName, email }
       if (password) body.password = password
+      if (currentPassword) body.currentPassword = currentPassword
 
       const userData = await fetchApi(`/user/${id}`, {
-        method: "PUT",
+        method: "PATCH",
         body: JSON.stringify(body)
       })
 
