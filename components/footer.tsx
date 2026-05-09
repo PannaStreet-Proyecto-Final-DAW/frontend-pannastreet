@@ -61,20 +61,20 @@ export function Footer() {
                 <Linkedin size={20} />
               </Link>
               <Link
-                href="#"
+                href="https://www.linkedin.com/in/candela-martinez-casas/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 shadow-sm"
-                aria-label="LinkedIn Profile 2"
+                aria-label="Candela Martinez Casas LinkedIn"
               >
                 <Linkedin size={20} />
               </Link>
               <Link
-                href="#"
+                href="https://www.linkedin.com/in/ivan-garcia-santos"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 shadow-sm"
-                aria-label="LinkedIn Profile 3"
+                aria-label="Ivan Garcia Santos LinkedIn"
               >
                 <Linkedin size={20} />
               </Link>
