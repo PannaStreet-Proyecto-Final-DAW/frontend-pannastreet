@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { FieldGroup, Field, FieldLabel } from "@/components/ui/field"
 import { Spinner } from "@/components/ui/spinner"
 import { toast } from "sonner"
-import { ChevronLeft } from "lucide-react"
+import { ChevronLeft, Eye, EyeOff } from "lucide-react"
 
 /**
  * ProfilePage Component
@@ -22,6 +22,9 @@ export default function ProfilePage() {
   const [userName, setUserName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [currentPassword, setCurrentPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false)
   const [error, setError] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
@@ -70,9 +73,15 @@ export default function ProfilePage() {
       return
     }
 
+    if (password && !currentPassword) {
+      setError("Please enter your current password to change it")
+      setIsSubmitting(false)
+      return
+    }
+
     if (!user?.id) return
 
-    const result = await updateUser(user.id, userName, email, password || undefined)
+    const result = await updateUser(user.id, userName, email, password || undefined, currentPassword || undefined)
 
     if (result.success) {
       toast.success("Profile updated successfully")
@@ -93,14 +102,14 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="max-w-md mx-auto py-4 px-4 animate-in fade-in slide-in-from-top-4 duration-700">
+    <div className="max-w-2xl mx-auto py-4 px-4 animate-in fade-in slide-in-from-top-4 duration-700">
       {/* Back Button */}
       <button
         onClick={() => router.push("/games")}
         className="w-fit -ml-2 mb-6 text-white hover:text-primary transition-colors text-sm flex items-center gap-1 bg-transparent border-none p-0"
       >
         <ChevronLeft className="w-4 h-4" />
-        Back to PannaMaster
+        Back to games
       </button>
 
       <div className="w-full">
@@ -115,7 +124,7 @@ export default function ProfilePage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="pb-4 pt-0">
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="max-w-xl mx-auto">
               <FieldGroup className="gap-3">
                 <Field className="gap-1">
                   <FieldLabel htmlFor="profile-username" className="text-xs">Username</FieldLabel>
@@ -144,20 +153,54 @@ export default function ProfilePage() {
                   />
                 </Field>
                 <Field className="gap-1">
-                  <FieldLabel htmlFor="profile-password" className="text-xs">New Password (optional)</FieldLabel>
-                  <Input
-                    id="profile-password"
-                    type="password"
-                    placeholder="Leave blank to keep current"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    autoComplete="new-password"
-                    className="bg-input border-border"
-                  />
+                  <FieldLabel htmlFor="profile-password" className="text-xs">New Password (Optional)</FieldLabel>
+                  <div className="relative">
+                    <Input
+                      id="profile-password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Leave blank to keep current"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      autoComplete="new-password"
+                      className="bg-input border-border pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
                   <p className="text-[9px] text-muted-foreground mt-0">
                     Min 8 characters, with uppercase, lowercase and a number.
                   </p>
                 </Field>
+
+                {password && (
+                  <Field className="gap-1 animate-in fade-in slide-in-from-top-2 duration-300">
+                    <FieldLabel htmlFor="current-password" className="text-xs">Current Password (Required to change password)</FieldLabel>
+                    <div className="relative">
+                      <Input
+                        id="current-password"
+                        type={showCurrentPassword ? "text" : "password"}
+                        placeholder="Enter current password"
+                        value={currentPassword}
+                        onChange={(e) => setCurrentPassword(e.target.value)}
+                        required={!!password}
+                        autoComplete="current-password"
+                        className="bg-input border-primary/20 focus:border-primary pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
+                      >
+                        {showCurrentPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </Field>
+                )}
               </FieldGroup>
 
               {error && (
@@ -189,10 +232,6 @@ export default function ProfilePage() {
             </form>
           </CardContent>
         </Card>
-
-        <p className="text-center text-xs text-muted-foreground mt-6 italic">
-          Your data is securely stored and protected.
-        </p>
       </div>
     </div>
   )

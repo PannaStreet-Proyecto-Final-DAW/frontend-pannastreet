@@ -19,6 +19,8 @@ export const metadata: Metadata = {
   },
 }
 
+import { Footer } from '@/components/footer'
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -34,7 +36,10 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AuthProvider>
-            {children}
+            <div className="flex flex-col min-h-screen">
+              {children}
+              <Footer />
+            </div>
           </AuthProvider>
           <Toaster position="top-right" closeButton richColors />
         </ThemeProvider>
