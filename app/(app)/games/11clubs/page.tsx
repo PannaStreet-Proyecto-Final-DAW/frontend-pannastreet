@@ -41,6 +41,9 @@ export default function ElevenClubsPage() {
   /** The formation picked for the current attempt */
   const [currentFormation, setCurrentFormation] = useState(FORMATION_COORDS["4-3-3"])
 
+  /** Map of club name (with gender) to its crest URL */
+  const [teamCrests, setTeamCrests] = useState<Record<string, string | null>>({})
+
   /** Track current calculated score for real-time reporting */
   const [currentCalculatedScore, setCurrentCalculatedScore] = useState(0)
 
@@ -78,13 +81,14 @@ export default function ElevenClubsPage() {
     allPlayers.forEach(player => {
       // Filter by gender mode
       const genderMatch =
-        mode === "Men" ? player.gender === "male" :
-          mode === "Women" ? player.gender === "female" : true;
+        mode === "Male" ? player.gender === "male" :
+          mode === "Female" ? player.gender === "female" : true;
 
       if (!genderMatch) return;
 
-      if (!map[player.team]) map[player.team] = []
-      map[player.team].push({
+      const groupKey = `${player.team} (${player.gender === "male" ? "M" : "F"})`
+      if (!map[groupKey]) map[groupKey] = []
+      map[groupKey].push({
         name: player.name,
         positions: player.position
       })
@@ -93,24 +97,72 @@ export default function ElevenClubsPage() {
   }, [allPlayers, mode])
 
   /**
+   * Helper to group all players by team name for search (unfiltered by gender)
+   */
+  const allPlayersByTeamMap = useMemo(() => {
+    const map: Record<string, { name: string; positions: string[] }[]> = {}
+    allPlayers.forEach(player => {
+      const groupKey = `${player.team} (${player.gender === "male" ? "M" : "F"})`
+      if (!map[groupKey]) map[groupKey] = []
+      map[groupKey].push({
+        name: player.name,
+        positions: player.position
+      })
+    })
+    return map
+  }, [allPlayers])
+
+  /**
    * Initializes or resets the game session.
    */
   const initializeGame = useCallback(() => {
     if (loading || allTeams.length === 0) return;
 
-    // 1. Filter teams based on difficulty tier
+    // 1. Filter teams based on difficulty tier and gender mode
     const filteredTeams = allTeams.filter(team => {
-      if (difficulty === "Easy") return team.tier === 1;
-      if (difficulty === "Medium") return team.tier === 1 || team.tier === 2;
-      if (difficulty === "Hard") return team.tier === 3;
-      return true;
+      // Tier filter
+      const tierMatch = difficulty === "Easy" ? team.tier === 1 :
+                        difficulty === "Intermediate" ? (team.tier === 1 || team.tier === 2) :
+                        difficulty === "Hard" ? team.tier === 2 : true;
+      
+      // Gender filter
+      const genderMatch = mode === "Male" ? team.gender === "male" :
+                          mode === "Female" ? team.gender === "female" : true;
+
+      return tierMatch && genderMatch;
     });
 
-    // 2. Select 11 random clubs
-    const shuffledTeams = [...filteredTeams].sort(() => Math.random() - 0.5)
-    setSelectedClubs(shuffledTeams.slice(0, 11).map(t => t.name))
+    // 2. Select 11 random clubs with balanced gender if mode is "Both"
+    let selected: Team[] = []
+    
+    if (mode === "Both") {
+      const menTeams = filteredTeams.filter(t => t.gender === "male")
+      const womenTeams = filteredTeams.filter(t => t.gender === "female")
+      
+      // Randomly decide which gender gets 6 and which gets 5
+      const menCount = Math.random() > 0.5 ? 6 : 5
+      const womenCount = 11 - menCount
+      
+      const pickedMen = [...menTeams].sort(() => Math.random() - 0.5).slice(0, menCount)
+      const pickedWomen = [...womenTeams].sort(() => Math.random() - 0.5).slice(0, womenCount)
+      
+      selected = [...pickedMen, ...pickedWomen].sort(() => Math.random() - 0.5)
+    } else {
+      // Just pick 11 random from the filtered list (which only contains one gender anyway)
+      selected = [...filteredTeams].sort(() => Math.random() - 0.5).slice(0, 11)
+    }
+    
+    // 3. Create a map of group keys to their respective crests
+    const crestsMap: Record<string, string | null> = {}
+    selected.forEach(t => {
+      const key = `${t.name} (${t.gender === "male" ? "M" : "F"})`
+      crestsMap[key] = t.pictureUrl
+    })
 
-    // 3. Randomize formation from backend
+    setSelectedClubs(selected.map(t => `${t.name} (${t.gender === "male" ? "M" : "F"})`))
+    setTeamCrests(crestsMap)
+
+    // 4. Randomize formation from backend
     if (allFormations.length > 0) {
       const randomFormation = allFormations[Math.floor(Math.random() * allFormations.length)]
       const coords = FORMATION_COORDS[randomFormation.name] || FORMATION_COORDS["4-3-3"]
@@ -124,7 +176,7 @@ export default function ElevenClubsPage() {
     setCurrentCalculatedScore(0)
     resetSync()
     setKey(prev => prev + 1)
-  }, [difficulty, allTeams, allFormations, loading, resetSync])
+  }, [difficulty, mode, allTeams, allFormations, loading, resetSync])
 
   // Set up game when data is ready or difficulty changes
   useEffect(() => {
@@ -208,7 +260,8 @@ export default function ElevenClubsPage() {
         key={key}
         groupLabel="Clubs"
         availableGroups={selectedClubs}
-        itemsByGroup={playersByTeamMap}
+        availableCrests={teamCrests}
+        itemsByGroup={allPlayersByTeamMap}
         difficulty={difficulty}
         mode={mode}
         formation={currentFormation}

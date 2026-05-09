@@ -37,6 +37,7 @@ export default function GuessThePlayerPage() {
     async function loadPlayers() {
       try {
         const data = await getAllPlayers()
+        console.log(data)
         setPlayers(data)
       } catch (error) {
         console.error("Failed to fetch players:", error)
@@ -54,13 +55,13 @@ export default function GuessThePlayerPage() {
     // Difficulty Match
     const difficultyMatch =
       difficulty === "Easy" ? player.tier === 1 :
-        difficulty === "Medium" ? (player.tier === 1 || player.tier === 2) :
-          difficulty === "Hard" ? (player.tier === 2 || player.tier === 3) : true;
+        difficulty === "Intermediate" ? (player.tier === 1 || player.tier === 2) :
+          difficulty === "Hard" ? player.tier === 2 : true;
 
     // Mode/Gender Match
     const modeMatch =
-      mode === "Men" ? player.gender === "male" :
-        mode === "Women" ? player.gender === "female" : true;
+      mode === "Male" ? player.gender === "male" :
+        mode === "Female" ? player.gender === "female" : true;
 
     return difficultyMatch && modeMatch;
   });
@@ -170,6 +171,7 @@ export default function GuessThePlayerPage() {
         difficulty={difficulty}
         mode={mode}
         players={filteredPlayers}
+        allPlayers={players}
         onGameOver={handleGameOver}
         isGameOver={gameState.gameOver}
       />

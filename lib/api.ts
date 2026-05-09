@@ -60,6 +60,7 @@ export interface Team {
   tier: number
   pictureUrl: string | null
   league: string
+  gender: "male" | "female"
   country: string
 }
 
@@ -190,14 +191,31 @@ export async function deleteMembership(id: string): Promise<{ message: string }>
 }
 
 /**
- * --- CORE ENTITIES API ---
+ * --- CORE ENTITIES API (WITH MEMORY CACHE) ---
  */
+
+// Simple singleton cache to avoid redundant network requests across different game pages
+const apiCache: {
+  players: Player[] | null;
+  teams: Team[] | null;
+  formations: Formation[] | null;
+  leagues: League[] | null;
+} = {
+  players: null,
+  teams: null,
+  formations: null,
+  leagues: null
+};
 
 /**
  * getAllPlayers: Fetches the complete database of professional players.
+ * Uses cache if available to optimize loading between games.
  */
 export async function getAllPlayers(): Promise<Player[]> {
-  return fetchApi("/player")
+  if (apiCache.players) return apiCache.players;
+  const players = await fetchApi("/player");
+  apiCache.players = players;
+  return players;
 }
 
 /**
@@ -211,7 +229,10 @@ export async function getPlayerById(id: string): Promise<Player> {
  * getAllTeams: Fetches the complete list of teams/clubs.
  */
 export async function getAllTeams(): Promise<Team[]> {
-  return fetchApi("/team")
+  if (apiCache.teams) return apiCache.teams;
+  const teams = await fetchApi("/team");
+  apiCache.teams = teams;
+  return teams;
 }
 
 /**
@@ -225,12 +246,18 @@ export async function getTeamById(id: string): Promise<Team> {
  * getAllLeagues: Fetches all professional leagues.
  */
 export async function getAllLeagues(): Promise<League[]> {
-  return fetchApi("/league")
+  if (apiCache.leagues) return apiCache.leagues;
+  const leagues = await fetchApi("/league");
+  apiCache.leagues = leagues;
+  return leagues;
 }
 
 /**
  * getAllFormations: Fetches all tactical formations.
  */
 export async function getAllFormations(): Promise<Formation[]> {
-  return fetchApi("/formation")
+  if (apiCache.formations) return apiCache.formations;
+  const formations = await fetchApi("/formation");
+  apiCache.formations = formations;
+  return formations;
 }

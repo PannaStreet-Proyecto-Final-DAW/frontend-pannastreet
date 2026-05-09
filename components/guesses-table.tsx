@@ -43,7 +43,7 @@ export function GuessesTable({ guesses, players }: GuessesTableProps) {
       case "correct":
         return "bg-primary text-primary-foreground"
       case "partial":
-        return "bg-amber-500 text-white"
+        return "bg-yellow-100 text-black"
       default:
         return "bg-[#DAE0C9] dark:bg-secondary text-black dark:text-white"
     }
