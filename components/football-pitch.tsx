@@ -19,6 +19,7 @@ export interface SelectedPlayer {
   positionId: number
   club: string
   player: string
+  crestUrl?: string | null
 }
 
 interface FootballPitchProps {
@@ -79,39 +80,61 @@ export function FootballPitch({
         const isSelected = currentPosition === pos.id
         const isHighlighted = highlightedPositions.includes(pos.id)
 
+        // Extract last name (surname) if player exists
+        const surname = player ? player.player.trim().split(" ").pop() : ""
+
         return (
-          <button
+          <div
             key={pos.id}
-            onClick={() => onPositionClick(pos.id)}
-            className={cn(
-              "absolute w-12 h-12 -translate-x-1/2 -translate-y-1/2 rounded-full",
-              "flex flex-col items-center justify-center text-xs font-medium transition-all duration-300",
-              // Styling based on state: Occupied, Selected, Highlighted, or Empty
-              player
-                ? "bg-primary text-primary-foreground"
-                : isSelected
-                  ? "bg-primary/50 text-primary-foreground ring-2 ring-primary"
-                  : isHighlighted
-                    ? "bg-primary/20 text-primary ring-2 ring-primary ring-offset-2 ring-offset-background animate-pulse cursor-pointer hover:bg-primary/40"
-                    : "bg-secondary/40 dark:bg-secondary/80 text-secondary-foreground cursor-default"
-            )}
+            className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center group/pos"
             style={{
               // Position mapping: converts coordinate values to percentage-based CSS positions
               left: `${(pos.col / 4) * 80 + 10}%`,
               top: `${(pos.row / 5) * 85 + 7.5}%`,
             }}
-            disabled={!!player || gameComplete || (!isHighlighted && highlightedPositions.length > 0)}
           >
-            {player ? (
-              // Show player name (shortened) if slot is filled
-              <>
-                <span className="truncate max-w-[44px]">{player.player.split(" ")[0]}</span>
-              </>
-            ) : (
-              // Show position label (e.g. "GK") if slot is empty
-              <span>{pos.label}</span>
+            <button
+              onClick={() => onPositionClick(pos.id)}
+              className={cn(
+                "w-12 h-12 rounded-full",
+                "flex flex-col items-center justify-center text-xs font-black transition-all duration-300 shadow-md",
+                // Styling based on state: Occupied, Selected, Highlighted, or Empty
+                player
+                  ? "bg-white/90 dark:bg-card/90 border-2 border-primary shadow-lg scale-110"
+                  : isSelected
+                    ? "bg-primary/50 text-primary-foreground ring-2 ring-primary"
+                    : isHighlighted
+                      ? "bg-primary/20 text-primary ring-2 ring-primary ring-offset-2 ring-offset-background animate-pulse cursor-pointer hover:bg-primary/40"
+                      : "bg-secondary/40 dark:bg-secondary/80 text-secondary-foreground cursor-default"
+              )}
+              disabled={!!player || gameComplete || (!isHighlighted && highlightedPositions.length > 0)}
+            >
+              {player ? (
+                // Show club crest (larger) if slot is filled
+                player.crestUrl ? (
+                  <img 
+                    src={player.crestUrl} 
+                    alt={player.club} 
+                    className="w-9 h-9 object-contain drop-shadow-sm" 
+                  />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-primary/10" />
+                )
+              ) : (
+                // Show position label (e.g. "GK") if slot is empty
+                <span className="uppercase tracking-tighter">{pos.label}</span>
+              )}
+            </button>
+
+            {/* Player Name Tag (Outside the circle) */}
+            {player && (
+              <div className="mt-1.5 px-2 py-0.5 bg-black/60 backdrop-blur-sm rounded border border-white/20 shadow-sm animate-in fade-in slide-in-from-top-1 duration-300">
+                <span className="text-[9px] font-black uppercase text-white tracking-tighter whitespace-nowrap block">
+                  {surname}
+                </span>
+              </div>
             )}
-          </button>
+          </div>
         )
       })}
     </div>

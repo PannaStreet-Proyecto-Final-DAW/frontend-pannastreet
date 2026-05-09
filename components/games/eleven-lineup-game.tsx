@@ -24,6 +24,8 @@ interface ElevenLineupGameProps {
   availableGroups: string[]
   /** Data mapping: category name -> list of player names */
   itemsByGroup: Record<string, { name: string; positions: string[] }[]>
+  /** Data mapping: category name -> crest URL */
+  availableCrests?: Record<string, string | null>
   /** Difficulty setting (Easy, Intermediate, Hard) */
   difficulty: string
   /** Mode setting (Male, Female, Both) */
@@ -46,6 +48,7 @@ export function ElevenLineupGame({
   groupLabel,
   availableGroups,
   itemsByGroup,
+  availableCrests = {},
   difficulty,
   mode,
   formation,
@@ -170,7 +173,8 @@ export function ElevenLineupGame({
    */
   const insertPlayer = (group: string, playerName: string, slotId: number) => {
     const newLineup = [...lineup]
-    newLineup[slotId] = { positionId: slotId, club: group, player: playerName }
+    const crestUrl = availableCrests[group] || null
+    newLineup[slotId] = { positionId: slotId, club: group, player: playerName, crestUrl }
 
     const nextCount = newLineup.filter(Boolean).length
     const currentScore = calculateScore(nextCount)
@@ -190,8 +194,26 @@ export function ElevenLineupGame({
   }
 
   /**
+   * Helper to normalize strings for comparison (removes accents/diacritics)
+   */
+  const normalizeString = (str: string) => {
+    if (!str) return ""
+    return str
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[đð]/g, "d")
+      .replace(/[ł]/g, "l")
+      .replace(/[ß]/g, "ss")
+      .replace(/[ø]/g, "o")
+      .replace(/[þ]/g, "th")
+      .replace(/[ț]/g, "t")
+      .replace(/[ș]/g, "s")
+      .replace(/[ş]/g, "s")
+      .toLowerCase()
+  }
+
+  /**
    * Logic to compute which items (players) can be displayed in the search results.
-   * Excludes groups already present in the current lineup.
    */
   const getFilteredResults = () => {
     if (searchQuery.length < 3) return []
@@ -199,26 +221,27 @@ export function ElevenLineupGame({
     const usedGroups = new Set(lineup.filter(Boolean).map((l) => l!.club))
     const results: { group: string; item: { name: string; positions: string[] } }[] = []
 
-    availableGroups.forEach((group) => {
+    const searchNormalized = normalizeString(searchQuery)
+
+    // Iterate over all groups (teams) available in the data, not just the selected ones
+    Object.keys(itemsByGroup).forEach((group) => {
       // Don't show players from groups that are already in the lineup
       if (usedGroups.has(group)) return
 
       itemsByGroup[group]?.forEach((item) => {
-        // Search by player name or group name starting with the query
-        const itemLower = item.name.toLowerCase()
-        const groupLower = group.toLowerCase()
-        const searchLower = searchQuery.toLowerCase()
+        const itemNormalized = normalizeString(item.name)
+        const groupNormalized = normalizeString(group)
 
-        const matchesItem = itemLower.startsWith(searchLower) || itemLower.split(" ").some(w => w.startsWith(searchLower))
-        const matchesGroup = groupLower.startsWith(searchLower) || groupLower.split(" ").some(w => w.startsWith(searchLower))
+        const matchesItem = itemNormalized.includes(searchNormalized)
+        const matchesGroup = groupNormalized.includes(searchNormalized)
 
-        if (searchQuery === "" || matchesItem || matchesGroup) {
+        if (matchesItem || matchesGroup) {
           results.push({ group, item })
         }
       })
     })
 
-    return results.slice(0, 10) // UI limit for better usability
+    return results.slice(0, 10)
   }
 
   return (
@@ -235,8 +258,16 @@ export function ElevenLineupGame({
           {currentClub ? (
             <>
               {/* Future Club Crest Placeholder */}
-              <div className="w-32 h-32 rounded-full bg-primary/5 border-4 border-dashed border-primary/20 flex items-center justify-center animate-pulse">
-                <div className="w-16 h-16 rounded-full bg-primary/10 border-2 border-primary/20" />
+              <div className="w-32 h-32 rounded-full bg-primary/5 border-4 border-dashed border-primary/20 flex items-center justify-center overflow-hidden">
+                {availableCrests[currentClub] ? (
+                  <img 
+                    src={availableCrests[currentClub]!} 
+                    alt={currentClub} 
+                    className="w-24 h-24 object-contain animate-in zoom-in-50 duration-500" 
+                  />
+                ) : (
+                  <div className="w-16 h-16 rounded-full bg-primary/10 border-2 border-primary/20 animate-pulse" />
+                )}
               </div>
 
               <div className="space-y-1">
@@ -328,6 +359,7 @@ export function ElevenLineupGame({
                 results={getFilteredResults().map(({ group, item }) => ({
                   id: `${group}-${item.name}`,
                   primaryText: item.name,
+                  secondaryText: (difficulty === "Intermediate" || difficulty === "Hard") ? undefined : group,
                   originalData: { group, item },
                 }))}
                 placeholder={`Search ${groupLabel.toLowerCase()} or player...`}

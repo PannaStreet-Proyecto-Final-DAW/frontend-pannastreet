@@ -4,205 +4,14 @@
  */
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback, useMemo } from "react"
 import { GameEngine } from "@/components/game-engine"
 import { ElevenLineupGame } from "@/components/games/eleven-lineup-game"
 import { useScoreSync } from "@/hooks/use-score-sync"
 import { SyncStatusIndicator } from "@/components/sync-status-indicator"
-import { FORMATIONS } from "@/lib/formations"
+import { FORMATIONS as FORMATION_COORDS } from "@/lib/formations"
+import { getAllTeams, getAllPlayers, getAllFormations, Player, Team, Formation } from "@/lib/api"
 
-/** Mock list of football clubs to select from with tiers */
-const CLUBS = [
-  // Tier 1: World Powerhouses (11)
-  { name: "Real Madrid", tier: 1 }, { name: "Barcelona", tier: 1 }, { name: "Man City", tier: 1 },
-  { name: "Liverpool", tier: 1 }, { name: "Bayern Munich", tier: 1 }, { name: "PSG", tier: 1 },
-  { name: "Arsenal", tier: 1 }, { name: "Inter Milan", tier: 1 }, { name: "Bayer Leverkusen", tier: 1 },
-  { name: "Juventus", tier: 1 }, { name: "Atletico Madrid", tier: 1 },
-  // Tier 2: Elite European Clubs (11)
-  { name: "Chelsea", tier: 2 }, { name: "Man United", tier: 2 }, { name: "AC Milan", tier: 2 },
-  { name: "Dortmund", tier: 2 }, { name: "Tottenham", tier: 2 }, { name: "Napoli", tier: 2 },
-  { name: "Aston Villa", tier: 2 }, { name: "RB Leipzig", tier: 2 }, { name: "Benfica", tier: 2 },
-  { name: "Porto", tier: 2 }, { name: "Roma", tier: 2 },
-  // Tier 3: Competitive Mid-Tier Clubs (11)
-  { name: "West Ham", tier: 3 }, { name: "Villarreal", tier: 3 }, { name: "Sevilla", tier: 3 },
-  { name: "Brighton", tier: 3 }, { name: "Lazio", tier: 3 }, { name: "Real Sociedad", tier: 3 },
-  { name: "Newcastle", tier: 3 }, { name: "Girona", tier: 3 }, { name: "Athletic Club", tier: 3 },
-  { name: "Fiorentina", tier: 3 }, { name: "Everton", tier: 3 }
-]
-
-/** Mock mapping of clubs to their top players */
-const PLAYERS_BY_CLUB: Record<string, { name: string; positions: string[] }[]> = {
-  // Tier 1
-  "Real Madrid": [
-    { name: "Bellingham", positions: ["CM"] }, { name: "Jude Bellingham", positions: ["CM"] },
-    { name: "Vinicius", positions: ["LW"] }, { name: "Vinicius Junior", positions: ["LW", "ST"] },
-    { name: "Mbappe", positions: ["ST", "LW", "RW"] }, { name: "Kylian Mbappe", positions: ["ST", "LW", "RW"] },
-    { name: "Rodrygo", positions: ["RW", "LW"] }, { name: "Valverde", positions: ["CM", "RW"] }
-  ],
-  "Barcelona": [
-    { name: "Pedri", positions: ["CM"] }, { name: "Gavi", positions: ["LW"] },
-    { name: "Yamal", positions: ["RW"] }, { name: "Lamine Yamal", positions: ["RW"] },
-    { name: "Raphinha", positions: ["LW", "RW"] }, { name: "Lewandowski", positions: ["ST"] }, { name: "Robert Lewandowski", positions: ["ST"] }
-  ],
-  "Bayern Munich": [
-    { name: "Sane", positions: ["LW", "RW"] }, { name: "Musiala", positions: ["CM", "LW"] },
-    { name: "Kane", positions: ["ST"] }, { name: "Harry Kane", positions: ["ST"] },
-    { name: "Kimmich", positions: ["CM", "RB"] }, { name: "Muller", positions: ["CM", "ST"] }, { name: "Thomas Muller", positions: ["CM", "ST"] }
-  ],
-  "Man City": [
-    { name: "Haaland", positions: ["ST"] }, { name: "Erling Haaland", positions: ["ST"] },
-    { name: "De Bruyne", positions: ["CM"] }, { name: "Kevin De Bruyne", positions: ["CM"] },
-    { name: "Foden", positions: ["RW", "LW", "CM"] }, { name: "Rodri", positions: ["CM"] }, { name: "Grealish", positions: ["LW", "CM"] }
-  ],
-  "Liverpool": [
-    { name: "Salah", positions: ["RW", "ST"] }, { name: "Mohamed Salah", positions: ["RW", "ST"] },
-    { name: "Nunez", positions: ["ST", "LW"] }, { name: "Darwin Nunez", positions: ["ST", "LW"] },
-    { name: "Mac Allister", positions: ["CM"] }, { name: "Szoboszlai", positions: ["CM", "RW"] }, { name: "Van Dijk", positions: ["CB"] }
-  ],
-  "PSG": [
-    { name: "Dembele", positions: ["RW", "LW"] }, { name: "Ousmane Dembele", positions: ["RW", "LW"] },
-    { name: "Barcola", positions: ["LW", "RW"] }, { name: "Asensio", positions: ["ST", "RW"] },
-    { name: "Vitinha", positions: ["CM"] }, { name: "Hakimi", positions: ["RB", "RW"] }
-  ],
-  "Inter Milan": [
-    { name: "Lautaro", positions: ["ST"] }, { name: "Lautaro Martinez", positions: ["ST"] },
-    { name: "Thuram", positions: ["ST", "LW"] }, { name: "Marcus Thuram", positions: ["ST", "LW"] },
-    { name: "Barella", positions: ["CM"] }, { name: "Calhanoglu", positions: ["CM"] }, { name: "Bastoni", positions: ["CB", "LB"] }
-  ],
-  "Bayer Leverkusen": [
-    { name: "Wirtz", positions: ["CM"] }, { name: "Florian Wirtz", positions: ["CM"] },
-    { name: "Grimaldo", positions: ["LB", "LW"] }, { name: "Frimpong", positions: ["RB", "RW"] },
-    { name: "Xhaka", positions: ["CM"] }, { name: "Schick", positions: ["ST"] }
-  ],
-  "Juventus": [
-    { name: "Vlahovic", positions: ["ST"] }, { name: "Dusan Vlahovic", positions: ["ST"] },
-    { name: "Chiesa", positions: ["LW", "RW"] }, { name: "Locatelli", positions: ["CM"] },
-    { name: "Bremer", positions: ["CB"] }, { name: "Yildiz", positions: ["ST", "LW"] }
-  ],
-  "Atletico Madrid": [
-    { name: "Griezmann", positions: ["ST", "CM"] }, { name: "Antoine Griezmann", positions: ["ST", "CM"] },
-    { name: "Morata", positions: ["ST"] }, { name: "Alvaro Morata", positions: ["ST"] },
-    { name: "Koke", positions: ["CM"] }, { name: "De Paul", positions: ["CM"] }, { name: "Oblak", positions: ["GK"] }
-  ],
-  "Arsenal": [
-    { name: "Saka", positions: ["RW", "LB"] }, { name: "Bukayo Saka", positions: ["RW", "LB"] },
-    { name: "Odegaard", positions: ["CM"] }, { name: "Martin Odegaard", positions: ["CM"] },
-    { name: "Rice", positions: ["CM", "CB"] }, { name: "Declan Rice", positions: ["CM", "CB"] },
-    { name: "Havertz", positions: ["ST", "CM"] }, { name: "Martinelli", positions: ["LW", "ST"] }
-  ],
-  // Tier 2
-  "Chelsea": [
-    { name: "Palmer", positions: ["RW", "CM"] }, { name: "Cole Palmer", positions: ["RW", "CM"] },
-    { name: "Mudryk", positions: ["LW"] }, { name: "Jackson", positions: ["ST"] },
-    { name: "Enzo", positions: ["CM"] }, { name: "Enzo Fernandez", positions: ["CM"] }, { name: "Caicedo", positions: ["CM"] }
-  ],
-  "Man United": [
-    { name: "Rashford", positions: ["LW", "ST"] }, { name: "Marcus Rashford", positions: ["LW", "ST"] },
-    { name: "Bruno", positions: ["CM", "RW"] }, { name: "Bruno Fernandes", positions: ["CM", "RW"] },
-    { name: "Hojlund", positions: ["ST"] }, { name: "Mainoo", positions: ["CM"] }, { name: "Garnacho", positions: ["RW", "LW"] }
-  ],
-  "AC Milan": [
-    { name: "Leao", positions: ["LW"] }, { name: "Rafael Leao", positions: ["LW"] },
-    { name: "Pulisic", positions: ["RW", "LW"] }, { name: "Giroud", positions: ["ST"] },
-    { name: "Hernandez", positions: ["LB"] }, { name: "Theo Hernandez", positions: ["LB"] }, { name: "Maignan", positions: ["GK"] }
-  ],
-  "Dortmund": [
-    { name: "Brandt", positions: ["CM", "LW"] }, { name: "Sancho", positions: ["LW", "RW"] },
-    { name: "Fullkrug", positions: ["ST"] }, { name: "Adeyemi", positions: ["LW", "RW"] },
-    { name: "Sabitzer", positions: ["CM"] }, { name: "Hummels", positions: ["CB"] }
-  ],
-  "Tottenham": [
-    { name: "Son", positions: ["LW", "ST"] }, { name: "Heung-min Son", positions: ["LW", "ST"] },
-    { name: "Madison", positions: ["CM"] }, { name: "James Maddison", positions: ["CM"] },
-    { name: "Richarlison", positions: ["ST", "LW"] }, { name: "Kulusevski", positions: ["RW", "CM"] }, { name: "Romero", positions: ["CB"] }
-  ],
-  "Napoli": [
-    { name: "Osimhen", positions: ["ST"] }, { name: "Victor Osimhen", positions: ["ST"] },
-    { name: "Kvaratskhelia", positions: ["LW"] }, { name: "Khvicha Kvaratskhelia", positions: ["LW"] },
-    { name: "Anguissa", positions: ["CM"] }, { name: "Lobotka", positions: ["CM"] }, { name: "Di Lorenzo", positions: ["RB"] }
-  ],
-  "Aston Villa": [
-    { name: "Watkins", positions: ["ST"] }, { name: "Ollie Watkins", positions: ["ST"] },
-    { name: "Bailey", positions: ["RW", "LW"] }, { name: "McGinn", positions: ["CM"] },
-    { name: "Douglas Luiz", positions: ["CM"] }, { name: "Martinez", positions: ["GK"] }, { name: "Emiliano Martinez", positions: ["GK"] }
-  ],
-  "RB Leipzig": [
-    { name: "Openda", positions: ["ST", "LW"] }, { name: "Simons", positions: ["CM", "LW", "RW"] },
-    { name: "Xavi Simons", positions: ["CM", "LW", "RW"] }, { name: "Olmo", positions: ["CM", "LW"] },
-    { name: "Dani Olmo", positions: ["CM", "LW"] }, { name: "Sesko", positions: ["ST"] }
-  ],
-  "Benfica": [
-    { name: "Di Maria", positions: ["RW", "CM"] }, { name: "Angel Di Maria", positions: ["RW", "CM"] },
-    { name: "Rafa", positions: ["ST", "LW"] }, { name: "Kokcu", positions: ["CM"] },
-    { name: "Neves", positions: ["CM"] }, { name: "Joao Neves", positions: ["CM"] }, { name: "Otamendi", positions: ["CB"] }
-  ],
-  "Porto": [
-    { name: "Taremi", positions: ["ST"] }, { name: "Evanilson", positions: ["ST"] },
-    { name: "Galeno", positions: ["LW"] }, { name: "Pepe", positions: ["CB", "LW"] },
-    { name: "Varela", positions: ["CM"] }, { name: "Diogo Costa", positions: ["GK"] }
-  ],
-  "Roma": [
-    { name: "Dybala", positions: ["ST", "CM"] }, { name: "Paulo Dybala", positions: ["ST", "CM"] },
-    { name: "Lukaku", positions: ["ST"] }, { name: "Romelu Lukaku", positions: ["ST"] },
-    { name: "Pellegrini", positions: ["CM"] }, { name: "Cristante", positions: ["CM", "CB"] }, { name: "Mancini", positions: ["CB"] }
-  ],
-  // Tier 3
-  "West Ham": [
-    { name: "Bowen", positions: ["RW", "ST"] }, { name: "Jarrod Bowen", positions: ["RW", "ST"] },
-    { name: "Kudus", positions: ["RW", "CM"] }, { name: "Mohammed Kudus", positions: ["RW", "CM"] },
-    { name: "Paqueta", positions: ["CM"] }, { name: "Antonio", positions: ["ST"] }
-  ],
-  "Villarreal": [
-    { name: "Gerard Moreno", positions: ["ST", "RW"] }, { name: "Sorloth", positions: ["ST"] },
-    { name: "Baena", positions: ["CM", "LW"] }, { name: "Alex Baena", positions: ["CM", "LW"] },
-    { name: "Parejo", positions: ["CM"] }
-  ],
-  "Sevilla": [
-    { name: "En-Nesyri", positions: ["ST"] }, { name: "Ocampos", positions: ["RW", "LW"] },
-    { name: "Ramos", positions: ["CB"] }, { name: "Sergio Ramos", positions: ["CB"] },
-    { name: "Suso", positions: ["RW", "CM"] }, { name: "Navas", positions: ["RB", "RW"] }
-  ],
-  "Brighton": [
-    { name: "Mitoma", positions: ["LW"] }, { name: "Kaoru Mitoma", positions: ["LW"] },
-    { name: "Pedro", positions: ["ST", "LW"] }, { name: "Joao Pedro", positions: ["ST", "LW"] },
-    { name: "Gross", positions: ["CM", "RB"] }, { name: "Ferguson", positions: ["ST"] }
-  ],
-  "Lazio": [
-    { name: "Immobile", positions: ["ST"] }, { name: "Ciro Immobile", positions: ["ST"] },
-    { name: "Luis Alberto", positions: ["CM"] }, { name: "Zaccagni", positions: ["LW"] },
-    { name: "Felipe Anderson", positions: ["RW", "LW"] }, { name: "Romagnoli", positions: ["CB"] }
-  ],
-  "Real Sociedad": [
-    { name: "Oyarzabal", positions: ["LW", "ST"] }, { name: "Mikel Oyarzabal", positions: ["LW", "ST"] },
-    { name: "Kubo", positions: ["RW", "CM"] }, { name: "Takefusa Kubo", positions: ["RW", "CM"] },
-    { name: "Merino", positions: ["CM"] }, { name: "Zubimendi", positions: ["CM"] }, { name: "Remiro", positions: ["GK"] }
-  ],
-  "Newcastle": [
-    { name: "Isak", positions: ["ST"] }, { name: "Alexander Isak", positions: ["ST"] },
-    { name: "Gordon", positions: ["LW", "RW"] }, { name: "Anthony Gordon", positions: ["LW", "RW"] },
-    { name: "Bruno Guimaraes", positions: ["CM"] }, { name: "Joelinton", positions: ["CM", "LW"] }, { name: "Trippier", positions: ["RB"] }
-  ],
-  "Girona": [
-    { name: "Dovbyk", positions: ["ST"] }, { name: "Artem Dovbyk", positions: ["ST"] },
-    { name: "Savio", positions: ["LW", "RW"] }, { name: "Tsygankov", positions: ["RW"] },
-    { name: "Aleix Garcia", positions: ["CM"] }, { name: "Miguel Gutierrez", positions: ["LB"] }
-  ],
-  "Athletic Club": [
-    { name: "Inaki Williams", positions: ["RW", "ST"] }, { name: "Nico Williams", positions: ["LW"] },
-    { name: "Sancet", positions: ["CM"] }, { name: "Guruzeta", positions: ["ST"] },
-    { name: "Vivian", positions: ["CB"] }, { name: "Unai Simon", positions: ["GK"] }
-  ],
-  "Fiorentina": [
-    { name: "Nico Gonzalez", positions: ["RW", "LW"] }, { name: "Beltran", positions: ["ST", "CM"] },
-    { name: "Bonaventura", positions: ["CM"] }, { name: "Arthur", positions: ["CM"] },
-    { name: "Biraghi", positions: ["LB"] }
-  ],
-  "Everton": [
-    { name: "Calvert-Lewin", positions: ["ST"] }, { name: "McNeil", positions: ["LW"] },
-    { name: "Doucoure", positions: ["CM"] }, { name: "Onana", positions: ["CM"] },
-    { name: "Amadou Onana", positions: ["CM"] }, { name: "Pickford", positions: ["GK"] }, { name: "Jordan Pickford", positions: ["GK"] }
-  ]
-}
 
 /**
  * Page component for the 11 Clubs game.
@@ -221,68 +30,163 @@ export default function ElevenClubsPage() {
 
   // --- Game Session Data ---
 
+  const [allTeams, setAllTeams] = useState<Team[]>([])
+  const [allPlayers, setAllPlayers] = useState<Player[]>([])
+  const [allFormations, setAllFormations] = useState<Formation[]>([])
+  const [loading, setLoading] = useState(true)
+
   /** The 11 clubs picked for the current attempt */
   const [selectedClubs, setSelectedClubs] = useState<string[]>([])
 
   /** The formation picked for the current attempt */
-  const [currentFormation, setCurrentFormation] = useState(FORMATIONS["4-3-3"])
+  const [currentFormation, setCurrentFormation] = useState(FORMATION_COORDS["4-3-3"])
 
-  /** Track current calculated score for real-time reporting (useful for surrender) */
+  /** Map of club name (with gender) to its crest URL */
+  const [teamCrests, setTeamCrests] = useState<Record<string, string | null>>({})
+
+  /** Track current calculated score for real-time reporting */
   const [currentCalculatedScore, setCurrentCalculatedScore] = useState(0)
 
-  /** Unique key to force a clean remount of the game component when starting over */
+  /** Unique key to force a clean remount of the game component */
   const [key, setKey] = useState(0)
+
+  /** 
+   * Fetches all required data from the API on mount
+   */
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const [teams, players, formations] = await Promise.all([
+          getAllTeams(),
+          getAllPlayers(),
+          getAllFormations()
+        ])
+        setAllTeams(teams)
+        setAllPlayers(players)
+        setAllFormations(formations)
+      } catch (error) {
+        console.error("Failed to load 11 Clubs data:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadData()
+  }, [])
+
+  /**
+   * Helper to group players by team name for the game engine
+   */
+  const playersByTeamMap = useMemo(() => {
+    const map: Record<string, { name: string; positions: string[] }[]> = {}
+    allPlayers.forEach(player => {
+      // Filter by gender mode
+      const genderMatch =
+        mode === "Male" ? player.gender === "male" :
+          mode === "Female" ? player.gender === "female" : true;
+
+      if (!genderMatch) return;
+
+      const groupKey = `${player.team} (${player.gender === "male" ? "M" : "F"})`
+      if (!map[groupKey]) map[groupKey] = []
+      map[groupKey].push({
+        name: player.name,
+        positions: player.position
+      })
+    })
+    return map
+  }, [allPlayers, mode])
+
+  /**
+   * Helper to group all players by team name for search (unfiltered by gender)
+   */
+  const allPlayersByTeamMap = useMemo(() => {
+    const map: Record<string, { name: string; positions: string[] }[]> = {}
+    allPlayers.forEach(player => {
+      const groupKey = `${player.team} (${player.gender === "male" ? "M" : "F"})`
+      if (!map[groupKey]) map[groupKey] = []
+      map[groupKey].push({
+        name: player.name,
+        positions: player.position
+      })
+    })
+    return map
+  }, [allPlayers])
 
   /**
    * Initializes or resets the game session.
-   * Randomizes the clubs and resets all scoring/status indicators.
-   * Filters clubs based on difficulty:
-   * - Easy: Tier 1 only
-   * - Medium: Tiers 1 and 2
-   * - Hard: Tier 3 only
    */
-  const initializeGame = () => {
-    // 1. Filter clubs based on difficulty tier requirements
-    const filteredClubs = CLUBS.filter(club => {
-      if (difficulty === "Easy") return club.tier === 1;
-      if (difficulty === "Medium") return club.tier === 1 || club.tier === 2;
-      if (difficulty === "Hard") return club.tier === 3;
-      return true;
+  const initializeGame = useCallback(() => {
+    if (loading || allTeams.length === 0) return;
+
+    // 1. Filter teams based on difficulty tier and gender mode
+    const filteredTeams = allTeams.filter(team => {
+      // Tier filter
+      const tierMatch = difficulty === "Easy" ? team.tier === 1 :
+                        difficulty === "Intermediate" ? (team.tier === 1 || team.tier === 2) :
+                        difficulty === "Hard" ? team.tier === 2 : true;
+      
+      // Gender filter
+      const genderMatch = mode === "Male" ? team.gender === "male" :
+                          mode === "Female" ? team.gender === "female" : true;
+
+      return tierMatch && genderMatch;
     });
 
-    // 2. Randomly select 11 clubs from the filtered pool
-    const shuffledClubs = [...filteredClubs].sort(() => Math.random() - 0.5)
-    setSelectedClubs(shuffledClubs.slice(0, 11).map(c => c.name))
+    // 2. Select 11 random clubs with balanced gender if mode is "Both"
+    let selected: Team[] = []
     
-    // 3. Randomize formation
-    const formationKeys = Object.keys(FORMATIONS)
-    const randomFormationKey = formationKeys[Math.floor(Math.random() * formationKeys.length)]
-    setCurrentFormation(FORMATIONS[randomFormationKey])
+    if (mode === "Both") {
+      const menTeams = filteredTeams.filter(t => t.gender === "male")
+      const womenTeams = filteredTeams.filter(t => t.gender === "female")
+      
+      // Randomly decide which gender gets 6 and which gets 5
+      const menCount = Math.random() > 0.5 ? 6 : 5
+      const womenCount = 11 - menCount
+      
+      const pickedMen = [...menTeams].sort(() => Math.random() - 0.5).slice(0, menCount)
+      const pickedWomen = [...womenTeams].sort(() => Math.random() - 0.5).slice(0, womenCount)
+      
+      selected = [...pickedMen, ...pickedWomen].sort(() => Math.random() - 0.5)
+    } else {
+      // Just pick 11 random from the filtered list (which only contains one gender anyway)
+      selected = [...filteredTeams].sort(() => Math.random() - 0.5).slice(0, 11)
+    }
     
+    // 3. Create a map of group keys to their respective crests
+    const crestsMap: Record<string, string | null> = {}
+    selected.forEach(t => {
+      const key = `${t.name} (${t.gender === "male" ? "M" : "F"})`
+      crestsMap[key] = t.pictureUrl
+    })
+
+    setSelectedClubs(selected.map(t => `${t.name} (${t.gender === "male" ? "M" : "F"})`))
+    setTeamCrests(crestsMap)
+
+    // 4. Randomize formation from backend
+    if (allFormations.length > 0) {
+      const randomFormation = allFormations[Math.floor(Math.random() * allFormations.length)]
+      const coords = FORMATION_COORDS[randomFormation.name] || FORMATION_COORDS["4-3-3"]
+      setCurrentFormation(coords)
+    }
+
     // 4. Reset states
     setGameOver(false)
     setWon(false)
     setScore(0)
     setCurrentCalculatedScore(0)
     resetSync()
-    setKey(prev => prev + 1) // Trigger React to create a fresh instance of the game component
-  }
+    setKey(prev => prev + 1)
+  }, [difficulty, mode, allTeams, allFormations, loading, resetSync])
 
-  // Set up initial game on mount
+  // Set up game when data is ready or difficulty changes
   useEffect(() => {
-    initializeGame()
-  }, [])
-
-  // Re-initialize game when difficulty changes (if game hasn't finished yet)
-  useEffect(() => {
-    if (!gameOver) {
+    if (!loading && allTeams.length > 0) {
       initializeGame()
     }
-  }, [difficulty])
+  }, [loading, allTeams.length, difficulty, initializeGame])
 
   /**
    * Finalizes the game session when the lineup is complete.
-   * Receives the final score from the game component.
    */
   const handleGameOver = async (finalScore: number) => {
     setWon(true)
@@ -292,8 +196,7 @@ export default function ElevenClubsPage() {
   }
 
   /**
-   * Handles the surrender action from the GameEngine header.
-   * Uses the last calculated score from the component.
+   * Handles the surrender action.
    */
   const handleSurrender = async () => {
     const finalScore = currentCalculatedScore
@@ -301,6 +204,17 @@ export default function ElevenClubsPage() {
     setScore(finalScore)
     setGameOver(true)
     await syncPoints(finalScore)
+  }
+
+  //Loading message
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-xl font-bold animate-pulse text-primary">
+          Cargando el vestuario...
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -346,7 +260,8 @@ export default function ElevenClubsPage() {
         key={key}
         groupLabel="Clubs"
         availableGroups={selectedClubs}
-        itemsByGroup={PLAYERS_BY_CLUB}
+        availableCrests={teamCrests}
+        itemsByGroup={allPlayersByTeamMap}
         difficulty={difficulty}
         mode={mode}
         formation={currentFormation}

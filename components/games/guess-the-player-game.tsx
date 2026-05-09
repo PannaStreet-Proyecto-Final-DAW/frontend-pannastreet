@@ -16,20 +16,26 @@ const SCORE_CONFIG = {
   attempts: { Male: 10, Female: 10, Both: 15 }
 } as const
 
-interface PlayerData {
-  name: string
-  team: string
-  league: string
-  nationality: string
-  position: string
-  age: number
-  tier: number
+import { Player } from "@/lib/api"
+
+const leaguePairs: Record<string, string> = {
+  "la liga": "liga f",
+  "liga f": "la liga",
+  "premier league": "wsl",
+  "wsl": "premier league",
+  "ligue 1": "premiere ligue",
+  "premiere ligue": "ligue 1",
+  "bundesliga": "frauen bundesliga",
+  "frauen bundesliga": "bundesliga",
+  "serie a (m)": "serie a (f)",
+  "serie a (f)": "serie a (m)",
 }
 
 interface GuessThePlayerGameProps {
   difficulty: string
   mode: string
-  players: PlayerData[]
+  players: Player[]
+  allPlayers: Player[]
   onGameOver: (won: boolean, targetPlayer: any, score: number) => void
   isGameOver: boolean
 }
@@ -38,14 +44,15 @@ export function GuessThePlayerGame({
   difficulty,
   mode,
   players,
+  allPlayers,
   onGameOver,
   isGameOver
 }: GuessThePlayerGameProps) {
   // --- GAME STATES ---
-  const [targetPlayer, setTargetPlayer] = useState<PlayerData>(players[0]) // The player to guess
+  const [targetPlayer, setTargetPlayer] = useState<Player>(players[0]) // The player to guess
   const [guesses, setGuesses] = useState<Guess[]>([])           // List of attempts made
   const [currentGuess, setCurrentGuess] = useState("")          // What the user types in the input
-  const [suggestions, setSuggestions] = useState<PlayerData[]>([]) // List of names appearing while typing
+  const [suggestions, setSuggestions] = useState<Player[]>([]) // List of names appearing while typing
   const [error, setError] = useState<string | null>(null)       // Error message if player not found
 
   // --- INITIALIZATION ---
@@ -58,6 +65,25 @@ export function GuessThePlayerGame({
   }, [players])
 
   /**
+   * Helper to normalize strings for comparison (removes accents/diacritics)
+   */
+  const normalizeString = (str: string) => {
+    if (!str) return ""
+    return str
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[đð]/g, "d")
+      .replace(/[ł]/g, "l")
+      .replace(/[ß]/g, "ss")
+      .replace(/[ø]/g, "o")
+      .replace(/[þ]/g, "th")
+      .replace(/[ț]/g, "t")
+      .replace(/[ș]/g, "s")
+      .replace(/[ş]/g, "s")
+      .toLowerCase()
+  }
+
+  /**
    * Handles text input changes.
    * Filters the player list to show suggestions.
    */
@@ -65,14 +91,14 @@ export function GuessThePlayerGame({
     setCurrentGuess(value)
     setError(null) // Clear error when user types again
     if (value.length >= 3) {
-      const filtered = players.filter((p) => {
-        const nameLower = p.name.toLowerCase()
-        const searchLower = value.toLowerCase()
-        const matchesSearch = nameLower.startsWith(searchLower) || nameLower.split(" ").some(w => w.startsWith(searchLower))
-        const notGuessed = !guesses.some((g) => g.name.toLowerCase() === p.name.toLowerCase())
+      const searchNormalized = normalizeString(value)
+      const filtered = allPlayers.filter((p) => {
+        const nameNormalized = normalizeString(p.name)
+        const matchesSearch = nameNormalized.includes(searchNormalized)
+        const notGuessed = !guesses.some((g) => normalizeString(g.name) === nameNormalized)
         return matchesSearch && notGuessed
       })
-      setSuggestions(filtered.slice(0, 5)) // Show a maximum of 5 suggestions
+      setSuggestions(filtered.slice(0, 5))
     } else {
       setSuggestions([])
     }
@@ -88,7 +114,7 @@ export function GuessThePlayerGame({
 
     // Find the full data of the player the user typed/selected.
     // If the user types a name not in our PLAYERS list, 'find' returns undefined.
-    const player = players.find((p) => p.name.toLowerCase() === playerName.toLowerCase())
+    const player = allPlayers.find((p) => p.name.toLowerCase() === playerName.toLowerCase())
     
     // SAFETY CHECK: If the player wasn't found, we notify the user and exit.
     if (!player) {
@@ -101,12 +127,24 @@ export function GuessThePlayerGame({
 
     // --- HINT CALCULATION ---
     // Compare each field. If it matches -> "correct", otherwise -> "wrong".
-    // For age, we indicate if it's "higher" or "lower" than the target.
+    // For Guess the Player, we only compare the generalPosition.
+    const isCorrectPosition = player.generalPosition === targetPlayer.generalPosition;
+
+    const playerLeague = (player.league || "").trim().toLowerCase();
+    const targetLeague = (targetPlayer.league || "").trim().toLowerCase();
+    
+    let leagueStatus: "correct" | "wrong" | "partial" = "wrong";
+    if (playerLeague === targetLeague) {
+      leagueStatus = "correct";
+    } else if (mode === "Both" && leaguePairs[playerLeague] === targetLeague) {
+      leagueStatus = "partial";
+    }
+
     const hints: Guess["hints"] = {
-      team: player.team === targetPlayer.team ? "correct" : "wrong",
-      league: player.league === targetPlayer.league ? "correct" : "wrong",
-      nationality: player.nationality === targetPlayer.nationality ? "correct" : "wrong",
-      position: player.position === targetPlayer.position ? "correct" : "wrong",
+      team: (player.team || "").trim().toLowerCase() === (targetPlayer.team || "").trim().toLowerCase() ? "correct" : "wrong",
+      league: leagueStatus,
+      nationality: (player.nationality || "").trim().toLowerCase() === (targetPlayer.nationality || "").trim().toLowerCase() ? "correct" : "wrong",
+      position: isCorrectPosition ? "correct" : "wrong",
       age: player.age === targetPlayer.age ? "correct" : player.age > targetPlayer.age ? "lower" : "higher",
     }
 
@@ -174,7 +212,7 @@ export function GuessThePlayerGame({
       )}
 
       {/* History table */}
-      <GuessesTable guesses={guesses} players={players} />
+      <GuessesTable guesses={guesses} players={allPlayers} />
 
       {/* Legend for the colors */}
       <div className="mt-6 flex items-center justify-center gap-4 text-xs font-medium">

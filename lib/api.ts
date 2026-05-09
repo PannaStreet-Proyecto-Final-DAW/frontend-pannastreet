@@ -35,24 +35,56 @@ export interface UserLeagueMembership {
 }
 
 /**
- * Player: Represents a professional player in the system database.
+ * Player: Represents a professional player in the system database (Standardized DTO).
  */
 export interface Player {
   id: string
   name: string
-  position: string
+  age: number
+  tier: number
+  team: string
   nationality: string
-  teamId: string
+  position: string[]
+  generalPosition: "GOALKEEPER" | "DEFENDER" | "MIDFIELDER" | "FORWARD"
+  pictureUrl: string | null
+  gender: "male" | "female"
+  league: string
 }
 
 /**
- * Team: Represents a professional club/team.
+ * Team: Represents a professional club/team (Standardized DTO).
  */
 export interface Team {
   id: string
   name: string
+  tier: number
+  pictureUrl: string | null
+  league: string
+  gender: "male" | "female"
   country: string
-  leagueId: string
+}
+
+/**
+ * League: Represents a professional league (Standardized DTO).
+ */
+export interface League {
+  id: string
+  name: string
+  category: "male" | "female"
+  country: string
+  pictureUrl: string | null
+}
+
+/**
+ * Formation: Represents a tactical formation (Standardized DTO).
+ */
+export interface Formation {
+  id: string
+  name: string
+  goalkeeper: string
+  defenders: string[]
+  midfielders: string[]
+  forwards: string[]
 }
 
 /**
@@ -159,14 +191,31 @@ export async function deleteMembership(id: string): Promise<{ message: string }>
 }
 
 /**
- * --- CORE ENTITIES API ---
+ * --- CORE ENTITIES API (WITH MEMORY CACHE) ---
  */
+
+// Simple singleton cache to avoid redundant network requests across different game pages
+const apiCache: {
+  players: Player[] | null;
+  teams: Team[] | null;
+  formations: Formation[] | null;
+  leagues: League[] | null;
+} = {
+  players: null,
+  teams: null,
+  formations: null,
+  leagues: null
+};
 
 /**
  * getAllPlayers: Fetches the complete database of professional players.
+ * Uses cache if available to optimize loading between games.
  */
 export async function getAllPlayers(): Promise<Player[]> {
-  return fetchApi("/player")
+  if (apiCache.players) return apiCache.players;
+  const players = await fetchApi("/player");
+  apiCache.players = players;
+  return players;
 }
 
 /**
@@ -180,7 +229,10 @@ export async function getPlayerById(id: string): Promise<Player> {
  * getAllTeams: Fetches the complete list of teams/clubs.
  */
 export async function getAllTeams(): Promise<Team[]> {
-  return fetchApi("/team")
+  if (apiCache.teams) return apiCache.teams;
+  const teams = await fetchApi("/team");
+  apiCache.teams = teams;
+  return teams;
 }
 
 /**
@@ -188,4 +240,24 @@ export async function getAllTeams(): Promise<Team[]> {
  */
 export async function getTeamById(id: string): Promise<Team> {
   return fetchApi(`/team/id/${id}`)
+}
+
+/**
+ * getAllLeagues: Fetches all professional leagues.
+ */
+export async function getAllLeagues(): Promise<League[]> {
+  if (apiCache.leagues) return apiCache.leagues;
+  const leagues = await fetchApi("/league");
+  apiCache.leagues = leagues;
+  return leagues;
+}
+
+/**
+ * getAllFormations: Fetches all tactical formations.
+ */
+export async function getAllFormations(): Promise<Formation[]> {
+  if (apiCache.formations) return apiCache.formations;
+  const formations = await fetchApi("/formation");
+  apiCache.formations = formations;
+  return formations;
 }

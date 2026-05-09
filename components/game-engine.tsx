@@ -75,8 +75,8 @@ export function GameEngine({
     // 1. Notify the game logic to reset (clear attempts, pick new target)
     onReset()
     
-    // 2. Note: We don't reset 'isStarted' because we want the user to stay 
-    // in the game view for a quick rematch, without seeing the rules again.
+    // 2. Reset isStarted to show the intro card again
+    setIsStarted(false)
   }
 
   return (
