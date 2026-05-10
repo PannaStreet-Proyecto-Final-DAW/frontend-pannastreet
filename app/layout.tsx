@@ -10,12 +10,12 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'PannaMaster - Football Games',
+  title: 'PannaStreet - Football Games',
   description: 'Daily football games - Guess the Player, Trivia, 11 Clubs and more',
   generator: 'v0.app',
   icons: {
-    icon: '/icon.jpg',
-    apple: '/icon.jpg',
+    icon: '/icon.png',
+    apple: '/icon.png',
   },
 }
 

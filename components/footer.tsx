@@ -18,10 +18,10 @@ export function Footer() {
           {/* --- LEFT SECTION: BRAND & COPYRIGHT --- */}
           <div className="flex flex-col items-center md:items-start gap-2">
             <div className="flex items-center gap-2">
-              <span className="font-bold text-lg text-primary tracking-tight">PannaMaster</span>
+              <span className="font-bold text-lg text-primary tracking-tight">PannaStreet</span>
             </div>
             <p className="text-xs text-muted-foreground">
-              © {new Date().getFullYear()} PannaMaster. All rights reserved.
+              © {new Date().getFullYear()} PannaStreet. All rights reserved.
             </p>
           </div>
 
