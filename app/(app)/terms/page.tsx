@@ -26,7 +26,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-base font-bold text-primary mb-2 uppercase italic tracking-tight">1. Acceptance of the Agreement</h2>
             <p>
-              By accessing PannaMaster, you agree to comply with and be bound by the following terms. These terms govern your relationship with our platform. We reserve the right to modify these terms at any time, and your continued use of the site signifies your acceptance of any changes.
+              By accessing PannaStreet, you agree to comply with and be bound by the following terms. These terms govern your relationship with our platform. We reserve the right to modify these terms at any time, and your continued use of the site signifies your acceptance of any changes.
             </p>
           </section>
 
@@ -45,14 +45,14 @@ export default function TermsPage() {
           <section>
             <h2 className="text-base font-bold text-primary mb-2 uppercase italic tracking-tight">3. Fair Play Policy</h2>
             <p>
-              PannaMaster is built on the spirit of football competition. Any form of cheating, including the use of bots, scripts, or external databases to gain an unfair advantage in games like "Guess the Player" or "11 Clubs", is strictly prohibited and will result in immediate account suspension.
+              PannaStreet is built on the spirit of football competition. Any form of cheating, including the use of bots, scripts, or external databases to gain an unfair advantage in games like "Guess the Player" or "11 Clubs", is strictly prohibited and will result in immediate account suspension.
             </p>
           </section>
 
           <section>
             <h2 className="text-base font-bold text-primary mb-2 uppercase italic tracking-tight">4. Intellectual Property</h2>
             <p>
-              The PannaMaster brand, our unique game mechanics, code, graphics, and interface are the exclusive property of the development team. Unauthorized reproduction or distribution of any part of this platform is a violation of copyright laws.
+              The PannaStreet brand, our unique game mechanics, code, graphics, and interface are the exclusive property of the development team. Unauthorized reproduction or distribution of any part of this platform is a violation of copyright laws.
             </p>
           </section>
 
@@ -66,13 +66,13 @@ export default function TermsPage() {
           <section>
             <h2 className="text-base font-bold text-primary mb-2 uppercase italic tracking-tight">6. Limitation of Liability</h2>
             <p>
-              PannaMaster is provided "as is". We are not liable for any direct or indirect damages resulting from your use of the platform, including but not limited to loss of data or emotional distress from losing a 90th-minute trivia challenge.
+              PannaStreet is provided "as is". We are not liable for any direct or indirect damages resulting from your use of the platform, including but not limited to loss of data or emotional distress from losing a 90th-minute trivia challenge.
             </p>
           </section>
         </div>
 
         <div className="mt-12 pt-6 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] md:text-xs font-medium">
-          <p className="text-muted-foreground">© {new Date().getFullYear()} PannaMaster Legal Team</p>
+          <p className="text-muted-foreground">© {new Date().getFullYear()} PannaStreet Legal Team</p>
           <p className="text-primary">Last updated: May 9, 2026</p>
         </div>
       </div>

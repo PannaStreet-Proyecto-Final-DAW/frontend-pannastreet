@@ -97,15 +97,15 @@ export default function AuthPage() {
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center mb-4">
             <Image
-              src="/icon.jpg"
-              alt="PannaMaster Logo"
+              src="/icon.png"
+              alt="PannaStreet Logo"
               width={80}
               height={80}
               className="rounded-full shadow-lg"
               priority
             />
           </div>
-          <h1 className="text-3xl font-bold text-foreground">PannaMaster</h1>
+          <h1 className="text-3xl font-bold text-foreground">PannaStreet</h1>
           <p className="text-white mt-1">Daily Football Games</p>
         </div>
 

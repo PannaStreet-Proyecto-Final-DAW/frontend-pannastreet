@@ -26,15 +26,15 @@ export default function AboutPage() {
       <header className="mb-16 text-center">
         <div className="inline-flex items-center justify-center mb-6">
           <Image
-            src="/icon.jpg"
-            alt="PannaMaster Logo"
+            src="/icon.png"
+            alt="PannaStreet Logo"
             width={100}
             height={100}
             className="rounded-full shadow-2xl border-2 border-primary/20"
           />
         </div>
         <h1 className="text-5xl md:text-7xl font-black italic tracking-tighter uppercase text-primary leading-none mb-4">
-          About PannaMaster
+          About PannaStreet
         </h1>
         <p className="text-xl text-white/80 max-w-2xl mx-auto font-medium">
           The ultimate daily challenge for football fans worldwide.
@@ -45,7 +45,7 @@ export default function AboutPage() {
         <div className="space-y-6">
           <h2 className="text-3xl font-bold text-white uppercase italic tracking-tight">Our Mission</h2>
           <p className="text-muted-foreground leading-relaxed text-lg">
-            PannaMaster was born from the passion for the beautiful game. Our mission is to provide football enthusiasts with a daily dose of excitement through brain-teasing games and competitive leagues.
+            PannaStreet was born from the passion for the beautiful game. Our mission is to provide football enthusiasts with a daily dose of excitement through brain-teasing games and competitive leagues.
           </p>
           <p className="text-muted-foreground leading-relaxed text-lg">
             Whether you're testing your knowledge in "Guess the Player", strategy in "11 Clubs", or speed in "Trivia", we aim to be the first destination for your morning football fix.
@@ -71,7 +71,7 @@ export default function AboutPage() {
               <Trophy className="w-20 h-20 text-primary mx-auto animate-bounce" style={{ animationDuration: '3s' }} />
               <h3 className="text-2xl font-black italic uppercase tracking-tighter text-white">Join the Elite</h3>
               <p className="text-muted-foreground">
-                Compete in global leagues, create private groups with your friends, and prove that you are the ultimate PannaMaster.
+                Compete in global leagues, create private groups with your friends, and prove that you are the ultimate PannaStreet.
               </p>
               <Link href="/games" className="inline-block w-full">
                 <button className="w-full bg-primary text-primary-foreground font-black py-4 rounded-xl text-sm hover:scale-[1.02] transition-transform shadow-lg uppercase tracking-widest">
@@ -89,7 +89,7 @@ export default function AboutPage() {
           The Team
         </h2>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-10">
-          PannaMaster is developed by a dedicated group of football fans and software engineers who believe that every fan deserves a premium experience to test their football IQ daily.
+          PannaStreet is developed by a dedicated group of football fans and software engineers who believe that every fan deserves a premium experience to test their football IQ daily.
         </p>
         <div className="flex justify-center gap-6">
           <div className="w-16 h-16 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-black">AC</div>

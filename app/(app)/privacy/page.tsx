@@ -52,7 +52,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-lg font-bold text-primary mb-2 uppercase italic tracking-tight">Cookie Policy</h2>
             <p>
-              We use small text files called cookies to remember your login session and your UI preferences. These cookies are essential for the site to function correctly. By using PannaMaster, you consent to our use of these technical cookies.
+              We use small text files called cookies to remember your login session and your UI preferences. These cookies are essential for the site to function correctly. By using PannaStreet, you consent to our use of these technical cookies.
             </p>
           </section>
 
@@ -72,7 +72,7 @@ export default function PrivacyPage() {
         </div>
 
         <div className="mt-12 pt-6 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] md:text-xs font-medium">
-          <p className="text-muted-foreground">© {new Date().getFullYear()} PannaMaster Security Team</p>
+          <p className="text-muted-foreground">© {new Date().getFullYear()} PannaStreet Security Team</p>
           <p className="text-primary">Last updated: May 9, 2026</p>
         </div>
       </div>

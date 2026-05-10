@@ -61,15 +61,15 @@ export function Navbar() {
         <Link href="/games" className="flex items-center gap-3">
           <div className="flex items-center justify-center shrink-0">
             <Image 
-              src="/icon.jpg" 
-              alt="PannaMaster Logo" 
+              src="/icon.png" 
+              alt="PannaStreet Logo" 
               width={42} 
               height={42} 
               className="rounded-full shadow-md"
               priority
             />
           </div>
-          <span className="font-bold text-lg text-primary tracking-tight">PannaMaster</span>
+          <span className="font-bold text-lg text-primary tracking-tight">PannaStreet</span>
         </Link>
 
         {/* --- NAVIGATION LINKS --- */}
