@@ -61,7 +61,7 @@ export function Navbar() {
         <Link href="/games" className="flex items-center gap-3">
           <div className="flex items-center justify-center shrink-0">
             <Image 
-              src="/icon.png" 
+              src="/icon.webp" 
               alt="PannaStreet Logo" 
               width={42} 
               height={42} 
