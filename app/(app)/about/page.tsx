@@ -26,7 +26,7 @@ export default function AboutPage() {
       <header className="mb-16 text-center">
         <div className="inline-flex items-center justify-center mb-6">
           <Image
-            src="/icon.png"
+            src="/icon.webp"
             alt="PannaStreet Logo"
             width={100}
             height={100}
