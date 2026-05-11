@@ -1,12 +1,14 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import Image from "next/image"
 import { useAuth } from "@/lib/auth-context"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { FieldGroup, Field, FieldLabel } from "@/components/ui/field"
+import { ThemeToggle } from "@/components/theme-toggle"
 import { Spinner } from "@/components/ui/spinner"
 
 export default function AuthPage() {
@@ -16,14 +18,24 @@ export default function AuthPage() {
   const [userName, setUserName] = useState("")
   const [error, setError] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
-  
+
   const { login, register, user, isLoading } = useAuth()
   const router = useRouter()
 
-  // Redirect if already logged in
-  if (!isLoading && user) {
-    router.push("/games")
-    return null
+  useEffect(() => {
+    if (!isLoading && user) {
+      router.push("/games")
+    }
+  }, [isLoading, user, router])
+
+  const validatePassword = (pass: string) => {
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/
+    return regex.test(pass)
+  }
+
+  const validateEmail = (emailStr: string) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return regex.test(emailStr)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -44,6 +56,19 @@ export default function AuthPage() {
         setIsSubmitting(false)
         return
       }
+
+      if (!validateEmail(email)) {
+        setError("Please enter a valid email address")
+        setIsSubmitting(false)
+        return
+      }
+
+      if (!validatePassword(password)) {
+        setError("Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, and a number.")
+        setIsSubmitting(false)
+        return
+      }
+
       const result = await register(userName, email, password)
       if (result.success) {
         router.push("/games")
@@ -54,38 +79,34 @@ export default function AuthPage() {
     setIsSubmitting(false)
   }
 
-  if (isLoading) {
+  if (isLoading || user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="min-h-screen flex items-center justify-center bg-transparent">
         <Spinner className="h-8 w-8 text-primary" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+    <div className="flex-1 flex items-center justify-center bg-transparent p-4 relative">
+      <div className="absolute top-6 right-6 z-10">
+        <ThemeToggle />
+      </div>
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
-            <svg
-              className="w-8 h-8 text-primary"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <circle cx="12" cy="12" r="10" strokeWidth="2" />
-              <path
-                strokeWidth="2"
-                d="M12 2C12 2 14.5 5.5 14.5 8.5C14.5 11.5 12 14 12 14C12 14 9.5 11.5 9.5 8.5C9.5 5.5 12 2 12 2Z"
-              />
-              <path strokeWidth="2" d="M2.5 9.5L7 12L2.5 14.5" />
-              <path strokeWidth="2" d="M21.5 9.5L17 12L21.5 14.5" />
-              <path strokeWidth="2" d="M7 19L12 15L17 19" />
-            </svg>
+          <div className="inline-flex items-center justify-center mb-4">
+            <Image
+              src="/icon.png"
+              alt="PannaStreet Logo"
+              width={80}
+              height={80}
+              className="rounded-full shadow-lg"
+              priority
+            />
           </div>
-          <h1 className="text-3xl font-bold text-foreground">PannaMaster</h1>
-          <p className="text-muted-foreground mt-1">Daily Football Games</p>
+          <h1 className="text-3xl font-bold text-foreground">PannaStreet</h1>
+          <p className="text-white mt-1">Daily Football Games</p>
         </div>
 
         <Card className="border-border bg-card">
@@ -112,6 +133,7 @@ export default function AuthPage() {
                       value={userName}
                       onChange={(e) => setUserName(e.target.value)}
                       required={!isLogin}
+                      autoComplete="username"
                       className="bg-input border-border"
                     />
                   </Field>
@@ -125,6 +147,7 @@ export default function AuthPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    autoComplete="email"
                     className="bg-input border-border"
                   />
                 </Field>
@@ -137,9 +160,14 @@ export default function AuthPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    minLength={6}
+                    autoComplete={isLogin ? "current-password" : "new-password"}
                     className="bg-input border-border"
                   />
+                  {!isLogin && (
+                    <p className="text-[10px] text-muted-foreground mt-1">
+                      Min 8 characters, with uppercase, lowercase and a number.
+                    </p>
+                  )}
                 </Field>
               </FieldGroup>
 
@@ -179,8 +207,8 @@ export default function AuthPage() {
           </CardContent>
         </Card>
 
-        <p className="text-center text-xs text-muted-foreground mt-6">
-          Play Wordle, Trivia, 11 Clubs and more football games daily
+        <p className="text-center text-xs text-white mt-6">
+          Play Guess the Player, 11 Clubs and more football games daily
         </p>
       </div>
     </div>

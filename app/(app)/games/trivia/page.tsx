@@ -1,10 +1,13 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
+
+import { GameLayout } from "@/components/game-layout"
+import { GameIntroCard } from "@/components/game-intro-card"
+import { GameResultCard } from "@/components/game-result-card"
 
 // Sample trivia questions - in production, fetch from API
 const TRIVIA_QUESTIONS = [
@@ -144,99 +147,86 @@ export default function TriviaPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="mb-6">
-        <Link href="/games" className="text-muted-foreground hover:text-primary text-sm flex items-center gap-1">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-          </svg>
-          Back to Games
-        </Link>
-      </div>
-
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Football Trivia</h1>
-        <p className="text-muted-foreground">
-          Test your football knowledge with daily questions
-        </p>
-      </div>
-
+    <GameLayout
+      backHref="/games"
+      backText="Back to Games"
+      showSurrender={isStarted && !gameState.isComplete}
+      onSurrender={() => console.log("Surrender")}
+    >
       {!isStarted ? (
-        <Card className="border-border bg-card">
-          <CardContent className="pt-6 text-center">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
-              <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" strokeWidth="2" />
-                <path strokeWidth="2" d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3" />
-                <circle cx="12" cy="17" r="0.5" className="fill-current" />
-              </svg>
+        <GameIntroCard
+          gameId="trivia"
+          title={
+            <>
+              <span className="text-primary">FOOTBALL</span> <span className="text-black dark:text-white tracking-normal uppercase">TRIVIA</span>
+            </>
+          }
+          image="/images/games/trivia.png"
+          description={
+            <div className="space-y-4">
+              <p className="text-white font-medium">
+                Prove your status as a football historian with our daily knowledge test.
+              </p>
+              <p className="text-black/80 dark:text-muted-foreground leading-relaxed">
+                Face a curated set of <strong>5 challenging questions</strong> covering everything from World Cup records and Champions League legends to iconic stadiums and Premier League history.
+              </p>
             </div>
-            <h2 className="text-xl font-bold text-card-foreground mb-2">Ready to Play?</h2>
-            <p className="text-muted-foreground mb-6">
-              Answer 5 questions about football history, players, and teams.
-            </p>
-            <Button onClick={() => setIsStarted(true)} className="bg-primary text-primary-foreground">
-              Start Trivia
-            </Button>
-          </CardContent>
-        </Card>
+          }
+          onStart={() => setIsStarted(true)}
+        />
       ) : gameState.isComplete ? (
-        <Card className="border-border bg-card">
-          <CardContent className="pt-6 text-center">
-            <div className={cn(
-              "w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center",
-              gameState.score >= questions.length * 0.6 ? "bg-primary/20" : "bg-secondary"
-            )}>
-              <span className="text-3xl font-bold text-primary">
-                {gameState.score}/{questions.length}
-              </span>
-            </div>
-            <h2 className="text-2xl font-bold text-card-foreground mb-2">
-              {gameState.score >= questions.length * 0.8 ? "Amazing!" : gameState.score >= questions.length * 0.5 ? "Good job!" : "Nice try!"}
-            </h2>
-            <p className="text-muted-foreground mb-6">{getScoreMessage()}</p>
-            
-            {/* Results breakdown */}
-            <div className="mb-6 space-y-2">
-              {questions.map((q, i) => (
-                <div
-                  key={i}
-                  className={cn(
-                    "flex items-center justify-between p-3 rounded-lg text-sm",
-                    gameState.answers[i] === q.correctAnswer
-                      ? "bg-primary/10 text-primary"
-                      : "bg-destructive/10 text-destructive"
-                  )}
-                >
-                  <span className="truncate max-w-[80%]">{q.question}</span>
-                  {gameState.answers[i] === q.correctAnswer ? (
-                    <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  )}
-                </div>
-              ))}
-            </div>
+        <GameResultCard
+          title={gameState.score >= questions.length * 0.8 ? "¡Increíble!" : gameState.score >= questions.length * 0.5 ? "¡Buen trabajo!" : "¡Buen intento!"}
+          subtitle={getScoreMessage()}
+          thanksMessage="¡Gracias por jugar! Nos vemos mañana"
+        >
+          <div className={cn(
+            "w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center",
+            gameState.score >= questions.length * 0.6 ? "bg-primary/20" : "bg-secondary"
+          )}>
+            <span className="text-3xl font-bold text-primary">
+              {gameState.score}/{questions.length}
+            </span>
+          </div>
 
-            <Button onClick={resetGame} className="bg-primary text-primary-foreground">
-              Play Again
-            </Button>
-          </CardContent>
-        </Card>
+          {/* Results breakdown */}
+          <div className="mb-6 space-y-2">
+            {questions.map((q, i) => (
+              <div
+                key={i}
+                className={cn(
+                  "flex items-center justify-between p-3 rounded-lg text-sm",
+                  gameState.answers[i] === q.correctAnswer
+                    ? "bg-primary/10 text-primary"
+                    : "bg-destructive/10 text-destructive"
+                )}
+              >
+                <span className="truncate max-w-[80%]">{q.question}</span>
+                {gameState.answers[i] === q.correctAnswer ? (
+                  <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                )}
+              </div>
+            ))}
+          </div>
+        </GameResultCard>
       ) : (
         <>
           {/* Progress */}
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-sm text-muted-foreground">
-              Question {gameState.currentQuestion + 1} of {questions.length}
+          <div className="relative flex items-center justify-between mb-4">
+            <span className="text-sm text-black dark:text-white font-medium">
+              Pregunta {gameState.currentQuestion + 1} de {questions.length}
             </span>
-            <span className="text-sm font-medium text-primary">
-              Score: {gameState.score}
-            </span>
+            <div className="flex items-center gap-4">
+              <span className="text-sm font-medium text-primary">
+                Score: {gameState.score}
+              </span>
+            </div>
           </div>
           <div className="w-full h-2 bg-secondary rounded-full mb-6 overflow-hidden">
             <div
@@ -272,10 +262,10 @@ export default function TriviaPage() {
                         showCorrect
                           ? "border-primary bg-primary/10 text-primary"
                           : showWrong
-                          ? "border-destructive bg-destructive/10 text-destructive"
-                          : isSelected
-                          ? "border-primary bg-primary/5 text-card-foreground"
-                          : "border-border bg-secondary/30 text-card-foreground hover:border-primary/50"
+                            ? "border-destructive bg-destructive/10 text-destructive"
+                            : isSelected
+                              ? "border-primary bg-primary/5 text-card-foreground"
+                              : "border-border bg-secondary/30 text-card-foreground hover:border-primary/50"
                       )}
                     >
                       <div className="flex items-center justify-between">
@@ -302,12 +292,12 @@ export default function TriviaPage() {
           <Button
             onClick={handleSubmitAnswer}
             disabled={selectedAnswer === null || showResult}
-            className="w-full bg-primary text-primary-foreground"
+            className="w-full bg-primary text-primary-foreground h-12 rounded-xl font-bold uppercase tracking-wider"
           >
             {showResult ? "Loading next question..." : "Submit Answer"}
           </Button>
         </>
       )}
-    </div>
+    </GameLayout>
   )
 }

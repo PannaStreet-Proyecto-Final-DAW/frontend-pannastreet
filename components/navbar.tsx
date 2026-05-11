@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import Image from "next/image"
 import { useAuth } from "@/lib/auth-context"
 import { Button } from "@/components/ui/button"
 import {
@@ -11,114 +12,182 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { ThemeToggle } from "@/components/theme-toggle"
 import { cn } from "@/lib/utils"
+import { useRouter } from "next/navigation"
 
 const navLinks = [
   { href: "/games", label: "Games" },
   { href: "/leagues", label: "Leagues" },
 ]
 
+/**
+ * Navbar Component
+ * 
+ * This is the main navigation header for the application.
+ * It provides links to different modules, a theme toggle, and a user profile dropdown.
+ */
 export function Navbar() {
+  /**
+   * Access authentication context for user data and logout functionality.
+   */
   const { user, logout } = useAuth()
+  
+  /**
+   * usePathname: Hook to get the current URL path.
+   * Used to highlight the active link in the navigation menu.
+   */
   const pathname = usePathname()
 
+  /**
+   * handleLogout: Handles the sign-out process.
+   * Clears session data and redirects the user to the landing page.
+   */
+  const router = useRouter()
+
+  /**
+   * handleLogout: Handles the sign-out process.
+   * Clears session data and redirects the user to the landing page.
+   */
   const handleLogout = () => {
     logout()
     window.location.href = "/"
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        {/* Logo */}
-        <Link href="/games" className="flex items-center gap-2">
-          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10">
-            <svg
-              className="w-4 h-4 text-primary"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <circle cx="12" cy="12" r="10" strokeWidth="2" />
-              <path
-                strokeWidth="2"
-                d="M12 2C12 2 14.5 5.5 14.5 8.5C14.5 11.5 12 14 12 14C12 14 9.5 11.5 9.5 8.5C9.5 5.5 12 2 12 2Z"
-              />
-            </svg>
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-card/90 backdrop-blur-md shadow-sm">
+      <div className="container mx-auto flex h-[72px] items-center justify-between px-6">
+        {/* --- LOGO SECTION --- */}
+        <Link href="/games" className="flex items-center gap-3">
+          <div className="flex items-center justify-center shrink-0">
+            <Image 
+              src="/icon.png" 
+              alt="PannaStreet Logo" 
+              width={42} 
+              height={42} 
+              className="rounded-full shadow-md"
+              priority
+            />
           </div>
-          <span className="font-bold text-foreground hidden sm:inline">PannaMaster</span>
+          <span className="font-bold text-lg text-primary tracking-tight">PannaStreet</span>
         </Link>
 
-        {/* Navigation */}
-        <nav className="flex items-center gap-1">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={cn(
-                "px-4 py-2 rounded-lg text-sm font-medium transition-colors",
-                pathname === link.href || pathname.startsWith(link.href + "/")
-                  ? "bg-primary/10 text-primary"
-                  : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-              )}
-            >
-              {link.label}
-            </Link>
-          ))}
+        {/* --- NAVIGATION LINKS --- */}
+        <nav className="flex items-center gap-2">
+          {pathname === "/profile" ? (
+            <div className="px-4 py-2 rounded-xl text-sm font-bold bg-primary/10 text-primary shadow-sm">
+              Edit Profile
+            </div>
+          ) : (
+            navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                /**
+                 * Dynamic Styling:
+                 * 1. If active: Apply primary background/text and a subtle shadow.
+                 * 2. If inactive: Use muted colors with a hover effect.
+                 * 3. Mode awareness: In dark mode, inactive links turn white as per user preference.
+                 */
+                className={cn(
+                  "px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200",
+                  pathname === link.href || pathname.startsWith(link.href + "/")
+                    ? "bg-primary/10 text-primary shadow-sm"
+                    : "text-muted-foreground dark:text-white hover:text-primary hover:bg-primary/5"
+                )}
+              >
+                {link.label}
+              </Link>
+            ))
+          )}
         </nav>
 
-        {/* User Menu */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              className="flex items-center gap-2 text-foreground hover:bg-secondary"
-            >
-              <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                <span className="text-sm font-medium text-primary">
-                  {user?.userName?.charAt(0).toUpperCase()}
+        {/* --- USER ACTIONS & SETTINGS --- */}
+        <div className="flex items-center gap-2">
+          {/* ThemeToggle: Component to switch between Light and Dark modes */}
+          <ThemeToggle />
+          
+          {/* User Profile Dropdown Menu */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="flex items-center gap-3 py-4 px-3 h-auto text-muted-foreground hover:bg-primary/5 hover:text-primary rounded-xl transition-all"
+              >
+                {/* User Avatar: Displays the first letter of the username */}
+                <div className="w-9 h-9 rounded-full bg-primary/20 flex items-center justify-center border border-primary/10 shadow-inner">
+                  <span className="text-sm font-bold text-primary">
+                    {user?.userName?.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+                {/* Username label (hidden on small mobile screens) */}
+                <span className="hidden md:inline text-sm font-semibold">
+                  {user?.userName}
                 </span>
+                {/* Downward arrow icon for the dropdown */}
+                <svg
+                  className="w-4 h-4 text-muted-foreground"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </Button>
+            </DropdownMenuTrigger>
+            
+            {/* Dropdown Content */}
+            <DropdownMenuContent align="end" className="w-48 bg-popover border-border">
+              {/* User Identity Header */}
+              <div className="px-3 py-2">
+                <p className="text-sm font-medium text-popover-foreground">{user?.userName}</p>
+                <p className="text-xs text-muted-foreground">{user?.email}</p>
               </div>
-              <span className="hidden sm:inline text-sm font-medium">
-                {user?.userName}
-              </span>
-              <svg
-                className="w-4 h-4 text-muted-foreground"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+              <DropdownMenuSeparator />
+              {/* Edit Profile Action */}
+              <DropdownMenuItem
+                onClick={() => router.push("/profile")}
+                className="cursor-pointer"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-              </svg>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48 bg-popover border-border">
-            <div className="px-3 py-2">
-              <p className="text-sm font-medium text-popover-foreground">{user?.userName}</p>
-              <p className="text-xs text-muted-foreground">{user?.email}</p>
-            </div>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={handleLogout}
-              className="text-destructive cursor-pointer focus:text-destructive"
-            >
-              <svg
-                className="w-4 h-4 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+                <svg
+                  className="w-4 h-4 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
+                </svg>
+                Edit Profile
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              {/* Sign Out Action */}
+              <DropdownMenuItem
+                onClick={handleLogout}
+                className="text-destructive cursor-pointer focus:text-destructive"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                />
-              </svg>
-              Sign out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+                <svg
+                  className="w-4 h-4 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                  />
+                </svg>
+                Sign out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
     </header>
   )

@@ -1,8 +1,7 @@
 "use client"
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react"
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
+import { fetchApi } from "./httpClient"
 
 export interface User {
   id: string
@@ -17,6 +16,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>
   register: (userName: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>
   logout: () => void
+  updateUser: (id: string, userName: string, email: string, password?: string, currentPassword?: string) => Promise<{ success: boolean; error?: string }>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -35,17 +35,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/user/email/${encodeURIComponent(email)}`)
-      
-      if (!response.ok) {
-        if (response.status === 404) {
-          return { success: false, error: "User not found" }
-        }
-        return { success: false, error: "Server error" }
-      }
+      const userData = await fetchApi(`/user/email/${encodeURIComponent(email)}`)
 
-      const userData = await response.json()
-      
       // Note: In production, password verification should be done server-side
       // For now, we trust the backend to handle this properly
       const loggedInUser: User = {
@@ -58,18 +49,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(loggedInUser)
       localStorage.setItem("user", JSON.stringify(loggedInUser))
       return { success: true }
-    } catch {
-      return { success: false, error: "Connection error. Please check your backend is running." }
+    } catch (error: any) {
+      return { success: false, error: error.message || "Connection error. Please check your backend is running." }
     }
   }
 
   const register = async (userName: string, email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/user`, {
+      const userData = await fetchApi("/user", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
         body: JSON.stringify({
           userName,
           email,
@@ -78,13 +66,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         })
       })
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        return { success: false, error: errorData.error || "Registration failed" }
-      }
-
-      const userData = await response.json()
-      
       const newUser: User = {
         id: userData.id,
         userName: userData.userName,
@@ -95,8 +76,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(newUser)
       localStorage.setItem("user", JSON.stringify(newUser))
       return { success: true }
-    } catch {
-      return { success: false, error: "Connection error. Please check your backend is running." }
+    } catch (error: any) {
+      return { success: false, error: error.message || "Registration failed" }
     }
   }
 
@@ -105,8 +86,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem("user")
   }
 
+  const updateUser = async (id: string, userName: string, email: string, password?: string, currentPassword?: string): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const body: any = { userName, email }
+      if (password) body.password = password
+      if (currentPassword) body.currentPassword = currentPassword
+
+      const userData = await fetchApi(`/user/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify(body)
+      })
+
+      const updatedUser: User = {
+        id: userData.id,
+        userName: userData.userName,
+        email: userData.email,
+        role: userData.role
+      }
+
+      setUser(updatedUser)
+      localStorage.setItem("user", JSON.stringify(updatedUser))
+      return { success: true }
+    } catch (error: any) {
+      return { success: false, error: error.message || "Failed to update profile" }
+    }
+  }
+
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, isLoading, login, register, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   )
