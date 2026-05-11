@@ -97,7 +97,7 @@ export default function AuthPage() {
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center mb-4">
             <Image
-              src="/icon.png"
+              src="/icon.webp"
               alt="PannaStreet Logo"
               width={80}
               height={80}

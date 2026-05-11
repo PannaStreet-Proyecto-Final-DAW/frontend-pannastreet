@@ -119,7 +119,7 @@ export default function GuessThePlayerPage() {
           <span className="text-primary">GUESS THE</span> <span className="text-black dark:text-white tracking-normal">PLAYER</span>
         </>
       }
-      image="/images/games/guess-the-player.png"
+      image="/images/games/guess-the-player.webp"
       description={
         <>
           <p className="mb-2">Guess the Player is a daily football game where you have 6 attempts to uncover the hidden football star.</p>

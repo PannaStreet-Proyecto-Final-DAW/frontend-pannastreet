@@ -161,7 +161,7 @@ export default function TriviaPage() {
               <span className="text-primary">FOOTBALL</span> <span className="text-black dark:text-white tracking-normal uppercase">TRIVIA</span>
             </>
           }
-          image="/images/games/trivia.png"
+          image="/images/games/trivia.webp"
           description={
             <div className="space-y-4">
               <p className="text-white font-medium">
