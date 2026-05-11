@@ -255,7 +255,12 @@ export function LeagueWindow({
 
           <div className="flex items-center gap-2">
             {/* --- RENAME LEAGUE ACTION --- */}
-            <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+            <Dialog open={editDialogOpen} onOpenChange={(open) => {
+              setEditDialogOpen(open)
+              if (!open) {
+                setEditedName(leagueName)
+              }
+            }}>
               <DialogTrigger asChild>
                 <Button
                   variant="ghost"
@@ -277,7 +282,7 @@ export function LeagueWindow({
                 </DialogHeader>
                 <form onSubmit={handleUpdateLeague} className="mt-4 space-y-6">
                   <Field>
-                    <FieldLabel className="text-[10px] uppercase tracking-widest font-black text-black/40 dark:text-muted-foreground/60">New League Name</FieldLabel>
+                    <FieldLabel className="text-[10px] uppercase tracking-widest font-black text-primary/70">New League Name</FieldLabel>
                     <Input
                       value={editedName}
                       onChange={(e) => setEditedName(e.target.value)}
