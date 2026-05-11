@@ -176,9 +176,9 @@ export default function TriviaPage() {
         />
       ) : gameState.isComplete ? (
         <GameResultCard
-          title={gameState.score >= questions.length * 0.8 ? "¡Increíble!" : gameState.score >= questions.length * 0.5 ? "¡Buen trabajo!" : "¡Buen intento!"}
+          title={gameState.score >= questions.length * 0.8 ? "Incredible!" : gameState.score >= questions.length * 0.5 ? "Good job!" : "Good try!"}
           subtitle={getScoreMessage()}
-          thanksMessage="¡Gracias por jugar! Nos vemos mañana"
+          thanksMessage="Thanks for playing! See you tomorrow"
         >
           <div className={cn(
             "w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center",
@@ -220,7 +220,7 @@ export default function TriviaPage() {
           {/* Progress */}
           <div className="relative flex items-center justify-between mb-4">
             <span className="text-sm text-black dark:text-white font-medium">
-              Pregunta {gameState.currentQuestion + 1} de {questions.length}
+              Question {gameState.currentQuestion + 1} of {questions.length}
             </span>
             <div className="flex items-center gap-4">
               <span className="text-sm font-medium text-primary">

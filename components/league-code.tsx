@@ -250,7 +250,7 @@ export function LeagueCode() {
                           if (inviteCodeError) setInviteCodeError(false)
                         }}
                         className={cn(
-                          "bg-muted/50 border-border h-12 rounded-lg text-center font-mono text-xl uppercase",
+                          "bg-muted/50 border-border h-12 rounded-lg text-center font-mono text-xl uppercase text-black dark:text-foreground",
                           inviteCodeError ? "border-destructive text-destructive" : ""
                         )}
                         placeholder="Enter code"
@@ -276,7 +276,12 @@ export function LeagueCode() {
               </Dialog>
 
               {/* --- CREATE LEAGUE DIALOG --- */}
-              <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
+              <Dialog open={createDialogOpen} onOpenChange={(open) => {
+                setCreateDialogOpen(open)
+                if (!open) {
+                  setNewLeagueName("")
+                }
+              }}>
                 <DialogTrigger asChild>
                   <Button className="bg-primary text-primary-foreground rounded-xl font-black italic uppercase text-[10px] tracking-widest h-10 px-6 shadow-lg shadow-primary/10 transition-all active:scale-95">
                     <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -288,15 +293,15 @@ export function LeagueCode() {
 
                 <DialogContent className="bg-white dark:bg-[#071a0c] border-border/30 rounded-[2rem] p-8 max-w-[450px]">
                   <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold">Create League</DialogTitle>
-                    <DialogDescription>
+                    <DialogTitle className="text-2xl font-bold text-primary">Create League</DialogTitle>
+                    <DialogDescription className="text-black/60 dark:text-muted-foreground font-medium">
                       Create a new league to compete with your friends.
                     </DialogDescription>
                   </DialogHeader>
 
                   <form onSubmit={handleCreateLeague} className="mt-4 space-y-4">
                     <Field>
-                      <FieldLabel className="text-sm font-semibold">League Name</FieldLabel>
+                      <FieldLabel className="text-sm font-semibold text-primary/70">League Name</FieldLabel>
                       <Input
                         id="league-name"
                         type="text"
@@ -305,7 +310,7 @@ export function LeagueCode() {
                         onChange={(e) => setNewLeagueName(e.target.value)}
                         required
                         autoComplete="off"
-                        className="bg-muted/50 border-border"
+                        className="bg-muted/50 border-border text-black dark:text-foreground"
                       />
                     </Field>
 

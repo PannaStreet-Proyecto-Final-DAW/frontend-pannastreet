@@ -6,8 +6,8 @@ import Link from "next/link"
 export default function PrivacyPage() {
   return (
     <div className="max-w-4xl mx-auto py-12 px-6 animate-in fade-in duration-700">
-      <Link 
-        href="/games" 
+      <Link
+        href="/games"
         className="inline-flex items-center gap-1 text-white hover:text-primary transition-colors mb-8 text-sm"
       >
         <ChevronLeft className="w-4 h-4" />
@@ -17,11 +17,11 @@ export default function PrivacyPage() {
       <div className="bg-card border border-border rounded-[2rem] p-8 md:p-12 shadow-2xl relative overflow-hidden">
         {/* Subtle decorative glow */}
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/5 blur-[100px] rounded-full pointer-events-none" />
-        
+
         <h1 className="text-2xl md:text-3xl font-black italic uppercase text-primary mb-8 tracking-tighter leading-none">
           Privacy Policy
         </h1>
-        
+
         <div className="space-y-8 text-muted-foreground leading-relaxed text-[13px] md:text-sm">
           <section>
             <h2 className="text-base font-bold text-primary mb-2 uppercase italic tracking-tight">Information We Collect</h2>
@@ -49,12 +49,7 @@ export default function PrivacyPage() {
             </p>
           </section>
 
-          <section>
-            <h2 className="text-lg font-bold text-primary mb-2 uppercase italic tracking-tight">Cookie Policy</h2>
-            <p>
-              We use small text files called cookies to remember your login session and your UI preferences. These cookies are essential for the site to function correctly. By using PannaStreet, you consent to our use of these technical cookies.
-            </p>
-          </section>
+
 
           <section>
             <h2 className="text-base font-bold text-primary mb-2 uppercase italic tracking-tight">Your Data Rights</h2>
@@ -73,7 +68,7 @@ export default function PrivacyPage() {
 
         <div className="mt-12 pt-6 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] md:text-xs font-medium">
           <p className="text-muted-foreground">© {new Date().getFullYear()} PannaStreet Security Team</p>
-          <p className="text-primary">Last updated: May 9, 2026</p>
+          <p className="text-primary">Last updated: May 11, 2026</p>
         </div>
       </div>
     </div>

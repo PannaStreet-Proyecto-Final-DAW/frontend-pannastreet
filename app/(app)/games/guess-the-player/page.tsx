@@ -105,7 +105,7 @@ export default function GuessThePlayerPage() {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="text-xl font-bold animate-pulse text-primary">
-          Cargando jugadores desde el túnel de vestuarios...
+          Loading players from the tunnel...
         </div>
       </div>
     )

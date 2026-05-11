@@ -211,7 +211,7 @@ export default function ElevenClubsPage() {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="text-xl font-bold animate-pulse text-primary">
-          Cargando el vestuario...
+          Loading players from the tunnel...
         </div>
       </div>
     )
