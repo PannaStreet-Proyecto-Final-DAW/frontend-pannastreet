@@ -7,5 +7,17 @@ import {
 } from 'next-themes'
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
+  const [mounted, setMounted] = React.useState(false)
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Durante el SSR (servidor) y el primer render, devolvemos un fragmento vacío o solo los hijos
+  // para evitar que el script de next-themes se inyecte antes de tiempo y rompa la hidratación.
+  if (!mounted) {
+    return <>{children}</>
+  }
+
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>
 }
