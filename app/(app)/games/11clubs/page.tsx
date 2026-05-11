@@ -225,7 +225,7 @@ export default function ElevenClubsPage() {
           <span className="text-primary">FOOTBALL 11</span> <span className="text-black dark:text-white tracking-normal">CLUBS</span>
         </>
       }
-      image="/images/games/11clubs.png"
+      image="/images/games/11clubs.webp"
       description={
         <>
           <p className="mb-2">Football 11 is a daily football game where you have to add players from 11 different clubs in one lineup.</p>

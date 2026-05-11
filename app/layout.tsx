@@ -14,8 +14,8 @@ export const metadata: Metadata = {
   description: 'Daily football games - Guess the Player, Trivia, 11 Clubs and more',
   generator: 'v0.app',
   icons: {
-    icon: '/icon.png',
-    apple: '/icon.png',
+    icon: '/icon.webp',
+    apple: '/icon.webp',
   },
 }
 
