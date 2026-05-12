@@ -35,10 +35,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     try {
-      const userData = await fetchApi(`/user/email/${encodeURIComponent(email)}`)
+      const response = await fetchApi("/user/login", {
+        method: "POST",
+        body: JSON.stringify({ identifier: email, password })
+      })
 
-      // Note: In production, password verification should be done server-side
-      // For now, we trust the backend to handle this properly
+      const { user: userData, token } = response
+
       const loggedInUser: User = {
         id: userData.id,
         userName: userData.userName,
@@ -48,9 +51,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       setUser(loggedInUser)
       localStorage.setItem("user", JSON.stringify(loggedInUser))
+      localStorage.setItem("jwt_token", token)
       return { success: true }
     } catch (error: any) {
-      return { success: false, error: error.message || "Connection error. Please check your backend is running." }
+      return { success: false, error: error.message || "Login failed" }
     }
   }
 
@@ -84,6 +88,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     setUser(null)
     localStorage.removeItem("user")
+    localStorage.removeItem("jwt_token")
   }
 
   const updateUser = async (id: string, userName: string, email: string, password?: string, currentPassword?: string): Promise<{ success: boolean; error?: string }> => {
