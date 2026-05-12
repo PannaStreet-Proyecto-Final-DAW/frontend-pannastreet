@@ -5,10 +5,10 @@
 "use client"
 
 import { useState, useEffect, useCallback, useMemo } from "react"
-import { GameEngine } from "@/components/game-engine"
+import { GameEngine } from "@/components/games/engine/game-engine"
 import { ElevenLineupGame } from "@/components/games/eleven-lineup-game"
 import { useScoreSync } from "@/hooks/use-score-sync"
-import { SyncStatusIndicator } from "@/components/sync-status-indicator"
+import { SyncStatusIndicator } from "@/components/games/shared/sync-status-indicator"
 import { FORMATIONS as FORMATION_COORDS } from "@/lib/formations"
 import { getAllTeams, getAllPlayers, getAllFormations, Player, Team, Formation } from "@/lib/api"
 

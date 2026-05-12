@@ -5,10 +5,10 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { GameEngine } from "@/components/game-engine"
+import { GameEngine } from "@/components/games/engine/game-engine"
 import { GuessThePlayerGame } from "@/components/games/guess-the-player-game"
 import { useScoreSync } from "@/hooks/use-score-sync"
-import { SyncStatusIndicator } from "@/components/sync-status-indicator"
+import { SyncStatusIndicator } from "@/components/games/shared/sync-status-indicator"
 import { getAllPlayers, Player } from "@/lib/api"
 
 

@@ -5,7 +5,7 @@
 "use client"
 
 import Link from "next/link"
-import { SurrenderButton } from "./surrender-button"
+import { SurrenderButton } from "../shared/surrender-button"
 
 interface GameLayoutProps {
   backHref?: string       // Destination URL for the back button

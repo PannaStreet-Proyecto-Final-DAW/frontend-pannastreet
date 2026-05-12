@@ -7,8 +7,8 @@
 import { useState, useEffect } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { GuessesTable, type Guess } from "@/components/guesses-table"
-import { PlayerSearchInput } from "@/components/player-search-input"
+import { GuessesTable, type Guess } from "@/components/games/engine/guesses-table"
+import { PlayerSearchInput } from "@/components/games/shared/player-search-input"
 
 const SCORE_CONFIG = {
   base: { Easy: 10, Medium: 20, Hard: 30 },

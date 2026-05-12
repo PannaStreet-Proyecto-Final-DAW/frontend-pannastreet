@@ -26,7 +26,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { LeagueWindow } from "@/components/league-window"
+import { LeagueWindow } from "@/components/league/league-window"
 import { cn } from "@/lib/utils"
 
 /**

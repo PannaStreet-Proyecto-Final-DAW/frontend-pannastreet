@@ -5,9 +5,9 @@
 "use client"
 
 import React, { useState, ReactNode } from "react"
-import { GameLayout } from "./game-layout"
-import { GameIntroCard } from "./game-intro-card"
-import { GameResultCard } from "./game-result-card"
+import { GameLayout } from "../ui/game-layout"
+import { GameIntroCard } from "../ui/game-intro-card"
+import { GameResultCard } from "../ui/game-result-card"
 import { cn } from "@/lib/utils"
 
 interface GameEngineProps {
