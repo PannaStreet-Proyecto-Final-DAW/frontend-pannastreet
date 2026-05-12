@@ -12,12 +12,21 @@ export const fetchApi = async (endpoint: string, options: RequestInit = {}) => {
   console.log(`🌐 Calling API: ${options.method || 'GET'} ${fullUrl}`);
   
   try {
+    const headers: any = {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    };
+
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('jwt_token');
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+    }
+
     const response = await fetch(fullUrl, {
       ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
+      headers,
     });
     
     if (!response.ok) {
