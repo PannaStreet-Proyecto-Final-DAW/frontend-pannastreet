@@ -7,8 +7,8 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
-import { DifficultySelector } from "./difficulty-selector"
-import { ModeSelector } from "./mode-selector"
+import { DifficultySelector } from "../shared/difficulty-selector"
+import { ModeSelector } from "../shared/mode-selector"
 
 interface GameIntroCardProps {
   title: React.ReactNode      // Title of the game (can include HTML tags)

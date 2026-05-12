@@ -1,4 +1,4 @@
-import { GameCard, type Game } from "@/components/game-card"
+import { GameCard, type Game } from "@/components/games/ui/game-card"
 
 const games: Game[] = [
   {
