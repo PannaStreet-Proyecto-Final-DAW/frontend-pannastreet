@@ -70,9 +70,7 @@ export function LeagueWindow({
    */
   const leagueName = selectedLeague.league?.name || `League ${selectedLeague.league?.id?.substring(0, 8) || selectedLeague.id.substring(0, 8)}`
   
-  /**
-   * Invite Code: Used for sharing the league with other players.
-   */
+  // Invite Code: Used for sharing the league with other players.
   const inviteCode = selectedLeague.league?.inviteCode || "N/A"
 
   /**
@@ -85,9 +83,7 @@ export function LeagueWindow({
   }
 
   // --- Leave League State ---
-  /**
-   * isLeaving: Local loading state to prevent double-clicks during the leave process.
-   */
+  // isLeaving: Local loading state to prevent double-clicks during the leave process.
   const [isLeaving, setIsLeaving] = useState(false)
 
   /**
@@ -112,19 +108,13 @@ export function LeagueWindow({
   }
 
   // --- Edit League Name States ---
-  /**
-   * editedName: Tracks the value of the name input in the edit dialog.
-   */
+  // editedName: Tracks the value of the name input in the edit dialog.
   const [editedName, setEditedName] = useState(leagueName)
   
-  /**
-   * isUpdating: Loading state for the rename API request.
-   */
+  // isUpdating: Loading state for the rename API request.
   const [isUpdating, setIsUpdating] = useState(false)
   
-  /**
-   * editDialogOpen: Controls the visibility of the rename modal.
-   */
+  // editDialogOpen: Controls the visibility of the rename modal.
   const [editDialogOpen, setEditDialogOpen] = useState(false)
 
   /**
@@ -172,9 +162,7 @@ export function LeagueWindow({
       backText="Back to My Leagues"
       title={leagueName}
       subtitle={
-        /**
-         * Header Meta Data: Shows player count and join date.
-         */
+        // Header Meta Data: Shows player count and join date.
         <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-1">
           <div className="flex flex-col gap-1">
             <span className="text-[10px] uppercase tracking-[0.15em] text-black/50 dark:text-muted-foreground/70 font-black">Members</span>
@@ -191,9 +179,7 @@ export function LeagueWindow({
         </div>
       }
       actions={
-        /**
-         * Action Toolbar: Group of buttons for managing the league.
-         */
+        // Action Toolbar: Group of buttons for managing the league.
         <div className="flex flex-wrap items-center justify-center gap-3">
           {/* --- INVITE CODE SECTION --- */}
           <div className="flex items-center bg-card dark:bg-muted/60 border border-border/60 rounded-lg px-2 py-1 shadow-sm">

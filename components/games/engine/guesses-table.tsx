@@ -4,34 +4,18 @@
  */
 "use client"
 
+import React from "react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
-
-export type Hint = "correct" | "partial" | "wrong"
-
-/**
- * Represents a single guess attempt with the player's name and the calculated hints.
- */
-export interface Guess {
-  name: string
-  hints: {
-    team: Hint
-    league: Hint
-    nationality: Hint
-    position: Hint
-    age: "correct" | "higher" | "lower"
-  }
-}
-
-import { Player } from "@/lib/api"
+import { Player, Guess, Hint } from "@/types"
 
 interface GuessesTableProps {
   guesses: Guess[] // Array of all attempts made by the user
   players: Player[] // Full list of players to pull display data from
 }
 
-export function GuessesTable({ guesses, players }: GuessesTableProps) {
+export const GuessesTable = React.memo(function GuessesTable({ guesses, players }: GuessesTableProps) {
   /**
    * Helper function to determine the CSS color classes based on the hint value.
    * - correct: Green (Primary)
@@ -172,4 +156,4 @@ export function GuessesTable({ guesses, players }: GuessesTableProps) {
       </CardContent>
     </Card>
   )
-}
+})

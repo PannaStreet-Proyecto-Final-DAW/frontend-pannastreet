@@ -1,6 +1,5 @@
 import { useState, useCallback } from "react";
-
-export type GameStatus = "playing" | "won" | "lost";
+import { GameStatus } from "@/types";
 
 /**
  * Configuration for the Game Logic hook.
@@ -8,7 +7,7 @@ export type GameStatus = "playing" | "won" | "lost";
  * This allows the hook to be generic and work with any game data structure.
  */
 interface GameLogicConfig<T> {
-  /** The maximum number of attempts allowed before a loss. */
+  // The maximum number of attempts allowed before a loss.
   maxAttempts?: number;
   /** 
    * A function that calculates the score based on the history of attempts and current outcome.
@@ -17,9 +16,7 @@ interface GameLogicConfig<T> {
   scoringFormula: (attempts: T[], won: boolean) => number;
 }
 
-/**
- * Internal state structure for the game logic.
- */
+// Internal state structure for the game logic.
 interface InternalGameState<T> {
   attempts: T[];
   status: GameStatus;
@@ -82,9 +79,7 @@ export function useGameLogic<T>({ maxAttempts, scoringFormula }: GameLogicConfig
     });
   }, [maxAttempts, scoringFormula]);
 
-  /**
-   * Resets the referee state to initial values.
-   */
+  // Resets the referee state to initial values.
   const reset = useCallback(() => {
     setState({
       attempts: [],

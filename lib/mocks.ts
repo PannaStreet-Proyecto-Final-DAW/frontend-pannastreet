@@ -59,9 +59,7 @@ export const MOCK_TEAMS = [
   { id: "t3", name: "Real Madrid", country: "Spain", leagueId: "1" }
 ]
 
-/**
- * GAME-SPECIFIC MOCKS (Used before API integration)
- */
+// GAME-SPECIFIC MOCKS (Used before API integration)
 
 export const GAME_MOCK_PLAYERS = [
   { name: "Messi", team: "Inter Miami", league: "MLS", nationality: "Argentina", position: ["RW", "ST"], age: 36, tier: 1, gender: "male", generalPosition: "FORWARD" },

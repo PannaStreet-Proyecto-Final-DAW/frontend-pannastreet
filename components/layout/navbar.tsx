@@ -28,11 +28,9 @@ const navLinks = [
  * It provides links to different modules, a theme toggle, and a user profile dropdown.
  */
 export function Navbar() {
-  /**
-   * Access authentication context for user data and logout functionality.
-   */
+  // Access authentication context for user data and logout functionality.
   const { user, logout } = useAuth()
-  
+
   /**
    * usePathname: Hook to get the current URL path.
    * Used to highlight the active link in the navigation menu.
@@ -60,11 +58,11 @@ export function Navbar() {
         {/* --- LOGO SECTION --- */}
         <Link href="/games" className="flex items-center gap-3">
           <div className="flex items-center justify-center shrink-0">
-            <Image 
-              src="/icon.webp" 
-              alt="PannaStreet Logo" 
-              width={42} 
-              height={42} 
+            <Image
+              src="/icon.webp"
+              alt="PannaStreet Logo"
+              width={42}
+              height={42}
               className="rounded-full shadow-md"
               priority
             />
@@ -106,7 +104,7 @@ export function Navbar() {
         <div className="flex items-center gap-2">
           {/* ThemeToggle: Component to switch between Light and Dark modes */}
           <ThemeToggle />
-          
+
           {/* User Profile Dropdown Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -135,7 +133,7 @@ export function Navbar() {
                 </svg>
               </Button>
             </DropdownMenuTrigger>
-            
+
             {/* Dropdown Content */}
             <DropdownMenuContent align="end" className="w-48 bg-popover border-border">
               {/* User Identity Header */}

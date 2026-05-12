@@ -1,26 +1,8 @@
 "use client"
 
+import React from "react"
 import { cn } from "@/lib/utils"
-
-/**
- * Interface representing a clickable position on the pitch
- */
-export interface Position {
-  id: number
-  label: string // e.g., "GK", "ST"
-  row: number // Vertical position (0 to 5)
-  col: number // Horizontal position (0 to 4)
-}
-
-/**
- * Interface for a player assigned to a position
- */
-export interface SelectedPlayer {
-  positionId: number
-  club: string
-  player: string
-  crestUrl?: string | null
-}
+import { Position, SelectedPlayer } from "@/types"
 
 interface FootballPitchProps {
   lineup: (SelectedPlayer | null)[] // Array of 11 slots
@@ -32,9 +14,7 @@ interface FootballPitchProps {
   className?: string
 }
 
-/**
- * Standard 4-3-3 formation coordinates
- */
+// Standard 4-3-3 formation coordinates
 export const DEFAULT_FORMATION: Position[] = [
   { id: 0, label: "GK", row: 4, col: 2 },
   { id: 1, label: "LB", row: 3, col: 0 },
@@ -49,10 +29,8 @@ export const DEFAULT_FORMATION: Position[] = [
   { id: 10, label: "RW", row: 1, col: 3.5 },
 ]
 
-/**
- * Component that renders a visual football pitch with interactive player positions
- */
-export function FootballPitch({
+// Component that renders a visual football pitch with interactive player positions
+export const FootballPitch = React.memo(function FootballPitch({
   lineup,
   currentPosition,
   onPositionClick,
@@ -139,4 +117,4 @@ export function FootballPitch({
       })}
     </div>
   )
-}
+})

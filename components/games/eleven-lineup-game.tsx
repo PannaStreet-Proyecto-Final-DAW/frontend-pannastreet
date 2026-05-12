@@ -8,38 +8,37 @@ import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
-import { FootballPitch, type Position, type SelectedPlayer } from "@/components/games/engine/football-pitch"
+import { FootballPitch } from "@/components/games/engine/football-pitch"
 import { PlayerSearchInput } from "@/components/games/shared/player-search-input"
 import { useNormalization } from "@/hooks/use-normalization"
 import { useGameLogic } from "@/hooks/use-game-logic"
 import { useCallback } from "react"
+import { Position, SelectedPlayer } from "@/types"
 
-/** Standard football positions labels used for the selection UI title */
+// Standard football positions labels used for the selection UI title
 const POSITIONS = ["GK", "LB", "CB", "CB", "RB", "CM", "CM", "CM", "LW", "ST", "RW"]
 
-/**
- * Props for the ElevenLineupGame component
- */
+// Props for the ElevenLineupGame component
 interface ElevenLineupGameProps {
-  /** The plural name of the category being used (e.g., "Clubs", "Countries") */
+  // The plural name of the category being used (e.g., "Clubs", "Countries")
   groupLabel: string
-  /** The specific 11 groups (clubs/countries) allowed for the current game session */
+  // The specific 11 groups (clubs/countries) allowed for the current game session
   availableGroups: string[]
-  /** Data mapping: category name -> list of player names */
+  // Data mapping: category name -> list of player names
   itemsByGroup: Record<string, { name: string; positions: string[] }[]>
-  /** Data mapping: category name -> crest URL */
+  // Data mapping: category name -> crest URL
   availableCrests?: Record<string, string | null>
-  /** Difficulty setting (Easy, Intermediate, Hard) */
+  // Difficulty setting (Easy, Intermediate, Hard)
   difficulty: string
-  /** Mode setting (Male, Female, Both) */
+  // Mode setting (Male, Female, Both)
   mode: string
-  /** The specific 11 positions (coordinates and labels) for the pitch */
+  // The specific 11 positions (coordinates and labels) for the pitch
   formation: Position[]
-  /** Triggered when the lineup is complete (passes final score) */
+  // Triggered when the lineup is complete (passes final score)
   onGameOver: (score: number) => void
-  /** Triggered whenever a player is added (passes current calculated score) */
+  // Triggered whenever a player is added (passes current calculated score)
   onProgressUpdate?: (score: number) => void
-  /** Flag to disable all interactions once the game has ended */
+  // Flag to disable all interactions once the game has ended
   isGameOver?: boolean
 }
 
@@ -61,13 +60,13 @@ export function ElevenLineupGame({
 }: ElevenLineupGameProps) {
   // --- Internal State ---
 
-  /** The lineup array: null means the position is empty */
+  // The lineup array: null means the position is empty
   const [lineup, setLineup] = useState<(SelectedPlayer | null)[]>(Array(11).fill(null))
 
-  /** User input for filtering players in the selection list */
+  // User input for filtering players in the selection list
   const [searchQuery, setSearchQuery] = useState("")
 
-  /** Error message to display when a slot is full */
+  // Error message to display when a slot is full
   const [searchError, setSearchError] = useState<string | null>(null)
 
   /** State for handling players with multiple available positions */
@@ -130,10 +129,10 @@ export function ElevenLineupGame({
 
   const effectiveIsGameOver = isGameOver || hookIsGameOver
 
-  /** Randomized queue of clubs to use for the sequential challenge */
+  // Randomized queue of clubs to use for the sequential challenge
   const [clubQueue, setClubQueue] = useState<string[]>([])
 
-  /** Initialize the shuffled club queue on mount or when availableGroups change */
+  // Initialize the shuffled club queue on mount or when availableGroups change
   useEffect(() => {
     if (availableGroups.length > 0) {
       const shuffled = [...availableGroups].sort(() => Math.random() - 0.5)
@@ -141,10 +140,10 @@ export function ElevenLineupGame({
     }
   }, [availableGroups])
 
-  /** Dynamic count of how many players have been assigned to the pitch */
+  // Dynamic count of how many players have been assigned to the pitch
   const completedCount = lineup.filter(Boolean).length
 
-  /** The currently active club for the challenge */
+  // The currently active club for the challenge
   const currentClub = clubQueue[completedCount] || null
 
   /** Randomized queue of clubs to use for the sequential challenge */
@@ -226,9 +225,7 @@ export function ElevenLineupGame({
   }
 
 
-  /**
-   * Logic to compute which items (players) can be displayed in the search results.
-   */
+  // Logic to compute which items (players) can be displayed in the search results.
   const getFilteredResults = () => {
     if (searchQuery.length < 3) return []
 

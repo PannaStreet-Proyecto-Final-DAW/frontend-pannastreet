@@ -9,7 +9,8 @@ import { GameEngine } from "@/components/games/engine/game-engine"
 import { GuessThePlayerGame } from "@/components/games/guess-the-player-game"
 import { useScoreSync } from "@/hooks/use-score-sync"
 import { SyncStatusIndicator } from "@/components/games/shared/sync-status-indicator"
-import { getAllPlayers, Player } from "@/lib/api"
+import { getAllPlayers } from "@/lib/api"
+import { Player } from "@/types"
 
 
 export default function GuessThePlayerPage() {
@@ -48,9 +49,7 @@ export default function GuessThePlayerPage() {
     loadPlayers()
   }, [])
 
-  /**
-   * Filter players based on difficulty tier and gender mode requirements
-   */
+  // Filter players based on difficulty tier and gender mode requirements
   const filteredPlayers = useMemo(() => {
     return players.filter((player: Player) => {
       // Difficulty Match
@@ -68,9 +67,7 @@ export default function GuessThePlayerPage() {
     });
   }, [players, difficulty, mode]);
 
-  /**
-   * Callback triggered when the user surrenders
-   */
+  // Callback triggered when the user surrenders
   const handleSurrender = () => {
     // If they surrender, they lose by default
     setGameState(prev => ({ ...prev, gameOver: true, won: false, score: 0 }))
@@ -89,9 +86,7 @@ export default function GuessThePlayerPage() {
     }
   }, [syncPoints])
 
-  /**
-   * Resets the game state to start a new round
-   */
+  // Resets the game state to start a new round
   const resetGame = () => {
     resetSync()
     setGameState({

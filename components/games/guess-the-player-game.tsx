@@ -7,18 +7,17 @@
 import { useState, useEffect, useCallback } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { GuessesTable, type Guess } from "@/components/games/engine/guesses-table"
+import { GuessesTable } from "@/components/games/engine/guesses-table"
 import { PlayerSearchInput } from "@/components/games/shared/player-search-input"
 import { useNormalization } from "@/hooks/use-normalization"
 import { useGameLogic } from "@/hooks/use-game-logic"
+import { Player, Guess } from "@/types"
 
 const SCORE_CONFIG = {
   base: { Easy: 10, Medium: 20, Hard: 30 },
   multipliers: { Male: 1, Female: 1.5, Both: 2 },
   attempts: { Male: 10, Female: 10, Both: 15 }
 } as const
-
-import { Player } from "@/lib/api"
 
 const leaguePairs: Record<string, string> = {
   "la liga": "liga f",
