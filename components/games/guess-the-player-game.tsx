@@ -4,11 +4,13 @@
  */
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { GuessesTable, type Guess } from "@/components/games/engine/guesses-table"
 import { PlayerSearchInput } from "@/components/games/shared/player-search-input"
+import { useNormalization } from "@/hooks/use-normalization"
+import { useGameLogic } from "@/hooks/use-game-logic"
 
 const SCORE_CONFIG = {
   base: { Easy: 10, Medium: 20, Hard: 30 },
@@ -46,42 +48,66 @@ export function GuessThePlayerGame({
   players,
   allPlayers,
   onGameOver,
-  isGameOver
+  isGameOver: externalIsGameOver
 }: GuessThePlayerGameProps) {
   // --- GAME STATES ---
-  const [targetPlayer, setTargetPlayer] = useState<Player>(players[0]) // The player to guess
-  const [guesses, setGuesses] = useState<Guess[]>([])           // List of attempts made
+  const [targetPlayer, setTargetPlayer] = useState<Player | null>(null) // The player to guess
   const [currentGuess, setCurrentGuess] = useState("")          // What the user types in the input
   const [suggestions, setSuggestions] = useState<Player[]>([]) // List of names appearing while typing
   const [error, setError] = useState<string | null>(null)       // Error message if player not found
+  const { normalize } = useNormalization()
+
+  // --- GAME LOGIC (REFEREE) ---
+  /**
+   * We initialize the generic useGameLogic hook with:
+   * 1. maxAttempts: Based on the selected game mode.
+   * 2. scoringFormula: A custom function that penalizes based on failed attempts.
+   */
+  const { attempts: guesses, status, score, recordAttempt, isGameOver } = useGameLogic<Guess>({
+    maxAttempts: SCORE_CONFIG.attempts[mode as keyof typeof SCORE_CONFIG.attempts] || 10,
+    
+    /**
+     * The scoring formula for "Guess the Player":
+     * - Only gives points if the user won.
+     * - Points = Base Points * Mode Multiplier.
+     * - Penalizes based on the number of wrong guesses before the correct one.
+     */
+    scoringFormula: useCallback((currentGuesses, won) => {
+      if (!won) return 0
+      const maxAttempts = SCORE_CONFIG.attempts[mode as keyof typeof SCORE_CONFIG.attempts] || 10
+      const basePoints = SCORE_CONFIG.base[difficulty as keyof typeof SCORE_CONFIG.base] || 10
+      const multiplier = SCORE_CONFIG.multipliers[mode as keyof typeof SCORE_CONFIG.multipliers] || 1
+      
+      const totalPotentialScore = basePoints * multiplier
+      const pointsPerFail = totalPotentialScore / maxAttempts
+      
+      // Points = Total Potential - (number of failures * penalty)
+      // currentGuesses.length - 1 because the LAST guess was correct and shouldn't be penalized
+      return Math.max(0, Math.floor(totalPotentialScore - ((currentGuesses.length - 1) * pointsPerFail)))
+    }, [difficulty, mode])
+  })
+
+  // --- STATE SYNCHRONIZATION ---
+  /**
+   * This effect listens for changes in the "referee" state (status and score).
+   * When the game ends (won or lost), it notifies the parent page component.
+   */
+  const effectiveIsGameOver = externalIsGameOver || isGameOver
+  useEffect(() => {
+    if (status !== "playing" && targetPlayer) {
+      onGameOver(status === "won", targetPlayer, score)
+    }
+  }, [status, score, targetPlayer, onGameOver])
 
   // --- INITIALIZATION ---
-  // Pick a random player when the component mounts or when players change
+  // Pick a random player once when players are available
   useEffect(() => {
-    if (players && players.length > 0) {
+    if (players && players.length > 0 && !targetPlayer) {
       const randomIndex = Math.floor(Math.random() * players.length)
       setTargetPlayer(players[randomIndex])
     }
-  }, [players])
+  }, [players, targetPlayer])
 
-  /**
-   * Helper to normalize strings for comparison (removes accents/diacritics)
-   */
-  const normalizeString = (str: string) => {
-    if (!str) return ""
-    return str
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[đð]/g, "d")
-      .replace(/[ł]/g, "l")
-      .replace(/[ß]/g, "ss")
-      .replace(/[ø]/g, "o")
-      .replace(/[þ]/g, "th")
-      .replace(/[ț]/g, "t")
-      .replace(/[ș]/g, "s")
-      .replace(/[ş]/g, "s")
-      .toLowerCase()
-  }
 
   /**
    * Handles text input changes.
@@ -91,11 +117,11 @@ export function GuessThePlayerGame({
     setCurrentGuess(value)
     setError(null) // Clear error when user types again
     if (value.length >= 3) {
-      const searchNormalized = normalizeString(value)
+      const searchNormalized = normalize(value)
       const filtered = allPlayers.filter((p) => {
-        const nameNormalized = normalizeString(p.name)
+        const nameNormalized = normalize(p.name)
         const matchesSearch = nameNormalized.includes(searchNormalized)
-        const notGuessed = !guesses.some((g) => normalizeString(g.name) === nameNormalized)
+        const notGuessed = !guesses.some((g) => normalize(g.name) === nameNormalized)
         return matchesSearch && notGuessed
       })
       setSuggestions(filtered.slice(0, 5))
@@ -128,6 +154,8 @@ export function GuessThePlayerGame({
     // --- HINT CALCULATION ---
     // Compare each field. If it matches -> "correct", otherwise -> "wrong".
     // For Guess the Player, we only compare the generalPosition.
+    if (!targetPlayer) return;
+    
     const isCorrectPosition = player.generalPosition === targetPlayer.generalPosition;
 
     const playerLeague = (player.league || "").trim().toLowerCase();
@@ -150,34 +178,13 @@ export function GuessThePlayerGame({
 
     // Save the new attempt to the list
     const newGuess: Guess = { name: player.name, hints }
-    const newGuesses = [...guesses, newGuess]
+    const isWin = player.name === targetPlayer.name
     
-    setGuesses(newGuesses)
+    recordAttempt(newGuess, isWin)
+    
     setCurrentGuess("") // Clear the input
     setError(null)      // Clear error
     setSuggestions([])   // Clear the suggestions
-
-    // --- SCORE CALCULATION LOGIC ---
-    // 1. Get configuration based on selected difficulty and mode
-    const maxAttempts = SCORE_CONFIG.attempts[mode as keyof typeof SCORE_CONFIG.attempts] || 10
-    const basePoints = SCORE_CONFIG.base[difficulty as keyof typeof SCORE_CONFIG.base] || 10
-    const multiplier = SCORE_CONFIG.multipliers[mode as keyof typeof SCORE_CONFIG.multipliers] || 1
-    
-    // 2. Calculate the total potential score and the penalty per wrong guess
-    const totalPotentialScore = basePoints * multiplier
-    const pointsPerFail = totalPotentialScore / maxAttempts
-
-    // --- WIN OR LOSS CHECK ---
-    if (player.name === targetPlayer.name) {
-      // If the name matches, the user has won
-      // Points = Total Potential - (number of wrong guesses * penalty)
-      // Note: newGuesses.length - 1 is the number of failures before the correct one
-      const finalScore = Math.max(0, Math.floor(totalPotentialScore - ((newGuesses.length - 1) * pointsPerFail)))
-      onGameOver(true, targetPlayer, finalScore)
-    } else if (newGuesses.length >= maxAttempts) {
-      // If the maximum number of attempts is reached without a match, the user has lost
-      onGameOver(false, targetPlayer, 0)
-    }
   }
 
   const handleSubmit = () => {
@@ -187,7 +194,7 @@ export function GuessThePlayerGame({
   return (
     <>
       {/* Guess input UI */}
-      {!isGameOver && (
+      {!effectiveIsGameOver && (
         <Card className="border-border bg-card mb-6">
           <CardContent className="pt-6">
             <PlayerSearchInput

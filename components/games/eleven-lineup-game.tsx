@@ -10,6 +10,9 @@ import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 import { FootballPitch, type Position, type SelectedPlayer } from "@/components/games/engine/football-pitch"
 import { PlayerSearchInput } from "@/components/games/shared/player-search-input"
+import { useNormalization } from "@/hooks/use-normalization"
+import { useGameLogic } from "@/hooks/use-game-logic"
+import { useCallback } from "react"
 
 /** Standard football positions labels used for the selection UI title */
 const POSITIONS = ["GK", "LB", "CB", "CB", "RB", "CM", "CM", "CM", "LW", "ST", "RW"]
@@ -75,6 +78,58 @@ export function ElevenLineupGame({
     positions: string[] // The valid position labels for this player that have slots
   } | null>(null)
 
+  const { normalize } = useNormalization()
+
+  // --- GAME LOGIC (REFEREE) ---
+  /**
+   * We initialize the generic useGameLogic hook for the 11 Clubs game.
+   * - maxAttempts: Fixed at 11 since we need exactly 11 players for the lineup.
+   * - scoringFormula: A progressive formula that calculates the score as the user adds players.
+   */
+  const { status, score, recordAttempt, isGameOver: hookIsGameOver } = useGameLogic<SelectedPlayer>({
+    maxAttempts: 11,
+    
+    /**
+     * Progressive Scoring Formula:
+     * - Every player added to the pitch grants points.
+     * - Points = (Number of Players) * (Difficulty Points) * (Mode Multiplier).
+     */
+    scoringFormula: useCallback((currentAttempts, won) => {
+      const difficultyPoints: Record<string, number> = {
+        "Easy": 1,
+        "Intermediate": 2,
+        "Hard": 3
+      }
+
+      const modeMultipliers: Record<string, number> = {
+        "Male": 1,
+        "Female": 1.5,
+        "Both": 2
+      }
+
+      const basePoints = difficultyPoints[difficulty] || 1
+      const multiplier = modeMultipliers[mode] || 1
+
+      return Math.floor(currentAttempts.length * basePoints * multiplier)
+    }, [difficulty, mode])
+  })
+
+  // --- STATE SYNCHRONIZATION ---
+  /**
+   * We synchronize the hook's internal state with the parent page callbacks.
+   * 1. If won: Notify parent of final score.
+   * 2. While playing: Notify parent of current score for real-time progress.
+   */
+  useEffect(() => {
+    if (status === "won") {
+      onGameOver(score)
+    } else if (status === "playing" && score > 0) {
+      onProgressUpdate?.(score)
+    }
+  }, [status, score, onGameOver, onProgressUpdate])
+
+  const effectiveIsGameOver = isGameOver || hookIsGameOver
+
   /** Randomized queue of clubs to use for the sequential challenge */
   const [clubQueue, setClubQueue] = useState<string[]>([])
 
@@ -92,29 +147,7 @@ export function ElevenLineupGame({
   /** The currently active club for the challenge */
   const currentClub = clubQueue[completedCount] || null
 
-  // --- Scoring Logic ---
-
-  /**
-   * Helper to calculate the score based on the number of players, difficulty and mode.
-   */
-  const calculateScore = (count: number) => {
-    const difficultyPoints: Record<string, number> = {
-      "Easy": 1,
-      "Intermediate": 2,
-      "Hard": 3
-    }
-
-    const modeMultipliers: Record<string, number> = {
-      "Male": 1,
-      "Female": 1.5,
-      "Both": 2
-    }
-
-    const basePoints = difficultyPoints[difficulty] || 1
-    const multiplier = modeMultipliers[mode] || 1
-
-    return Math.floor(count * basePoints * multiplier)
-  }
+  /** Randomized queue of clubs to use for the sequential challenge */
 
   // --- Derived State ---
 
@@ -172,45 +205,26 @@ export function ElevenLineupGame({
    * Finalizes the insertion of a player into a specific slot and updates the score.
    */
   const insertPlayer = (group: string, playerName: string, slotId: number) => {
-    const newLineup = [...lineup]
     const crestUrl = availableCrests[group] || null
-    newLineup[slotId] = { positionId: slotId, club: group, player: playerName, crestUrl }
+    const playerAdded: SelectedPlayer = { positionId: slotId, club: group, player: playerName, crestUrl }
+
+    const newLineup = [...lineup]
+    newLineup[slotId] = playerAdded
 
     const nextCount = newLineup.filter(Boolean).length
-    const currentScore = calculateScore(nextCount)
-
+    
+    // Update local lineup for UI
     setLineup(newLineup)
+    
+    // Record attempt in the logic hook
+    // Win condition for this game is reaching 11 players
+    recordAttempt(playerAdded, nextCount === 11)
+
     setSearchQuery("")
     setSearchError(null)
     setPendingPlayer(null)
-
-    // Notify parent of the new score
-    onProgressUpdate?.(currentScore)
-
-    // Trigger game over if the final slot (11th) is filled
-    if (nextCount === 11) {
-      onGameOver(currentScore)
-    }
   }
 
-  /**
-   * Helper to normalize strings for comparison (removes accents/diacritics)
-   */
-  const normalizeString = (str: string) => {
-    if (!str) return ""
-    return str
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[đð]/g, "d")
-      .replace(/[ł]/g, "l")
-      .replace(/[ß]/g, "ss")
-      .replace(/[ø]/g, "o")
-      .replace(/[þ]/g, "th")
-      .replace(/[ț]/g, "t")
-      .replace(/[ș]/g, "s")
-      .replace(/[ş]/g, "s")
-      .toLowerCase()
-  }
 
   /**
    * Logic to compute which items (players) can be displayed in the search results.
@@ -221,7 +235,7 @@ export function ElevenLineupGame({
     const usedGroups = new Set(lineup.filter(Boolean).map((l) => l!.club))
     const results: { group: string; item: { name: string; positions: string[] } }[] = []
 
-    const searchNormalized = normalizeString(searchQuery)
+    const searchNormalized = normalize(searchQuery)
 
     // Iterate over all groups (teams) available in the data, not just the selected ones
     Object.keys(itemsByGroup).forEach((group) => {
@@ -229,8 +243,8 @@ export function ElevenLineupGame({
       if (usedGroups.has(group)) return
 
       itemsByGroup[group]?.forEach((item) => {
-        const itemNormalized = normalizeString(item.name)
-        const groupNormalized = normalizeString(group)
+        const itemNormalized = normalize(item.name)
+        const groupNormalized = normalize(group)
 
         const matchesItem = itemNormalized.includes(searchNormalized)
         const matchesGroup = groupNormalized.includes(searchNormalized)
@@ -308,7 +322,7 @@ export function ElevenLineupGame({
           }}
           positions={formation}
           highlightedPositions={pendingPlayer ? pendingPlayer.availableSlots : []}
-          gameComplete={isGameOver || completedCount === 11}
+          gameComplete={effectiveIsGameOver || completedCount === 11}
         />
       </Card>
 
@@ -317,7 +331,7 @@ export function ElevenLineupGame({
         <CardHeader className="p-4 pb-2">
           <div className="flex items-center justify-between">
             <CardTitle className="text-sm font-bold text-card-foreground">
-              {isGameOver || completedCount === 11
+              {effectiveIsGameOver || completedCount === 11
                 ? "Game Over!"
                 : "Search Player"}
             </CardTitle>

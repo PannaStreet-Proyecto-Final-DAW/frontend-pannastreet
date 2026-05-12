@@ -18,14 +18,14 @@ import { getAllTeams, getAllPlayers, getAllFormations, Player, Team, Formation }
  * Manages game lifecycle states (difficulty, mode, gameOver) required by the GameEngine console.
  */
 export default function ElevenClubsPage() {
-  // --- Game State (Required by GameEngine) ---
+  // --- Game State (Required by GameEngine "Console") ---
   const [difficulty, setDifficulty] = useState("Easy")
   const [mode, setMode] = useState("Both")
   const [gameOver, setGameOver] = useState(false)
   const [won, setWon] = useState(false)
   const [score, setScore] = useState(0)
 
-  // --- Score Synchronization Hook ---
+  // --- Score Synchronization Hook (Syncs points with Supabase) ---
   const { syncStatus, syncPoints, resetSync } = useScoreSync()
 
   // --- Game Session Data ---
@@ -188,23 +188,23 @@ export default function ElevenClubsPage() {
   /**
    * Finalizes the game session when the lineup is complete.
    */
-  const handleGameOver = async (finalScore: number) => {
+  const handleGameOver = useCallback(async (finalScore: number) => {
     setWon(true)
     setScore(finalScore)
     setGameOver(true)
     await syncPoints(finalScore)
-  }
+  }, [syncPoints])
 
   /**
    * Handles the surrender action.
    */
-  const handleSurrender = async () => {
+  const handleSurrender = useCallback(async () => {
     const finalScore = currentCalculatedScore
     setWon(false)
     setScore(finalScore)
     setGameOver(true)
     await syncPoints(finalScore)
-  }
+  }, [currentCalculatedScore, syncPoints])
 
   //Loading message
   if (loading) {
