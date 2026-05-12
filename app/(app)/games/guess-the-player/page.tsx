@@ -4,12 +4,13 @@
  */
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo, useCallback } from "react"
 import { GameEngine } from "@/components/games/engine/game-engine"
 import { GuessThePlayerGame } from "@/components/games/guess-the-player-game"
 import { useScoreSync } from "@/hooks/use-score-sync"
 import { SyncStatusIndicator } from "@/components/games/shared/sync-status-indicator"
-import { getAllPlayers, Player } from "@/lib/api"
+import { getAllPlayers } from "@/lib/api"
+import { Player } from "@/types"
 
 
 export default function GuessThePlayerPage() {
@@ -20,7 +21,7 @@ export default function GuessThePlayerPage() {
   const [difficulty, setDifficulty] = useState("Easy")
   const [mode, setMode] = useState("Both")
 
-  // 2. High-level game status
+  // 2. High-level game status (Controlled by the GameEngine "Console")
   const [gameState, setGameState] = useState({
     gameOver: false,
     won: false,
@@ -29,7 +30,7 @@ export default function GuessThePlayerPage() {
     key: 0 // Key to force re-mounting the game logic component on reset
   })
 
-  // 3. Score Synchronization Hook
+  // 3. Score Synchronization Hook (Syncs points with the server/Supabase)
   const { syncStatus, syncPoints, resetSync } = useScoreSync()
 
   // 4. Fetch players from API
@@ -48,47 +49,44 @@ export default function GuessThePlayerPage() {
     loadPlayers()
   }, [])
 
-  /**
-   * Filter players based on difficulty tier and gender mode requirements
-   */
-  const filteredPlayers = players.filter((player: Player) => {
-    // Difficulty Match
-    const difficultyMatch =
-      difficulty === "Easy" ? player.tier === 1 :
-        difficulty === "Intermediate" ? (player.tier === 1 || player.tier === 2) :
-          difficulty === "Hard" ? player.tier === 2 : true;
+  // Filter players based on difficulty tier and gender mode requirements
+  const filteredPlayers = useMemo(() => {
+    return players.filter((player: Player) => {
+      // Difficulty Match
+      const difficultyMatch =
+        difficulty === "Easy" ? player.tier === 1 :
+          difficulty === "Intermediate" ? (player.tier === 1 || player.tier === 2) :
+            difficulty === "Hard" ? player.tier === 2 : true;
 
-    // Mode/Gender Match
-    const modeMatch =
-      mode === "Male" ? player.gender === "male" :
-        mode === "Female" ? player.gender === "female" : true;
+      // Mode/Gender Match
+      const modeMatch =
+        mode === "Male" ? player.gender === "male" :
+          mode === "Female" ? player.gender === "female" : true;
 
-    return difficultyMatch && modeMatch;
-  });
+      return difficultyMatch && modeMatch;
+    });
+  }, [players, difficulty, mode]);
 
-  /**
-   * Callback triggered when the user surrenders
-   */
+  // Callback triggered when the user surrenders
   const handleSurrender = () => {
     // If they surrender, they lose by default
     setGameState(prev => ({ ...prev, gameOver: true, won: false, score: 0 }))
   }
 
   /**
-   * Callback triggered by the Game Cartridge when the match ends
+   * Callback triggered by the Game Cartridge when the match ends.
+   * This bridges the internal Game Logic (hook) with the UI Console (Engine).
    */
-  const handleGameOver = async (won: boolean, target: any, score: number) => {
+  const handleGameOver = useCallback(async (won: boolean, target: any, score: number) => {
     setGameState(prev => ({ ...prev, gameOver: true, won, target, score }))
 
-    // If the user won points, sync with backend
+    // If the user won points, sync with backend (Supabase)
     if (won && score > 0) {
       await syncPoints(score)
     }
-  }
+  }, [syncPoints])
 
-  /**
-   * Resets the game state to start a new round
-   */
+  // Resets the game state to start a new round
   const resetGame = () => {
     resetSync()
     setGameState({

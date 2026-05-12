@@ -4,6 +4,7 @@
  */
 "use client"
 
+import React from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
@@ -16,10 +17,8 @@ interface GameResultCardProps {
   noCard?: boolean;            // If true, renders without the Card wrapper
 }
 
-/**
- * A reusable component to display the final result of any game.
- */
-export function GameResultCard({
+// A reusable component to display the final result of any game.
+export const GameResultCard = React.memo(function GameResultCard({
   title,
   subtitle,
   children,
@@ -71,4 +70,4 @@ export function GameResultCard({
       </CardContent>
     </Card>
   )
-}
+})

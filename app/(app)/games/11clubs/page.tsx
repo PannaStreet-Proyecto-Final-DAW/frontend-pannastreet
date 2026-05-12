@@ -10,7 +10,8 @@ import { ElevenLineupGame } from "@/components/games/eleven-lineup-game"
 import { useScoreSync } from "@/hooks/use-score-sync"
 import { SyncStatusIndicator } from "@/components/games/shared/sync-status-indicator"
 import { FORMATIONS as FORMATION_COORDS } from "@/lib/formations"
-import { getAllTeams, getAllPlayers, getAllFormations, Player, Team, Formation } from "@/lib/api"
+import { getAllTeams, getAllPlayers, getAllFormations } from "@/lib/api"
+import { Player, Team, Formation } from "@/types"
 
 
 /**
@@ -18,14 +19,14 @@ import { getAllTeams, getAllPlayers, getAllFormations, Player, Team, Formation }
  * Manages game lifecycle states (difficulty, mode, gameOver) required by the GameEngine console.
  */
 export default function ElevenClubsPage() {
-  // --- Game State (Required by GameEngine) ---
+  // --- Game State (Required by GameEngine "Console") ---
   const [difficulty, setDifficulty] = useState("Easy")
   const [mode, setMode] = useState("Both")
   const [gameOver, setGameOver] = useState(false)
   const [won, setWon] = useState(false)
   const [score, setScore] = useState(0)
 
-  // --- Score Synchronization Hook ---
+  // --- Score Synchronization Hook (Syncs points with Supabase) ---
   const { syncStatus, syncPoints, resetSync } = useScoreSync()
 
   // --- Game Session Data ---
@@ -35,24 +36,22 @@ export default function ElevenClubsPage() {
   const [allFormations, setAllFormations] = useState<Formation[]>([])
   const [loading, setLoading] = useState(true)
 
-  /** The 11 clubs picked for the current attempt */
+  // The 11 clubs picked for the current attempt
   const [selectedClubs, setSelectedClubs] = useState<string[]>([])
 
-  /** The formation picked for the current attempt */
+  // The formation picked for the current attempt
   const [currentFormation, setCurrentFormation] = useState(FORMATION_COORDS["4-3-3"])
 
-  /** Map of club name (with gender) to its crest URL */
+  // Map of club name (with gender) to its crest URL
   const [teamCrests, setTeamCrests] = useState<Record<string, string | null>>({})
 
-  /** Track current calculated score for real-time reporting */
+  // Track current calculated score for real-time reporting
   const [currentCalculatedScore, setCurrentCalculatedScore] = useState(0)
 
-  /** Unique key to force a clean remount of the game component */
+  // Unique key to force a clean remount of the game component
   const [key, setKey] = useState(0)
 
-  /** 
-   * Fetches all required data from the API on mount
-   */
+  // Fetches all required data from the API on mount
   useEffect(() => {
     async function loadData() {
       try {
@@ -73,9 +72,7 @@ export default function ElevenClubsPage() {
     loadData()
   }, [])
 
-  /**
-   * Helper to group players by team name for the game engine
-   */
+  // Helper to group players by team name for the game engine
   const playersByTeamMap = useMemo(() => {
     const map: Record<string, { name: string; positions: string[] }[]> = {}
     allPlayers.forEach(player => {
@@ -96,9 +93,7 @@ export default function ElevenClubsPage() {
     return map
   }, [allPlayers, mode])
 
-  /**
-   * Helper to group all players by team name for search (unfiltered by gender)
-   */
+  // Helper to group all players by team name for search (unfiltered by gender)
   const allPlayersByTeamMap = useMemo(() => {
     const map: Record<string, { name: string; positions: string[] }[]> = {}
     allPlayers.forEach(player => {
@@ -112,9 +107,7 @@ export default function ElevenClubsPage() {
     return map
   }, [allPlayers])
 
-  /**
-   * Initializes or resets the game session.
-   */
+  // Initializes or resets the game session.
   const initializeGame = useCallback(() => {
     if (loading || allTeams.length === 0) return;
 
@@ -185,26 +178,22 @@ export default function ElevenClubsPage() {
     }
   }, [loading, allTeams.length, difficulty, initializeGame])
 
-  /**
-   * Finalizes the game session when the lineup is complete.
-   */
-  const handleGameOver = async (finalScore: number) => {
+  // Finalizes the game session when the lineup is complete.
+  const handleGameOver = useCallback(async (finalScore: number) => {
     setWon(true)
     setScore(finalScore)
     setGameOver(true)
     await syncPoints(finalScore)
-  }
+  }, [syncPoints])
 
-  /**
-   * Handles the surrender action.
-   */
-  const handleSurrender = async () => {
+  // Handles the surrender action.
+  const handleSurrender = useCallback(async () => {
     const finalScore = currentCalculatedScore
     setWon(false)
     setScore(finalScore)
     setGameOver(true)
     await syncPoints(finalScore)
-  }
+  }, [currentCalculatedScore, syncPoints])
 
   //Loading message
   if (loading) {

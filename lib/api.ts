@@ -1,95 +1,18 @@
 import { fetchApi } from "./httpClient"
 
-/**
- * --- LEAGUE DATA MODELS ---
- */
+import { 
+  UserLeague, 
+  UserLeagueMembership, 
+  Player, 
+  Team, 
+  League, 
+  Formation 
+} from "@/types"
 
-/**
- * UserLeague: Represents a competitive league created by a user.
- * Each league has a unique name and a private invite code used for secure joining.
- */
-export interface UserLeague {
-  id: string
-  name: string
-  inviteCode: string
-  createdAt: string
-}
+// Re-export everything from centralized types to maintain backward compatibility
+export * from "@/types"
 
-/**
- * UserLeagueMembership: Represents the link between a user and a league.
- * It tracks the user's performance (score) and when they joined the competition.
- * Note: Includes optional league and user objects for enriched leaderboard displays.
- */
-export interface UserLeagueMembership {
-  id: string
-  userId?: string
-  leagueId?: string
-  score: number
-  joinedAt: string
-  league?: UserLeague
-  user?: {
-    id: string
-    userName: string
-    email: string
-  }
-}
-
-/**
- * Player: Represents a professional player in the system database (Standardized DTO).
- */
-export interface Player {
-  id: string
-  name: string
-  age: number
-  tier: number
-  team: string
-  nationality: string
-  position: string[]
-  generalPosition: "GOALKEEPER" | "DEFENDER" | "MIDFIELDER" | "FORWARD"
-  pictureUrl: string | null
-  gender: "male" | "female"
-  league: string
-}
-
-/**
- * Team: Represents a professional club/team (Standardized DTO).
- */
-export interface Team {
-  id: string
-  name: string
-  tier: number
-  pictureUrl: string | null
-  league: string
-  gender: "male" | "female"
-  country: string
-}
-
-/**
- * League: Represents a professional league (Standardized DTO).
- */
-export interface League {
-  id: string
-  name: string
-  category: "male" | "female"
-  country: string
-  pictureUrl: string | null
-}
-
-/**
- * Formation: Represents a tactical formation (Standardized DTO).
- */
-export interface Formation {
-  id: string
-  name: string
-  goalkeeper: string
-  defenders: string[]
-  midfielders: string[]
-  forwards: string[]
-}
-
-/**
- * --- LEAGUE MANAGEMENT API ---
- */
+// --- LEAGUE MANAGEMENT API ---
 
 /**
  * createUserLeague: Creates a new competitive arena in the system.
@@ -124,16 +47,12 @@ export async function updateUserLeague(id: string, name: string): Promise<UserLe
   })
 }
 
-/**
- * getUserLeagueById: Retrieves full details of a specific league.
- */
+// getUserLeagueById: Retrieves full details of a specific league.
 export async function getUserLeagueById(id: string): Promise<UserLeague> {
   return fetchApi(`/user-league/id/${id}`)
 }
 
-/**
- * --- MEMBERSHIP & LEADERBOARD API ---
- */
+// --- MEMBERSHIP & LEADERBOARD API ---
 
 /**
  * joinLeague: Grants a user access to a specific league.
@@ -190,9 +109,7 @@ export async function deleteMembership(id: string): Promise<{ message: string }>
   })
 }
 
-/**
- * --- CORE ENTITIES API (WITH MEMORY CACHE) ---
- */
+// --- CORE ENTITIES API (WITH MEMORY CACHE) ---
 
 // Simple singleton cache to avoid redundant network requests across different game pages
 const apiCache: {
@@ -218,16 +135,12 @@ export async function getAllPlayers(): Promise<Player[]> {
   return players;
 }
 
-/**
- * getPlayerById: Retrieves detailed information for a single player.
- */
+// getPlayerById: Retrieves detailed information for a single player.
 export async function getPlayerById(id: string): Promise<Player> {
   return fetchApi(`/player/id/${id}`)
 }
 
-/**
- * getAllTeams: Fetches the complete list of teams/clubs.
- */
+// getAllTeams: Fetches the complete list of teams/clubs.
 export async function getAllTeams(): Promise<Team[]> {
   if (apiCache.teams) return apiCache.teams;
   const teams = await fetchApi("/team");
@@ -235,16 +148,12 @@ export async function getAllTeams(): Promise<Team[]> {
   return teams;
 }
 
-/**
- * getTeamById: Retrieves detailed information for a specific team.
- */
+// getTeamById: Retrieves detailed information for a specific team.
 export async function getTeamById(id: string): Promise<Team> {
   return fetchApi(`/team/id/${id}`)
 }
 
-/**
- * getAllLeagues: Fetches all professional leagues.
- */
+// getAllLeagues: Fetches all professional leagues.
 export async function getAllLeagues(): Promise<League[]> {
   if (apiCache.leagues) return apiCache.leagues;
   const leagues = await fetchApi("/league");
@@ -252,9 +161,7 @@ export async function getAllLeagues(): Promise<League[]> {
   return leagues;
 }
 
-/**
- * getAllFormations: Fetches all tactical formations.
- */
+// getAllFormations: Fetches all tactical formations.
 export async function getAllFormations(): Promise<Formation[]> {
   if (apiCache.formations) return apiCache.formations;
   const formations = await fetchApi("/formation");
