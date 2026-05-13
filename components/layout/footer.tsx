@@ -12,7 +12,7 @@ import { Linkedin } from "lucide-react"
  */
 export function Footer() {
   return (
-    <footer className="w-full border-t border-border bg-card/90 backdrop-blur-md py-8 mt-auto shadow-[0_-1px_3px_rgba(0,0,0,0.05)]">
+    <footer className="w-full border-t border-border bg-card/90 backdrop-blur-md py-4 mt-auto shadow-[0_-1px_3px_rgba(0,0,0,0.05)]">
       <div className="container mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between items-center gap-8">
           {/* --- LEFT SECTION: BRAND & COPYRIGHT --- */}
@@ -55,7 +55,7 @@ export function Footer() {
                 href="https://www.linkedin.com/in/alberto-casas-ramirez"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 shadow-sm"
+                className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 shadow-sm"
                 aria-label="Alberto Casas Ramirez LinkedIn"
               >
                 <Linkedin size={20} />
@@ -64,7 +64,7 @@ export function Footer() {
                 href="https://www.linkedin.com/in/candela-martinez-casas/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 shadow-sm"
+                className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 shadow-sm"
                 aria-label="Candela Martinez Casas LinkedIn"
               >
                 <Linkedin size={20} />
@@ -73,7 +73,7 @@ export function Footer() {
                 href="https://www.linkedin.com/in/ivan-garcia-santos"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 shadow-sm"
+                className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 shadow-sm"
                 aria-label="Ivan Garcia Santos LinkedIn"
               >
                 <Linkedin size={20} />

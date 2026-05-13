@@ -12,21 +12,22 @@ interface FootballPitchProps {
   positions?: Position[]
   highlightedPositions?: number[] // Array of slot IDs that should be highlighted/clickable
   className?: string
+  showGrid?: boolean
 }
 
 // Standard 4-3-3 formation coordinates
 export const DEFAULT_FORMATION: Position[] = [
-  { id: 0, label: "GK", row: 4, col: 2 },
-  { id: 1, label: "LB", row: 3, col: 0 },
-  { id: 2, label: "CB", row: 3, col: 1.5 },
-  { id: 3, label: "CB", row: 3, col: 2.5 },
-  { id: 4, label: "RB", row: 3, col: 4 },
-  { id: 5, label: "CM", row: 2, col: 0.5 },
-  { id: 6, label: "CM", row: 2, col: 2 },
-  { id: 7, label: "CM", row: 2, col: 3.5 },
-  { id: 8, label: "LW", row: 1, col: 0.5 },
-  { id: 9, label: "ST", row: 1, col: 2 },
-  { id: 10, label: "RW", row: 1, col: 3.5 },
+  { id: 0, label: "GK", row: 4.8, col: 2 },
+  { id: 1, label: "LB", row: 3.6, col: 0 },
+  { id: 2, label: "CB", row: 3.9, col: 1.3 },
+  { id: 3, label: "CB", row: 3.9, col: 2.7 },
+  { id: 4, label: "RB", row: 3.6, col: 4 },
+  { id: 5, label: "CM", row: 2.2, col: 1.3 },
+  { id: 6, label: "CM", row: 2.2, col: 2 },
+  { id: 7, label: "CM", row: 2.2, col: 2.7 },
+  { id: 8, label: "LW", row: 0.8, col: 0 },
+  { id: 9, label: "ST", row: 0.4, col: 2 },
+  { id: 10, label: "RW", row: 0.8, col: 4 },
 ]
 
 // Component that renders a visual football pitch with interactive player positions
@@ -37,10 +38,11 @@ export const FootballPitch = React.memo(function FootballPitch({
   gameComplete = false,
   positions = DEFAULT_FORMATION,
   highlightedPositions = [],
-  className
+  className,
+  showGrid = false
 }: FootballPitchProps) {
   return (
-    <div className={cn("relative bg-gradient-to-b from-primary/20 to-primary/10 flex-1 p-2 min-h-[320px]", className)}>
+    <div className={cn("relative bg-gradient-to-b from-primary/20 to-primary/10 flex-1 p-2 min-h-[450px]", className)}>
       {/* Field Decorations: Lines, boxes, and center circle */}
       <div className="absolute inset-4 border-2 border-primary/30 rounded-lg">
         {/* Goal boxes */}
@@ -51,6 +53,32 @@ export const FootballPitch = React.memo(function FootballPitch({
         {/* Center circle */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full border-2 border-primary/30"></div>
       </div>
+      
+      {/* Grid Visualizer (Debug Mode) */}
+      {showGrid && (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-20">
+          {/* Row Lines (0 to 5) */}
+          {[0, 1, 2, 3, 4, 5].map((row) => (
+            <div 
+              key={`row-${row}`} 
+              className="absolute w-full border-t border-white/50 flex items-start pl-1"
+              style={{ top: `${(row / 5) * 90 + 5}%` }}
+            >
+              <span className="text-[7px] text-white font-mono bg-black/40 px-0.5 rounded">R{row}</span>
+            </div>
+          ))}
+          {/* Column Lines (0 to 4) */}
+          {[0, 1, 2, 3, 4].map((col) => (
+            <div 
+              key={`col-${col}`} 
+              className="absolute h-full border-l border-white/50 flex items-end pb-1"
+              style={{ left: `${(col / 4) * 80 + 10}%` }}
+            >
+              <span className="text-[7px] text-white font-mono bg-black/40 px-0.5 rounded ml-0.5">C{col}</span>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Render interactive player position buttons */}
       {positions.map((pos) => {
@@ -68,7 +96,7 @@ export const FootballPitch = React.memo(function FootballPitch({
             style={{
               // Position mapping: converts coordinate values to percentage-based CSS positions
               left: `${(pos.col / 4) * 80 + 10}%`,
-              top: `${(pos.row / 5) * 85 + 7.5}%`,
+              top: `${(pos.row / 5) * 90 + 5}%`,
             }}
           >
             <button
@@ -90,10 +118,10 @@ export const FootballPitch = React.memo(function FootballPitch({
               {player ? (
                 // Show club crest (larger) if slot is filled
                 player.crestUrl ? (
-                  <img 
-                    src={player.crestUrl} 
-                    alt={player.club} 
-                    className="w-9 h-9 object-contain drop-shadow-sm" 
+                  <img
+                    src={player.crestUrl}
+                    alt={player.club}
+                    className="w-9 h-9 object-contain drop-shadow-sm"
                   />
                 ) : (
                   <div className="w-8 h-8 rounded-full bg-primary/10" />
