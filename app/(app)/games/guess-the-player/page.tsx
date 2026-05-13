@@ -6,7 +6,7 @@
 
 import { useState, useEffect, useMemo, useCallback } from "react"
 import { GameEngine } from "@/components/games/engine/game-engine"
-import { GuessThePlayerGame } from "@/components/games/guess-the-player-game"
+import { GuessThePlayerGame } from "@/components/games/cartridges/guess-the-player-game"
 import { useScoreSync } from "@/hooks/use-score-sync"
 import { SyncStatusIndicator } from "@/components/games/shared/sync-status-indicator"
 import { getAllPlayers } from "@/lib/api"

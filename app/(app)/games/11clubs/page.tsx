@@ -6,7 +6,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react"
 import { GameEngine } from "@/components/games/engine/game-engine"
-import { ElevenLineupGame } from "@/components/games/eleven-lineup-game"
+import { ElevenLineupGame } from "@/components/games/cartridges/eleven-lineup-game"
 import { useScoreSync } from "@/hooks/use-score-sync"
 import { SyncStatusIndicator } from "@/components/games/shared/sync-status-indicator"
 import { FORMATIONS as FORMATION_COORDS } from "@/lib/formations"
