@@ -115,36 +115,36 @@ export default function ElevenClubsPage() {
     const filteredTeams = allTeams.filter(team => {
       // Tier filter
       const tierMatch = difficulty === "Easy" ? team.tier === 1 :
-                        difficulty === "Intermediate" ? (team.tier === 1 || team.tier === 2) :
-                        difficulty === "Hard" ? team.tier === 2 : true;
-      
+        difficulty === "Intermediate" ? (team.tier === 1 || team.tier === 2) :
+          difficulty === "Hard" ? team.tier === 2 : true;
+
       // Gender filter
       const genderMatch = mode === "Male" ? team.gender === "male" :
-                          mode === "Female" ? team.gender === "female" : true;
+        mode === "Female" ? team.gender === "female" : true;
 
       return tierMatch && genderMatch;
     });
 
     // 2. Select 11 random clubs with balanced gender if mode is "Both"
     let selected: Team[] = []
-    
+
     if (mode === "Both") {
       const menTeams = filteredTeams.filter(t => t.gender === "male")
       const womenTeams = filteredTeams.filter(t => t.gender === "female")
-      
+
       // Randomly decide which gender gets 6 and which gets 5
       const menCount = Math.random() > 0.5 ? 6 : 5
       const womenCount = 11 - menCount
-      
+
       const pickedMen = [...menTeams].sort(() => Math.random() - 0.5).slice(0, menCount)
       const pickedWomen = [...womenTeams].sort(() => Math.random() - 0.5).slice(0, womenCount)
-      
+
       selected = [...pickedMen, ...pickedWomen].sort(() => Math.random() - 0.5)
     } else {
       // Just pick 11 random from the filtered list (which only contains one gender anyway)
       selected = [...filteredTeams].sort(() => Math.random() - 0.5).slice(0, 11)
     }
-    
+
     // 3. Create a map of group keys to their respective crests
     const crestsMap: Record<string, string | null> = {}
     selected.forEach(t => {
@@ -211,20 +211,19 @@ export default function ElevenClubsPage() {
       gameId="11clubs"
       title={
         <>
-          <span className="text-primary">FOOTBALL 11</span> <span className="text-black dark:text-white tracking-normal">CLUBS</span>
+          <span className="text-primary">11</span> <span className="text-black dark:text-white tracking-normal">CLUBS</span>
         </>
       }
       image="/images/games/11clubs.webp"
       description={
         <>
-          <p className="mb-2">Football 11 is a daily football game where you have to add players from 11 different clubs in one lineup.</p>
+          <p className="mb-2">11 Clubs is a daily football game where you have to add players from 11 different clubs in one lineup.</p>
           <ul className="list-disc list-inside space-y-0 opacity-80 decoration-primary/50">
             <li>Clubs appear in random order, and you must add a player from each club.</li>
             <li>Complete the full lineup to win.</li>
             <li>Choose between 3 difficulty levels that get progressively harder.</li>
-            <li>Play in Men's, Women's, or Both mode.</li>
-            <li>Earn double points by playing in Both mode!</li>
-            <li>You can give up by clicking the Red Card button.</li>
+            <li>Choose your mode to multiply your points: Male (x1), Female (x1.5) or Both (x2).</li>
+            <li>You can give up by clicking the Red Card icon.</li>
           </ul>
         </>
       }

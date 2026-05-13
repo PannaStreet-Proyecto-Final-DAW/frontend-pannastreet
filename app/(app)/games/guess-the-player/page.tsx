@@ -120,15 +120,14 @@ export default function GuessThePlayerPage() {
       image="/images/games/guess-the-player.webp"
       description={
         <>
-          <p className="mb-2">Guess the Player is a daily football game where you have 6 attempts to uncover the hidden football star.</p>
+          <p className="mb-2">Guess the Player is a daily football game where you have to uncover the hidden football star using dynamic hints.</p>
           <ul className="list-disc list-inside space-y-0 opacity-80 decoration-primary/50">
-            <li>After each guess, you'll receive dynamic feedback.</li>
-            <li>The tiles will change color to show how close you are.</li>
-            <li>Green for a match, and Grey for no match.</li>
-            <li>Select from 3 difficulty levels that increase in challenge.</li>
-            <li>Play in Men's, Women's, or Both categories.</li>
-            <li>Double your points by choosing the Both mode!</li>
-            <li>You can give up by clicking the Red Card button.</li>
+            <li>After each guess, the tiles will change color to show how close you are.</li>
+            <li>Matches are highlighted in Gold, with partial matches (equivalent league in Both) in Light Yellow.</li>
+            <li>Misses will appear as Green or Grey depending on your Light/Dark mode setting.</li>
+            <li>Choose between 3 difficulty levels that get progressively harder.</li>
+            <li>Choose your mode to multiply your points: Male (x1), Female (x1.5) or Both (x2).</li>
+            <li>You can give up by clicking the Red Card icon.</li>
           </ul>
         </>
       }
