@@ -8,7 +8,6 @@ import { useState, useEffect, useMemo, useCallback } from "react"
 import { GameEngine } from "@/components/games/engine/game-engine"
 import { GuessThePlayerGame } from "@/components/games/cartridges/guess-the-player-game"
 import { useScoreSync } from "@/hooks/use-score-sync"
-import { SyncStatusIndicator } from "@/components/games/shared/sync-status-indicator"
 import { getAllPlayers } from "@/lib/api"
 import { Player } from "@/types"
 
@@ -31,7 +30,7 @@ export default function GuessThePlayerPage() {
   })
 
   // 3. Score Synchronization Hook (Syncs points with the server/Supabase)
-  const { syncStatus, syncPoints, resetSync } = useScoreSync()
+  const { syncPoints, resetSync } = useScoreSync()
 
   // 4. Fetch players from API
   useEffect(() => {
@@ -159,9 +158,6 @@ export default function GuessThePlayerPage() {
         )
       }
     >
-      {/* Visual indicator of backend synchronization status */}
-      <SyncStatusIndicator status={syncStatus} />
-
       {/* The Game Cartridge: Contains all the specific logic for this game */}
       <GuessThePlayerGame
         key={gameState.key}

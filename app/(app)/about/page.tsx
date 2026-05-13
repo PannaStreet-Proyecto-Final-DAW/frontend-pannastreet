@@ -1,102 +1,106 @@
 "use client"
 
-import { Card, CardContent } from "@/components/ui/card"
-import { ChevronLeft, Trophy, Users, Zap, Globe } from "lucide-react"
+import { ChevronLeft, Linkedin } from "lucide-react"
 import Link from "next/link"
-import Image from "next/image"
 
 export default function AboutPage() {
-  const stats = [
-    { label: "Active Players", value: "10K+", icon: <Users className="w-4 h-4" /> },
-    { label: "Games Played", value: "250K+", icon: <Zap className="w-4 h-4" /> },
-    { label: "Leagues Created", value: "500+", icon: <Trophy className="w-4 h-4" /> },
-    { label: "Countries", value: "40+", icon: <Globe className="w-4 h-4" /> },
-  ]
-
   return (
-    <div className="max-w-5xl mx-auto py-10 px-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <Link 
-        href="/games" 
-        className="inline-flex items-center gap-2 text-white hover:text-primary transition-colors mb-6 text-sm font-bold"
+    <div className="max-w-4xl mx-auto py-12 px-6 animate-in fade-in duration-700">
+      <Link
+        href="/games"
+        className="inline-flex items-center gap-1 text-foreground hover:text-primary transition-colors mb-8 text-sm"
       >
         <ChevronLeft className="w-4 h-4" />
         Back to Games
       </Link>
 
-      <header className="mb-16 text-center">
-        <div className="inline-flex items-center justify-center mb-6">
-          <Image
-            src="/icon.webp"
-            alt="PannaStreet Logo"
-            width={100}
-            height={100}
-            className="rounded-full shadow-2xl border-2 border-primary/20"
-          />
-        </div>
-        <h1 className="text-5xl md:text-7xl font-black italic tracking-tighter uppercase text-primary leading-none mb-4">
+      <div className="bg-card border border-border rounded-[2rem] p-8 md:p-12 shadow-2xl relative overflow-hidden">
+        {/* Subtle decorative glow */}
+        <div className="absolute bottom-0 right-0 w-64 h-64 bg-primary/5 blur-[100px] rounded-full pointer-events-none" />
+        <div className="absolute top-0 left-0 w-48 h-48 bg-primary/5 blur-[80px] rounded-full pointer-events-none" />
+
+        <h1 className="text-2xl md:text-3xl font-black italic uppercase text-primary mb-8 tracking-tighter leading-none">
           About PannaStreet
         </h1>
-        <p className="text-xl text-white/80 max-w-2xl mx-auto font-medium">
-          The ultimate daily challenge for football fans worldwide.
-        </p>
-      </header>
 
-      <div className="grid md:grid-cols-2 gap-8 mb-16">
-        <div className="space-y-6">
-          <h2 className="text-3xl font-bold text-white uppercase italic tracking-tight">Our Mission</h2>
-          <p className="text-muted-foreground leading-relaxed text-lg">
-            PannaStreet was born from the passion for the beautiful game. Our mission is to provide football enthusiasts with a daily dose of excitement through brain-teasing games and competitive leagues.
-          </p>
-          <p className="text-muted-foreground leading-relaxed text-lg">
-            Whether you're testing your knowledge in "Guess the Player", strategy in "11 Clubs", or speed in "Trivia", we aim to be the first destination for your morning football fix.
-          </p>
-          
-          <div className="grid grid-cols-2 gap-4 pt-4">
-            {stats.map((stat, i) => (
-              <div key={i} className="bg-card border border-border p-4 rounded-2xl">
-                <div className="flex items-center gap-2 text-primary mb-1">
-                  {stat.icon}
-                  <span className="text-xs font-bold uppercase tracking-wider">{stat.label}</span>
+        <div className="space-y-8 text-muted-foreground leading-relaxed text-[13px] md:text-sm">
+          <section>
+            <h2 className="text-base font-bold text-primary mb-2 uppercase italic tracking-tight">Our Mission</h2>
+            <p>
+              PannaStreet was born from the pure passion for the beautiful game. Our mission is simple: to provide football enthusiasts with the ultimate daily challenge to test their knowledge, strategy, and memory. We believe that every fan deserves a premium, high-stakes environment to prove their football IQ.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-base font-bold text-primary mb-2 uppercase italic tracking-tight">The Experience</h2>
+            <p className="mb-4">
+              We've designed a suite of modular "cartridges"—individual game modes that challenge different aspects of your football brain:
+            </p>
+            <ul className="list-disc pl-6 space-y-2">
+              <li><span className="text-card-foreground font-bold italic">11 CLUBS:</span> A tactical puzzle where you must build a complete lineup using players from 11 specific, randomly selected clubs.</li>
+              <li><span className="text-card-foreground font-bold italic">GUESS THE PLAYER:</span> A daily mystery challenge where you must identify a professional player through a series of tactical hints.</li>
+              <li><span className="text-card-foreground font-bold italic">TRIVIA:</span> Fast-paced questions to test your historical and current knowledge of the game.</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-base font-bold text-primary mb-2 uppercase italic tracking-tight">Global Competition</h2>
+            <p>
+              PannaStreet isn't just about playing alone. Through our League system, users can create private competitions with friends or climb the global leaderboard. Every point counts, and every daily challenge is an opportunity to prove you belong to the elite.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-base font-bold text-primary mb-2 uppercase italic tracking-tight">The Development Team</h2>
+            <p className="mb-6">
+              PannaStreet is the result of a collaborative effort by a dedicated team of developers and football fans. We are committed to constantly evolving the platform and adding new ways to celebrate the sport.
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Link 
+                href="https://www.linkedin.com/in/alberto-casas-ramirez" 
+                target="_blank"
+                className="group flex items-center justify-between p-4 bg-primary/5 border border-primary/10 rounded-2xl hover:bg-primary/10 transition-all duration-300"
+              >
+                <div className="flex flex-col">
+                  <span className="text-xs font-bold text-primary uppercase tracking-widest italic">Developer</span>
+                  <span className="text-card-foreground font-black uppercase tracking-tighter">Alberto Casas</span>
                 </div>
-                <div className="text-2xl font-black text-white">{stat.value}</div>
-              </div>
-            ))}
-          </div>
-        </div>
+                <Linkedin className="w-5 h-5 text-primary/40 group-hover:text-primary transition-colors" />
+              </Link>
 
-        <div className="relative group">
-          <div className="absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
-          <Card className="relative bg-card border-border h-full overflow-hidden flex items-center justify-center p-8">
-            <div className="text-center space-y-6">
-              <Trophy className="w-20 h-20 text-primary mx-auto animate-bounce" style={{ animationDuration: '3s' }} />
-              <h3 className="text-2xl font-black italic uppercase tracking-tighter text-white">Join the Elite</h3>
-              <p className="text-muted-foreground">
-                Compete in global leagues, create private groups with your friends, and prove that you are the ultimate PannaStreet.
-              </p>
-              <Link href="/games" className="inline-block w-full">
-                <button className="w-full bg-primary text-primary-foreground font-black py-4 rounded-xl text-sm hover:scale-[1.02] transition-transform shadow-lg uppercase tracking-widest">
-                  Start Playing Now
-                </button>
+              <Link 
+                href="https://www.linkedin.com/in/candela-martinez-casas/" 
+                target="_blank"
+                className="group flex items-center justify-between p-4 bg-primary/5 border border-primary/10 rounded-2xl hover:bg-primary/10 transition-all duration-300"
+              >
+                <div className="flex flex-col">
+                  <span className="text-xs font-bold text-primary uppercase tracking-widest italic">Developer</span>
+                  <span className="text-card-foreground font-black uppercase tracking-tighter">Candela Martínez</span>
+                </div>
+                <Linkedin className="w-5 h-5 text-primary/40 group-hover:text-primary transition-colors" />
+              </Link>
+
+              <Link 
+                href="https://www.linkedin.com/in/ivan-garcia-santos" 
+                target="_blank"
+                className="group flex items-center justify-between p-4 bg-primary/5 border border-primary/10 rounded-2xl hover:bg-primary/10 transition-all duration-300"
+              >
+                <div className="flex flex-col">
+                  <span className="text-xs font-bold text-primary uppercase tracking-widest italic">Developer</span>
+                  <span className="text-card-foreground font-black uppercase tracking-tighter">Iván García</span>
+                </div>
+                <Linkedin className="w-5 h-5 text-primary/40 group-hover:text-primary transition-colors" />
               </Link>
             </div>
-          </Card>
+          </section>
+        </div>
+
+        <div className="mt-12 pt-6 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] md:text-xs font-medium">
+          <p className="text-muted-foreground">© {new Date().getFullYear()} PannaStreet Development Team</p>
+          <p className="text-primary font-bold italic tracking-widest uppercase">Built for the fans</p>
         </div>
       </div>
-
-      <section className="bg-card border border-border rounded-[2.5rem] p-10 md:p-16 text-center relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 blur-[100px] rounded-full" />
-        <h2 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter text-primary mb-6">
-          The Team
-        </h2>
-        <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-10">
-          PannaStreet is developed by a dedicated group of football fans and software engineers who believe that every fan deserves a premium experience to test their football IQ daily.
-        </p>
-        <div className="flex justify-center gap-6">
-          <div className="w-16 h-16 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-black">AC</div>
-          <div className="w-16 h-16 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-black">PM</div>
-          <div className="w-16 h-16 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-black">DAW</div>
-        </div>
-      </section>
     </div>
   )
 }

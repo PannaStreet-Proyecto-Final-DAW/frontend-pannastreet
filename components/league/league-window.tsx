@@ -352,8 +352,8 @@ export function LeagueWindow({
                 <TableHead className="text-primary font-bold py-5 pl-8 w-20 text-center uppercase tracking-tighter italic">Rank</TableHead>
                 <TableHead className="text-primary font-bold py-5 px-4 uppercase tracking-tighter italic">Player</TableHead>
                 <TableHead className="text-primary font-bold text-center py-5 px-4 uppercase tracking-tighter italic">Total Score</TableHead>
-                <TableHead className="text-primary font-bold text-center py-5 px-4 uppercase tracking-tighter italic">Weekly Impact</TableHead>
-                <TableHead className="text-primary font-bold text-right py-5 pr-8 uppercase tracking-tighter italic">Status</TableHead>
+                <TableHead className="text-primary font-bold text-center py-5 px-4 uppercase tracking-tighter italic">Daily Score</TableHead>
+                <TableHead className="text-primary font-bold text-right py-5 pr-8 uppercase tracking-tighter italic">Joined</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -407,7 +407,7 @@ export function LeagueWindow({
                         </span>
                       </TableCell>
                       
-                      {/* Weekly Impact (Mock calculation) */}
+                      {/* Daily Score (Mock calculation) */}
                       <TableCell className="text-center py-4 px-4">
                         <div className="inline-flex items-center px-2 py-1 rounded bg-primary/10 text-primary text-[10px] font-black italic uppercase">
                           +{Math.floor(member.score / 10)} PTS

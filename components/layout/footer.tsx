@@ -40,7 +40,7 @@ export function Footer() {
               Privacy Policy
             </Link>
             <Link 
-              href="#" 
+              href="/about" 
               className="text-sm font-bold text-muted-foreground hover:text-primary dark:text-white dark:hover:text-primary transition-all duration-200"
             >
               About Us
