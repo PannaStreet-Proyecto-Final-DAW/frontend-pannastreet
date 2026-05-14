@@ -14,7 +14,7 @@ export default function AboutPage() {
         Back to Games
       </Link>
 
-      <div className="bg-card border border-border rounded-[2rem] p-8 md:p-12 shadow-2xl relative overflow-hidden">
+      <div className="bg-card border border-border rounded-[2rem] p-8 md:px-24 md:py-12 shadow-2xl relative overflow-hidden">
         {/* Subtle decorative glow */}
         <div className="absolute bottom-0 right-0 w-64 h-64 bg-primary/5 blur-[100px] rounded-full pointer-events-none" />
         <div className="absolute top-0 left-0 w-48 h-48 bg-primary/5 blur-[80px] rounded-full pointer-events-none" />
@@ -23,11 +23,14 @@ export default function AboutPage() {
           About PannaStreet
         </h1>
 
-        <div className="space-y-8 text-muted-foreground leading-relaxed text-[13px] md:text-sm">
+        <div className="space-y-8 text-muted-foreground leading-relaxed text-[13px] md:text-sm text-justify">
           <section>
             <h2 className="text-base font-bold text-primary mb-2 uppercase italic tracking-tight">Our Mission</h2>
             <p>
-              PannaStreet was born from the pure passion for the beautiful game. Our mission is simple: to provide football enthusiasts with the ultimate daily challenge to test their knowledge, strategy, and memory. We believe that every fan deserves a premium, high-stakes environment to prove their football IQ.
+              PannaStreet was founded by three developer friends united by their passion for football in all its forms, men's and women's alike. We love playing football games, but we couldn't find a platform that offered a truly inclusive experience without gender distinctions. This led us to build our own space, where we design our own games while we are able to incorporate ideas and feedback from other fans.
+            </p>
+            <p className="mt-4">
+              Our mission is simple: to provide football enthusiasts with the ultimate daily challenge to test their knowledge, strategy, and memory. We believe that every fan deserves a premium, high-stakes environment to prove their football IQ.
             </p>
           </section>
 
@@ -39,7 +42,6 @@ export default function AboutPage() {
             <ul className="list-disc pl-6 space-y-2">
               <li><span className="text-card-foreground font-bold italic">11 CLUBS:</span> A tactical puzzle where you must build a complete lineup using players from 11 specific, randomly selected clubs.</li>
               <li><span className="text-card-foreground font-bold italic">GUESS THE PLAYER:</span> A daily mystery challenge where you must identify a professional player through a series of tactical hints.</li>
-              <li><span className="text-card-foreground font-bold italic">TRIVIA:</span> Fast-paced questions to test your historical and current knowledge of the game.</li>
             </ul>
           </section>
 
@@ -53,12 +55,12 @@ export default function AboutPage() {
           <section>
             <h2 className="text-base font-bold text-primary mb-2 uppercase italic tracking-tight">The Development Team</h2>
             <p className="mb-6">
-              PannaStreet is the result of a collaborative effort by a dedicated team of developers and football fans. We are committed to constantly evolving the platform and adding new ways to celebrate the sport.
+              PannaStreet is a collaborative project driven by our shared passion for the game. We are constantly evolving the platform and we'd love to hear from fellow fans. If you'd like to get in touch, share a suggestion, or simply connect, you can reach us at <span className="text-primary font-bold">pannastreetfootball@gmail.com</span> or via our LinkedIn profiles below.
             </p>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Link 
-                href="https://www.linkedin.com/in/alberto-casas-ramirez" 
+              <Link
+                href="https://www.linkedin.com/in/alberto-casas-ramirez"
                 target="_blank"
                 className="group flex items-center justify-between p-4 bg-primary/5 border border-primary/10 rounded-2xl hover:bg-primary/10 transition-all duration-300"
               >
@@ -69,8 +71,8 @@ export default function AboutPage() {
                 <Linkedin className="w-5 h-5 text-primary/40 group-hover:text-primary transition-colors" />
               </Link>
 
-              <Link 
-                href="https://www.linkedin.com/in/candela-martinez-casas/" 
+              <Link
+                href="https://www.linkedin.com/in/candela-martinez-casas/"
                 target="_blank"
                 className="group flex items-center justify-between p-4 bg-primary/5 border border-primary/10 rounded-2xl hover:bg-primary/10 transition-all duration-300"
               >
@@ -81,8 +83,8 @@ export default function AboutPage() {
                 <Linkedin className="w-5 h-5 text-primary/40 group-hover:text-primary transition-colors" />
               </Link>
 
-              <Link 
-                href="https://www.linkedin.com/in/ivan-garcia-santos" 
+              <Link
+                href="https://www.linkedin.com/in/ivan-garcia-santos"
                 target="_blank"
                 className="group flex items-center justify-between p-4 bg-primary/5 border border-primary/10 rounded-2xl hover:bg-primary/10 transition-all duration-300"
               >
