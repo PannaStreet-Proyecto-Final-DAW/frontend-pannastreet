@@ -15,6 +15,14 @@ import {
 import { ThemeToggle } from "@/components/layout/theme-toggle"
 import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
+import { Menu } from "lucide-react"
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
 
 const navLinks = [
   { href: "/games", label: "Games" },
@@ -70,8 +78,8 @@ export function Navbar() {
           <span className="font-bold text-lg text-primary tracking-tight">PannaStreet</span>
         </Link>
 
-        {/* --- NAVIGATION LINKS --- */}
-        <nav className="flex items-center gap-2">
+        {/* --- NAVIGATION LINKS (Desktop) --- */}
+        <nav className="hidden md:flex items-center gap-2">
           {pathname === "/profile" ? (
             <div className="px-4 py-2 rounded-xl text-sm font-bold bg-primary/10 text-primary shadow-sm">
               Edit Profile
@@ -105,86 +113,145 @@ export function Navbar() {
           {/* ThemeToggle: Component to switch between Light and Dark modes */}
           <ThemeToggle />
 
-          {/* User Profile Dropdown Menu */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="flex items-center gap-3 py-4 px-3 h-auto text-muted-foreground hover:bg-primary/5 hover:text-primary rounded-xl transition-all"
-              >
-                {/* User Avatar: Displays the first letter of the username */}
-                <div className="w-9 h-9 rounded-full bg-primary/20 flex items-center justify-center border border-primary/10 shadow-inner">
-                  <span className="text-sm font-bold text-primary">
-                    {user?.userName?.charAt(0).toUpperCase()}
-                  </span>
-                </div>
-                {/* Username label (hidden on small mobile screens) */}
-                <span className="hidden md:inline text-sm font-semibold">
-                  {user?.userName}
-                </span>
-                {/* Downward arrow icon for the dropdown */}
-                <svg
-                  className="w-4 h-4 text-muted-foreground"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </Button>
-            </DropdownMenuTrigger>
+          {/* Mobile Menu Trigger */}
+          <div className="md:hidden">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl text-muted-foreground hover:text-primary">
+                  <Menu className="h-6 w-6" />
+                  <span className="sr-only">Toggle menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[280px] bg-card/95 backdrop-blur-xl border-border/50 p-0 flex flex-col">
+                <SheetHeader className="p-6 border-b border-border/50 flex flex-row items-center gap-4">
+                  <Image src="/icon.webp" alt="PannaStreet Logo" width={32} height={32} className="rounded-full" />
+                  <SheetTitle className="text-primary font-black italic tracking-tighter uppercase">Options</SheetTitle>
+                </SheetHeader>
 
-            {/* Dropdown Content */}
-            <DropdownMenuContent align="end" className="w-48 bg-popover border-border">
-              {/* User Identity Header */}
-              <div className="px-3 py-2">
-                <p className="text-sm font-medium text-popover-foreground">{user?.userName}</p>
-                <p className="text-xs text-muted-foreground">{user?.email}</p>
-              </div>
-              <DropdownMenuSeparator />
-              {/* Edit Profile Action */}
-              <DropdownMenuItem
-                onClick={() => router.push("/profile")}
-                className="cursor-pointer"
-              >
-                <svg
-                  className="w-4 h-4 mr-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+                <div className="flex-1 flex flex-col p-4 gap-2">
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 px-2 mb-2">Navigation</p>
+                  {navLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className={cn(
+                        "flex items-center gap-4 px-4 py-3 rounded-2xl text-sm font-bold transition-all duration-200",
+                        pathname === link.href || pathname.startsWith(link.href + "/")
+                          ? "bg-primary/10 text-primary shadow-sm"
+                          : "text-muted-foreground dark:text-white hover:bg-primary/5 hover:text-primary"
+                      )}
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+
+                  <DropdownMenuSeparator className="my-4 bg-border/50" />
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 px-2 mb-2">Account</p>
+                  <Link
+                    href="/profile"
+                    className={cn(
+                      "flex items-center gap-4 px-4 py-3 rounded-2xl text-sm font-bold transition-all duration-200",
+                      pathname === "/profile"
+                        ? "bg-primary/10 text-primary shadow-sm"
+                        : "text-muted-foreground dark:text-white hover:bg-primary/5 hover:text-primary"
+                    )}
+                  >
+                    Edit Profile
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-4 px-4 py-3 rounded-2xl text-sm font-bold text-destructive hover:bg-destructive/10 transition-all duration-200 text-left"
+                  >
+                    Sign out
+                  </button>
+                </div>
+
+              </SheetContent>
+            </Sheet>
+          </div>
+
+          {/* User Profile Dropdown Menu (Desktop Only) */}
+          <div className="hidden md:block">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="flex items-center gap-3 py-4 px-3 h-auto text-muted-foreground hover:bg-primary/5 hover:text-primary rounded-xl transition-all"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                  />
-                </svg>
-                Edit Profile
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              {/* Sign Out Action */}
-              <DropdownMenuItem
-                onClick={handleLogout}
-                className="text-destructive cursor-pointer focus:text-destructive"
-              >
-                <svg
-                  className="w-4 h-4 mr-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+                  {/* User Avatar: Displays the first letter of the username */}
+                  <div className="w-9 h-9 rounded-full bg-primary/20 flex items-center justify-center border border-primary/10 shadow-inner">
+                    <span className="text-sm font-bold text-primary">
+                      {user?.userName?.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                  {/* Username label (hidden on small mobile screens) */}
+                  <span className="hidden md:inline text-sm font-semibold">
+                    {user?.userName}
+                  </span>
+                  {/* Downward arrow icon for the dropdown */}
+                  <svg
+                    className="w-4 h-4 text-muted-foreground"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </Button>
+              </DropdownMenuTrigger>
+
+              {/* Dropdown Content */}
+              <DropdownMenuContent align="end" className="w-48 bg-popover border-border">
+                {/* User Identity Header */}
+                <div className="px-3 py-2">
+                  <p className="text-sm font-medium text-popover-foreground">{user?.userName}</p>
+                  <p className="text-xs text-muted-foreground">{user?.email}</p>
+                </div>
+                <DropdownMenuSeparator />
+                {/* Edit Profile Action */}
+                <DropdownMenuItem
+                  onClick={() => router.push("/profile")}
+                  className="cursor-pointer"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                  />
-                </svg>
-                Sign out
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                  <svg
+                    className="w-4 h-4 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
+                  </svg>
+                  Edit Profile
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                {/* Sign Out Action */}
+                <DropdownMenuItem
+                  onClick={handleLogout}
+                  className="text-destructive cursor-pointer focus:text-destructive"
+                >
+                  <svg
+                    className="w-4 h-4 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                    />
+                  </svg>
+                  Sign out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </div>
     </header>

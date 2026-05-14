@@ -34,14 +34,14 @@ const games: Game[] = [
 export default function GamesPage() {
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="text-center mb-10">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Daily Football Games</h1>
-        <p className="text-white font-medium tracking-wide">
+      <div className="text-center mb-6 md:mb-10 px-4">
+        <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Daily Football Games</h1>
+        <p className="text-xs md:text-base text-white/80 font-medium tracking-wide">
           Select a game to play and test your football knowledge
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 px-2 md:px-0">
         {games.map((game) => (
           <GameCard key={game.id} game={game} />
         ))}

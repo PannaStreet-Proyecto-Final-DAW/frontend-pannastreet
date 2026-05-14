@@ -44,7 +44,7 @@ export function GameIntroCard({
         <div className="flex flex-col md:flex-row items-stretch md:items-center">
 
           {/* Left/Top Section: Game Image and Background Gradient */}
-          <div className="w-full md:w-1/3 aspect-video md:aspect-auto relative flex items-center justify-center p-4 md:p-8 bg-muted/5">
+          <div className="w-full md:w-1/3 aspect-[21/9] md:aspect-auto relative flex items-center justify-center p-6 md:p-8 bg-muted/5">
             <div className={cn(
               "absolute inset-0 opacity-10 bg-gradient-to-br from-transparent",
               // Conditional gradient color based on the gameId
@@ -53,7 +53,7 @@ export function GameIntroCard({
             <img
               src={image}
               alt="Game Image"
-              className="relative z-10 max-h-full max-w-full object-contain rounded-2xl shadow-2xl"
+              className="relative z-10 max-h-[120px] md:max-h-full max-w-full object-contain rounded-2xl shadow-2xl transition-transform duration-500 hover:scale-110"
             />
           </div>
 
