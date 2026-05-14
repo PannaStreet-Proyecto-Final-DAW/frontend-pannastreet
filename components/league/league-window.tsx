@@ -349,11 +349,10 @@ export function LeagueWindow({
           <Table>
             <TableHeader className="bg-muted/10 border-b border-border/50">
               <TableRow className="hover:bg-transparent border-none">
-                <TableHead className="text-primary font-bold py-5 pl-8 w-20 text-center uppercase tracking-tighter italic">Rank</TableHead>
-                <TableHead className="text-primary font-bold py-5 px-4 uppercase tracking-tighter italic">Player</TableHead>
-                <TableHead className="text-primary font-bold text-center py-5 px-4 uppercase tracking-tighter italic">Total Score</TableHead>
-                <TableHead className="text-primary font-bold text-center py-5 px-4 uppercase tracking-tighter italic">Weekly Impact</TableHead>
-                <TableHead className="text-primary font-bold text-right py-5 pr-8 uppercase tracking-tighter italic">Status</TableHead>
+                <TableHead className="w-20 text-primary font-bold py-5 pl-8 text-center uppercase tracking-tighter italic">Rank</TableHead>
+                <TableHead className="w-[30%] text-primary font-bold py-5 px-4 text-center uppercase tracking-tighter italic">Player</TableHead>
+                <TableHead className="w-[30%] text-primary font-bold text-center py-5 px-4 uppercase tracking-tighter italic">Total Score</TableHead>
+                <TableHead className="w-[30%] text-primary font-bold py-5 px-4 text-center uppercase tracking-tighter italic">Joined</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -386,8 +385,8 @@ export function LeagueWindow({
                       </TableCell>
                       
                       {/* Player Identity Cell */}
-                      <TableCell className="py-4 px-4">
-                        <div className="flex flex-col">
+                      <TableCell className="py-4 px-4 text-center">
+                        <div className="flex flex-col items-center">
                           <span className={cn(
                             "text-base font-bold transition-colors",
                             isCurrentUser ? "text-primary" : "text-black dark:text-foreground"
@@ -407,15 +406,10 @@ export function LeagueWindow({
                         </span>
                       </TableCell>
                       
-                      {/* Weekly Impact (Mock calculation) */}
-                      <TableCell className="text-center py-4 px-4">
-                        <div className="inline-flex items-center px-2 py-1 rounded bg-primary/10 text-primary text-[10px] font-black italic uppercase">
-                          +{Math.floor(member.score / 10)} PTS
-                        </div>
-                      </TableCell>
+
                       
                       {/* Join Date / Status Cell */}
-                      <TableCell className="text-right py-4 pr-8 text-xs font-bold text-black/40 dark:text-muted-foreground/60 uppercase tracking-widest">
+                      <TableCell className="py-4 px-4 text-center text-xs font-bold text-black/40 dark:text-muted-foreground/60 uppercase tracking-widest">
                         {member.joinedAt
                           ? new Date(member.joinedAt).toLocaleDateString('en-US', { month: 'short', year: '2-digit' })
                           : "N/A"}
@@ -426,7 +420,7 @@ export function LeagueWindow({
               ) : (
                 /* Empty Leaderboard State */
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-20 text-muted-foreground italic">
+                  <TableCell colSpan={4} className="text-center py-20 text-muted-foreground italic">
                     No contenders found in this league yet.
                   </TableCell>
                 </TableRow>

@@ -8,7 +8,6 @@ import { useState, useEffect, useCallback, useMemo } from "react"
 import { GameEngine } from "@/components/games/engine/game-engine"
 import { ElevenLineupGame } from "@/components/games/cartridges/eleven-lineup-game"
 import { useScoreSync } from "@/hooks/use-score-sync"
-import { SyncStatusIndicator } from "@/components/games/shared/sync-status-indicator"
 import { FORMATIONS as FORMATION_COORDS } from "@/lib/formations"
 import { getAllTeams, getAllPlayers, getAllFormations } from "@/lib/api"
 import { Player, Team, Formation } from "@/types"
@@ -27,7 +26,7 @@ export default function ElevenClubsPage() {
   const [score, setScore] = useState(0)
 
   // --- Score Synchronization Hook (Syncs points with Supabase) ---
-  const { syncStatus, syncPoints, resetSync } = useScoreSync()
+  const { syncPoints, resetSync } = useScoreSync()
 
   // --- Game Session Data ---
 
@@ -240,9 +239,6 @@ export default function ElevenClubsPage() {
       backHref="/games"
       backText="Back to Games"
     >
-      {/* Visual indicator of backend synchronization status */}
-      <SyncStatusIndicator status={syncStatus} />
-
       {/* The "Cartridge" Component: Encapsulates the specific game UI and logic */}
       <ElevenLineupGame
         key={key}
