@@ -224,6 +224,37 @@
       font-size: 14px !important;
     }
 
+/* Specific Tablet Vertical (Portrait) Fix - Minimalist and Safe */
+@media screen and (min-width: 600px) and (max-width: 900px) and (orientation: portrait) {
+  .game-intro-image-container-v2 {
+    width: 200px !important;
+    height: 200px !important;
+    aspect-ratio: 1 / 1 !important;
+    padding: 1rem !important;
+  }
+
+  .game-intro-content-container-v2 {
+    padding: 1.5rem !important;
+    text-align: left !important;
+  }
+
+  .game-intro-footer-v2 {
+    margin-top: 1rem !important;
+    flex-direction: row !important;
+    gap: 1.5rem !important;
+  }
+
+  .game-intro-btn-v2 {
+    justify-content: flex-start !important;
+    width: auto !important;
+  }
+}
+
+
+
+
+
+
     .tablet-v-play-btn {
       font-size: 0.7rem !important;
       margin-top: 0.25rem !important;
