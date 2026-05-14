@@ -60,13 +60,13 @@ export function GameCard({ game }: { game: Game }) {
   const wrapperProps = game.isComingSoon ? {} : { href: game.href };
 
   return (
-    <CardWrapper {...(wrapperProps as any)} className={cn("block group h-full", game.isComingSoon && "cursor-default")}>
+    <CardWrapper {...(wrapperProps as any)} className={cn("block group", game.isComingSoon && "cursor-default")}>
       <Card className={cn(
-        "relative overflow-hidden border-border bg-card transition-all duration-500 h-full flex flex-col",
+        "relative overflow-hidden border-border bg-card transition-all duration-500",
         "hover:border-primary hover:shadow-[0_20px_50px_rgba(0,0,0,0.15)] hover:shadow-primary/40 hover:-translate-y-3"
       )}>
         <div className={cn(
-          "relative aspect-[2/1] md:aspect-[2.2/1] lg:aspect-[16/10] overflow-hidden border-b border-border flex items-center justify-center p-2 md:p-1 lg:p-6 bg-muted/5",
+          "relative aspect-[2/1] md:aspect-[16/10] overflow-hidden border-b border-border flex items-center justify-center p-2 md:p-6 bg-muted/5",
           game.isComingSoon && "filter blur-md"
         )}>
           {/* Subtle background glow */}
@@ -79,7 +79,7 @@ export function GameCard({ game }: { game: Game }) {
             src={game.image}
             alt={game.title}
             className={cn(
-              "relative z-10 max-h-[80px] md:max-h-[135px] lg:max-h-full max-w-full object-contain rounded-xl shadow-2xl transition-transform duration-500",
+              "relative z-10 max-h-full max-w-full object-contain rounded-xl shadow-2xl transition-transform duration-500",
               "group-hover:scale-110"
             )}
           />
@@ -101,14 +101,14 @@ export function GameCard({ game }: { game: Game }) {
 
         <CardHeader className="relative pt-0.5 md:pt-1 pb-0 px-3 md:px-6">
           <CardTitle className={cn(
-            "text-base md:text-lg lg:text-xl text-card-foreground transition-colors text-center",
+            "text-base md:text-xl text-card-foreground transition-colors text-center",
             !game.isComingSoon && "group-hover:text-primary",
             game.isComingSoon && "opacity-40 blur-sm"
           )}>
             {game.title}
           </CardTitle>
         </CardHeader>
-        <CardContent className="relative pt-0 md:pt-0 pb-3 md:pb-6 px-3 md:px-6 flex-1 flex flex-col">
+        <CardContent className="relative pt-0 md:pt-0 pb-3 md:pb-6 px-3 md:px-6">
           <CardDescription className={cn(
             "text-xs md:text-sm text-neutral-600 dark:text-neutral-300 line-clamp-2 md:line-clamp-none transition-colors text-center md:text-left",
             game.isComingSoon && "opacity-40 blur-sm"
@@ -116,7 +116,7 @@ export function GameCard({ game }: { game: Game }) {
             {game.description}
           </CardDescription>
           <div className={cn(
-            "mt-auto pt-4 flex items-center justify-center text-[10px] md:text-sm font-bold uppercase tracking-wider transition-colors",
+            "mt-2 md:mt-4 flex items-center justify-center text-[10px] md:text-sm font-bold uppercase tracking-wider transition-colors",
             game.isComingSoon ? "text-primary opacity-40 blur-sm" : "text-primary"
           )}>
             {game.isComingSoon ? "Coming Soon" : "Play now"}

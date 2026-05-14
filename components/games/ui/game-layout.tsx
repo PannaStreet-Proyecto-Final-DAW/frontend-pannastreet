@@ -25,7 +25,7 @@ export function GameLayout({
   children
 }: GameLayoutProps) {
   return (
-    <div className="max-w-5xl mx-auto px-6 lg:px-12">
+    <div className="max-w-5xl mx-auto">
       <div className="relative flex flex-col items-center justify-center mb-6">
         <div className="absolute left-0 top-0">
           {backHref ? (

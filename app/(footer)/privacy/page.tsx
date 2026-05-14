@@ -5,7 +5,7 @@ import Link from "next/link"
 
 export default function PrivacyPage() {
   return (
-    <div className="max-w-4xl mx-auto py-12 px-6 md:px-28 animate-in fade-in duration-700">
+    <div className="max-w-4xl mx-auto py-12 px-6 animate-in fade-in duration-700">
       <Link
         href="/games"
         className="inline-flex items-center gap-1 text-white hover:text-primary transition-colors mb-8 text-sm"
@@ -14,7 +14,7 @@ export default function PrivacyPage() {
         Back to Games
       </Link>
 
-      <div className="bg-card border border-border rounded-[2rem] p-8 md:px-16 lg:px-24 md:py-12 shadow-2xl relative overflow-hidden">
+      <div className="bg-card border border-border rounded-[2rem] p-8 md:px-24 md:py-12 shadow-2xl relative overflow-hidden">
         {/* Subtle decorative glow */}
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/5 blur-[100px] rounded-full pointer-events-none" />
 
@@ -22,7 +22,7 @@ export default function PrivacyPage() {
           Privacy Policy
         </h1>
 
-        <div className="space-y-8 text-muted-foreground leading-relaxed text-[13px] md:text-[12px] lg:text-sm text-justify">
+        <div className="space-y-8 text-muted-foreground leading-relaxed text-[13px] md:text-sm text-justify">
           <section>
             <h2 className="text-base font-bold text-primary mb-2 uppercase italic tracking-tight">Information We Collect</h2>
             <p className="mb-2">
