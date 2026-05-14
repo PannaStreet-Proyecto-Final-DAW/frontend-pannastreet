@@ -33,9 +33,9 @@ const games: Game[] = [
 
 export default function GamesPage() {
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto tablet-v-container">
       <div className="text-center mb-6 md:mb-10 px-4">
-        <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Daily Football Games</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2 tablet-v-title">Daily Football Games</h1>
         <p className="text-xs md:text-base text-white/80 font-medium tracking-wide">
           Select a game to play and test your football knowledge
         </p>

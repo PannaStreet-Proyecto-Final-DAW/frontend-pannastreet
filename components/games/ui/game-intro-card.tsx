@@ -58,7 +58,7 @@ export function GameIntroCard({
           </div>
 
           {/* Right/Bottom Section: Content and Settings */}
-          <div className="p-4 md:p-6 flex-1 flex flex-col justify-center text-center md:text-left">
+          <div className="p-4 md:p-6 tablet-ls-card-padding flex-1 flex flex-col justify-center text-center md:text-left">
             <div className="text-3xl font-black italic mb-2 tracking-tighter uppercase">
               {title}
             </div>

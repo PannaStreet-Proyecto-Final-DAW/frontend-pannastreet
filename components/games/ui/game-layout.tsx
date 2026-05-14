@@ -25,8 +25,8 @@ export function GameLayout({
   children
 }: GameLayoutProps) {
   return (
-    <div className="max-w-5xl mx-auto">
-      <div className="relative flex flex-col items-center justify-center mb-6">
+    <div className="max-w-5xl mx-auto tablet-ls-container">
+      <div className="relative flex flex-col items-center justify-center mb-6 tablet-ls-game-controls">
         <div className="absolute left-0 top-0">
           {backHref ? (
             <Link href={backHref} className="text-white hover:text-primary text-sm flex items-center gap-1 transition-colors">

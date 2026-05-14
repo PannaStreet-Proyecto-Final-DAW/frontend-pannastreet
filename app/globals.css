@@ -130,3 +130,105 @@
       radial-gradient(circle at center, transparent 0, transparent 120px, oklch(1 0 0 / 0.1) 120px, oklch(1 0 0 / 0.1) 122px, transparent 122px);
   }
 }
+
+@layer utilities {
+  /* Tablet Landscape Specific Overrides (iPad Mini, iPad Air, etc.) */
+  @media (min-width: 768px) and (max-width: 1180px) and (orientation: landscape) {
+    .tablet-ls-container {
+      max-width: 1024px !important;
+      margin-left: auto !important;
+      margin-right: auto !important;
+      padding-left: 2rem !important;
+      padding-right: 2rem !important;
+    }
+
+    .tablet-ls-nav-gap {
+      gap: 2.5rem !important;
+    }
+
+    .tablet-ls-game-controls {
+      padding-left: 1.5rem !important;
+      padding-right: 1.5rem !important;
+      margin-bottom: 2rem !important;
+    }
+
+    .tablet-ls-card-padding {
+      padding: 1.5rem !important;
+    }
+  }
+
+  /* Tablet Vertical Specific Overrides (iPad Mini Portrait) */
+  @media (min-width: 600px) and (max-width: 900px) and (orientation: portrait) {
+    .tablet-v-title {
+      font-size: 1.5rem !important;
+      margin-bottom: 0.5rem !important;
+    }
+
+    .tablet-v-card-header {
+      padding-top: 0.5rem !important;
+      padding-bottom: 0 !important;
+      padding-left: 1rem !important;
+      padding-right: 1rem !important;
+    }
+
+    .tablet-v-card-title {
+      font-size: 1rem !important;
+    }
+
+    .tablet-v-card-content {
+      padding-top: 0 !important;
+      padding-bottom: 1rem !important;
+      padding-left: 1rem !important;
+      padding-right: 1rem !important;
+    }
+
+    .tablet-v-card-description {
+      font-size: 0.75rem !important;
+      line-height: 1.1 !important;
+      -webkit-line-clamp: 2 !important;
+      display: -webkit-box !important;
+      -webkit-box-orient: vertical !important;
+      overflow: hidden !important;
+    }
+
+    .tablet-v-container {
+      padding-left: 4rem !important;
+      padding-right: 4rem !important;
+    }
+
+    .tablet-v-image-container {
+      aspect-ratio: 2 / 1 !important;
+      padding: 1rem !important;
+    }
+
+    .tablet-v-image {
+      max-height: 140px !important;
+    }
+
+    .tablet-v-legal-container {
+      padding-left: 3.5rem !important;
+      padding-right: 3.5rem !important;
+      padding-top: 2rem !important;
+    }
+
+    .tablet-v-legal-card {
+      padding: 2.5rem !important;
+    }
+
+    .tablet-v-legal-text {
+      font-size: 12px !important;
+      line-height: 1.6 !important;
+    }
+
+    .tablet-v-legal-h2 {
+      font-size: 14px !important;
+    }
+
+    .tablet-v-play-btn {
+      font-size: 0.7rem !important;
+      margin-top: 0.25rem !important;
+    }
+  }
+}
+
+
