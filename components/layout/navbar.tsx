@@ -79,7 +79,7 @@ export function Navbar() {
         </Link>
 
         {/* --- NAVIGATION LINKS (Desktop) --- */}
-        <nav className="hidden md:flex items-center gap-2">
+        <nav className="hidden md:flex items-center gap-4 lg:gap-8">
           {pathname === "/profile" ? (
             <div className="px-4 py-2 rounded-xl text-sm font-bold bg-primary/10 text-primary shadow-sm">
               Edit Profile
