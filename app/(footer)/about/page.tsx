@@ -37,7 +37,7 @@ export default function AboutPage() {
           <section>
             <h2 className="text-base font-bold text-primary mb-2 uppercase italic tracking-tight tablet-v-legal-h2">The Experience</h2>
             <p className="mb-4">
-              We've designed a suite of modular "cartridges"—individual game modes that challenge different aspects of your football brain:
+              We've designed a suite of individual game modes that challenge different aspects of your football brain:
             </p>
             <ul className="list-disc pl-6 space-y-2">
               <li><span className="text-card-foreground font-bold italic">11 CLUBS:</span> A tactical puzzle where you must build a complete lineup using players from 11 specific, randomly selected clubs.</li>

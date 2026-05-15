@@ -68,7 +68,7 @@ export default function PrivacyPage() {
 
         <div className="mt-12 pt-6 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] md:text-xs font-medium">
           <p className="text-muted-foreground">© {new Date().getFullYear()} PannaStreet Security Team</p>
-          <p className="text-primary">Last updated: May 11, 2026</p>
+          <p className="text-primary">Last updated: May 15, 2026</p>
         </div>
       </div>
     </div>

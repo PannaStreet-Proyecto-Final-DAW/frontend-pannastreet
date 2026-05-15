@@ -40,15 +40,11 @@ export function GameIntroCard({
   return (
     <Card className="border-border bg-card overflow-hidden">
       <CardContent className="p-0">
-        {/* Original Flex Layout: Column on mobile, Row on desktop */}
-        <div className="flex flex-col md:flex-row items-stretch md:items-center">
+        {/* Main Layout: Grid/Flex depending on device */}
+        <div className="flex flex-col md:flex-row items-stretch md:items-center game-intro-main-layout">
 
           {/* Left/Top Section: Game Image */}
-          <div className="w-full md:w-1/3 aspect-[21/9] md:aspect-auto relative flex items-center justify-center p-6 md:p-8 bg-muted/5 game-intro-image-container-v2">
-            <div className={cn(
-              "absolute inset-0 opacity-10 bg-gradient-to-br from-transparent",
-              gameId === "guess-the-player" ? "from-game-1" : "from-primary"
-            )} />
+          <div className="w-full md:w-1/3 aspect-[21/9] md:aspect-auto relative flex items-center justify-center p-6 md:p-8 game-intro-image-container-v2">
             <img
               src={image}
               alt="Game Image"
@@ -57,19 +53,20 @@ export function GameIntroCard({
           </div>
 
           {/* Right Section: Content and Settings */}
-          <div className="p-4 md:p-6 tablet-ls-card-padding flex-1 flex flex-col justify-center text-center md:text-left game-intro-content-container-v2">
-            <div className="text-3xl font-black italic mb-2 tracking-tighter uppercase">
-              {title}
-            </div>
-
-            <div className="flex flex-col gap-4">
-              <div className="text-[13px] text-black dark:text-white/90 font-medium leading-tight space-y-0.5 text-pretty">
-                {description}
+          <div className="p-4 md:p-6 tablet-ls-card-padding flex-1 flex flex-col justify-center text-center md:text-left game-intro-info-block">
+            <div className="game-intro-text-header">
+              <div className="text-3xl font-black italic mb-2 tracking-tighter uppercase">
+                {title}
               </div>
 
-              {/* Settings Panel */}
-              <div className="flex flex-col md:flex-row gap-8 items-center bg-muted/5 p-4 rounded-2xl backdrop-blur-sm game-intro-footer-v2">
-                <div className="flex flex-col gap-4 flex-1 w-full">
+              <div className="text-[13px] text-black dark:text-white/90 font-medium leading-tight space-y-0.5 text-pretty mb-4">
+                {description}
+              </div>
+            </div>
+
+            {/* Settings Panel */}
+            <div className="flex flex-col md:flex-row gap-8 items-center p-4 rounded-2xl game-intro-footer-v2">
+                <div className="flex flex-col gap-4 flex-1 w-full game-intro-selectors-grid-v2">
                   {setDifficulty && difficulty && (
                     <DifficultySelector
                       value={difficulty}
@@ -81,7 +78,6 @@ export function GameIntroCard({
                     <ModeSelector
                       value={mode}
                       onChange={setMode}
-                      className={cn(setDifficulty && "pt-2")}
                     />
                   )}
                 </div>
@@ -98,7 +94,6 @@ export function GameIntroCard({
               </div>
             </div>
           </div>
-        </div>
 
 
 

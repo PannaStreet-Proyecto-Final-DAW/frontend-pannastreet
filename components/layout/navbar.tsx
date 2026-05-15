@@ -78,8 +78,8 @@ export function Navbar() {
           <span className="font-bold text-lg text-primary tracking-tight">PannaStreet</span>
         </Link>
 
-        {/* --- NAVIGATION LINKS (Desktop) --- */}
-        <nav className="hidden md:flex items-center gap-2 tablet-ls-nav-gap">
+        {/* --- NAVIGATION LINKS (Desktop & Tablet) --- */}
+        <nav className="nav-desktop-links items-center gap-2 tablet-ls-nav-gap">
           {pathname === "/profile" ? (
             <div className="px-4 py-2 rounded-xl text-sm font-bold bg-primary/10 text-primary shadow-sm">
               Edit Profile
@@ -113,8 +113,8 @@ export function Navbar() {
           {/* ThemeToggle: Component to switch between Light and Dark modes */}
           <ThemeToggle />
 
-          {/* Mobile Menu Trigger */}
-          <div className="md:hidden">
+          {/* Mobile Menu Trigger (Only for screens < 600px) */}
+          <div className="nav-mobile-trigger">
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl text-muted-foreground hover:text-primary">
@@ -170,8 +170,8 @@ export function Navbar() {
             </Sheet>
           </div>
 
-          {/* User Profile Dropdown Menu (Desktop Only) */}
-          <div className="hidden md:block">
+          {/* User Profile Dropdown Menu (Desktop & Tablet) */}
+          <div className="nav-desktop-links">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
