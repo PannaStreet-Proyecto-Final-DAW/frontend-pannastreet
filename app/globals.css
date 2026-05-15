@@ -131,6 +131,18 @@
   }
 }
 
+/* --- NAVIGATION VISIBILITY --- 
+   Forced overrides to ensure Hamburger is GONE on Tablet/Desktop (600px+)
+   and Links are ONLY visible from 600px.
+*/
+.nav-desktop-links {
+  display: none !important;
+}
+
+.nav-mobile-trigger {
+  display: flex !important;
+}
+
 @layer utilities {
 
   /* Tablet Landscape Specific Overrides (iPad Mini, iPad Air, etc.) */
@@ -158,8 +170,8 @@
     }
   }
 
-  /* Tablet Vertical Specific Overrides (iPad Mini Portrait, 600px-900px) */
-  @media (min-width: 600px) and (max-width: 900px) and (orientation: portrait) {
+  /* Tablet Vertical Specific Overrides (iPad Mini Portrait, 600px-1180px) */
+  @media (min-width: 600px) and (max-width: 1180px) and (orientation: portrait) {
     .tablet-v-title {
       font-size: 1.5rem !important;
       margin-bottom: 0.5rem !important;
@@ -234,7 +246,8 @@
     /* Game Intro adjustments for Tablet Portrait (Final Layout from Sketch) */
     .game-intro-main-layout {
       display: grid !important;
-      grid-template-columns: 240px 1fr !important; /* Image width + text space */
+      grid-template-columns: 240px 1fr !important;
+      /* Image width + text space */
       gap: 0 !important;
       align-items: stretch !important;
     }
@@ -251,7 +264,8 @@
     }
 
     .game-intro-info-block {
-      display: contents !important; /* Pulls children into the parent grid */
+      display: contents !important;
+      /* Pulls children into the parent grid */
     }
 
     .game-intro-text-header {
@@ -286,26 +300,92 @@
     }
 
     .game-intro-btn-v2 {
-      grid-row: 3 !important; /* Logical separation */
+      grid-row: 3 !important;
+      /* Logical separation */
       justify-content: center !important;
       width: 100% !important;
       padding-top: 1rem !important;
     }
+
+    /* 11 Clubs Game Layout for Tablet Portrait - Proportional padding for all iPads */
+    .eleven-game-layout {
+      grid-template-columns: 1fr !important;
+      gap: 1.5rem !important;
+      padding-left: 7% !important;
+      padding-right: 7% !important;
+      max-width: none !important;
+      width: 100% !important;
+    }
+
+    .eleven-monitor-card {
+      order: 1 !important;
+      position: relative !important;
+      top: 0 !important;
+    }
+
+    .eleven-search-card {
+      order: 2 !important;
+    }
+
+    .eleven-pitch-card {
+      order: 3 !important;
+    }
+
+    .eleven-monitor-content {
+      flex-direction: row !important;
+      justify-content: flex-start !important;
+      text-align: left !important;
+      gap: 2.5rem !important;
+      padding: 1.5rem 2rem !important;
+    }
+
+    .eleven-monitor-content .w-32 {
+      width: 5rem !important;
+      height: 5rem !important;
+      flex-shrink: 0 !important;
+    }
+
+    .eleven-monitor-content .w-24 {
+      width: 4rem !important;
+      height: 4rem !important;
+    }
+
+    .game-result-container-v2 {
+      width: 100% !important;
+    }
+
+    .game-result-container-v2 .game-result-card-v2 {
+      margin-left: 7% !important;
+      margin-right: 7% !important;
+    }
+
+    .game-result-card-gtp .game-result-card-v2 {
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
+
+    /* Compact Guess Table for Tablet Portrait */
+    .guesses-table-v2 {
+      padding-left: 0.15rem !important;
+      padding-right: 0.15rem !important;
+    }
+    
+    .guesses-table-v2 td, 
+    .guesses-table-v2 th {
+      padding-left: 0.2rem !important;
+      padding-right: 0.2rem !important;
+    }
+
+    /* Dar aire a la primera columna (Player) */
+    .guesses-table-v2 tr > th:first-child,
+    .guesses-table-v2 tr > td:first-child {
+      padding-left: 2rem !important;
+    }
   }
 }
 
-/* --- NAVIGATION VISIBILITY --- 
-   Forced overrides to ensure Hamburger is GONE on Tablet/Desktop (600px+)
-   and Links are ONLY visible from 600px.
-*/
-.nav-desktop-links {
-  display: none !important;
-}
 
-.nav-mobile-trigger {
-  display: flex !important;
-}
-
+/* Phone */
 @media (min-width: 600px) {
   .nav-desktop-links {
     display: flex !important;

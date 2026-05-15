@@ -33,6 +33,7 @@ interface GameEngineProps {
   // Result screen customization
   resultTitle?: string
   resultContent?: ReactNode
+  resultClassName?: string
 
   // Navigation properties for the Layout back button
   backHref: string     // URL to navigate back to (e.g. "/games")
@@ -58,6 +59,7 @@ export function GameEngine({
   onSurrender,
   resultTitle,
   resultContent,
+  resultClassName,
   backHref,
   backText,
   children
@@ -108,9 +110,9 @@ export function GameEngine({
           {/* --- PHASE 3: RESULTS --- 
               Displayed automatically when 'gameOver' is true */}
           {gameOver && (
-            <div className="mt-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className={cn("mt-8 animate-in fade-in slide-in-from-bottom-4 duration-500", resultClassName || "game-result-container-v2")}>
               <GameResultCard
-                className={cn(won ? "bg-primary/10" : "bg-destructive/10")}
+                className={cn(won ? "bg-primary/10" : "bg-destructive/10", "game-result-card-v2")}
                 title={resultTitle || (won ? "¡Congratulations!" : "Game Over")}
                 thanksMessage="¡Thanks for playing! See you tomorrow"
               >

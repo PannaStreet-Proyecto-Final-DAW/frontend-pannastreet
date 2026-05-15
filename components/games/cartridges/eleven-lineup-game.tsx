@@ -216,15 +216,15 @@ export function ElevenLineupGame({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[1fr_1.8fr_1fr] gap-6 items-stretch">
-      {/* COLUMN 1: The Challenge Monitor */}
-      <Card className="border-border bg-card sticky top-6 md:h-full flex flex-col overflow-hidden">
+    <div className="grid grid-cols-1 md:grid-cols-[1fr_1.8fr_1fr] gap-6 items-stretch eleven-game-layout">
+      {/* COLUMN 1: The Challenge Monitor (Amarillo) */}
+      <Card className="border-border bg-card sticky top-6 md:h-full flex flex-col overflow-hidden eleven-monitor-card">
         <CardHeader className="p-4 pb-2">
           <CardTitle className="text-[11px] font-black uppercase tracking-widest text-primary/60 italic">
             Current Challenge
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-4 flex-1 flex flex-col items-center justify-center text-center gap-6">
+        <CardContent className="p-4 flex-1 flex flex-col items-center justify-center text-center gap-6 eleven-monitor-content">
           {currentClub ? (
             <>
               <div className="w-32 h-32 rounded-full bg-primary/5 border-4 border-dashed border-primary/20 flex items-center justify-center overflow-hidden">
@@ -250,8 +250,8 @@ export function ElevenLineupGame({
         </CardContent>
       </Card>
 
-      {/* COLUMN 2: Pitch Visualization */}
-      <Card className="border-border bg-card overflow-hidden h-full flex flex-col">
+      {/* COLUMN 2: Pitch Visualization (Verde) */}
+      <Card className="border-border bg-card overflow-hidden h-full flex flex-col eleven-pitch-card">
         <FootballPitch
           lineup={lineup}
           currentPosition={null}
@@ -266,8 +266,8 @@ export function ElevenLineupGame({
         />
       </Card>
 
-      {/* COLUMN 3: Interaction Hub */}
-      <Card className="border-border bg-card h-full flex flex-col">
+      {/* COLUMN 3: Interaction Hub (Azul) */}
+      <Card className="border-border bg-card h-full flex flex-col eleven-search-card">
         <CardHeader className="p-4 pb-2">
           <div className="flex items-center justify-between">
             <CardTitle className="text-sm font-bold text-card-foreground">

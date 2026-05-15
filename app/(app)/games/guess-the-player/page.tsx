@@ -8,12 +8,13 @@ import { useState, useEffect, useMemo, useCallback } from "react"
 import { GameEngine } from "@/components/games/engine/game-engine"
 import { GuessThePlayerGame } from "@/components/games/cartridges/guess-the-player-game"
 import { useScoreSync } from "@/hooks/use-score-sync"
-import { getAllPlayers } from "@/lib/api"
-import { Player } from "@/types"
+import { getAllPlayers, getAllTeams } from "@/lib/api"
+import { Player, Team } from "@/types"
 
 
 export default function GuessThePlayerPage() {
   const [players, setPlayers] = useState<Player[]>([])
+  const [teams, setTeams] = useState<Team[]>([])
   const [loading, setLoading] = useState(true)
 
   // 1. Settings state (Difficulty and Mode)
@@ -36,11 +37,14 @@ export default function GuessThePlayerPage() {
   useEffect(() => {
     async function loadPlayers() {
       try {
-        const data = await getAllPlayers()
-        console.log(data)
-        setPlayers(data)
+        const [playerData, teamData] = await Promise.all([
+          getAllPlayers(),
+          getAllTeams()
+        ])
+        setPlayers(playerData)
+        setTeams(teamData)
       } catch (error) {
-        console.error("Failed to fetch players:", error)
+        console.error("Failed to fetch game data:", error)
       } finally {
         setLoading(false)
       }
@@ -65,6 +69,20 @@ export default function GuessThePlayerPage() {
       return difficultyMatch && modeMatch;
     });
   }, [players, difficulty, mode]);
+  
+  // Create a map of team names to their crest URLs
+  const teamCrests = useMemo(() => {
+    const map: Record<string, string | null> = {}
+    teams.forEach(t => {
+      const nameClean = t.name.trim().toLowerCase()
+      map[nameClean] = t.pictureUrl
+      
+      // Also map with common gender suffixes just in case
+      const suffix = t.gender === "male" ? " (m)" : " (f)"
+      map[nameClean + suffix] = t.pictureUrl
+    })
+    return map
+  }, [teams])
 
   // Callback triggered when the user surrenders
   const handleSurrender = () => {
@@ -141,6 +159,7 @@ export default function GuessThePlayerPage() {
       onSurrender={handleSurrender}
       backHref="/games"
       backText="Back to Games"
+      resultClassName="game-result-card-gtp"
       // Content to show inside the result card
       resultContent={
         gameState.target && (
@@ -165,6 +184,7 @@ export default function GuessThePlayerPage() {
         mode={mode}
         players={filteredPlayers}
         allPlayers={players}
+        teamCrests={teamCrests}
         onGameOver={handleGameOver}
         isGameOver={gameState.gameOver}
       />
