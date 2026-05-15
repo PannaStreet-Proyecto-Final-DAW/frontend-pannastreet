@@ -35,8 +35,8 @@ export default function GamesPage() {
   return (
     <div className="max-w-4xl mx-auto tablet-v-container">
       <div className="text-center mb-6 md:mb-10 px-4">
-        <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2 tablet-v-title">Daily Football Games</h1>
-        <p className="text-xs md:text-base text-white/80 font-medium tracking-wide">
+        <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2 tablet-v-title mobile-games-title">Daily Football Games</h1>
+        <p className="text-xs md:text-base text-white/80 font-medium tracking-wide mobile-games-subtitle">
           Select a game to play and test your football knowledge
         </p>
       </div>
@@ -48,7 +48,7 @@ export default function GamesPage() {
       </div>
 
       <div className="mt-12 text-center">
-        <p className="text-sm text-white font-medium">
+        <p className="text-sm text-white font-medium mobile-games-footer-text">
           New challenges every day at midnight
         </p>
       </div>
