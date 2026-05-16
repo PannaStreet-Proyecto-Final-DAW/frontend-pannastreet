@@ -21,7 +21,7 @@ interface ElevenLineupGameProps {
   // The specific 11 groups (clubs/countries) allowed for the current game session
   availableGroups: string[]
   // Data mapping: category name -> list of player names
-  itemsByGroup: Record<string, { id: string; name: string; positions: string[] }[]>
+  itemsByGroup: Record<string, { id: string; name: string; positions: string[]; tier?: number }[]>
   // Data mapping: category name -> crest URL
   availableCrests?: Record<string, string | null>
   // Difficulty setting (Easy, Intermediate, Hard)
@@ -99,20 +99,32 @@ export function ElevenLineupGame({
     resultsContainerRef,
     resetSearch,
     selectResult
-  } = usePlayerSearch<{ group: string; item: { id: string; name: string; positions: string[] } }>({
+  } = usePlayerSearch<{ group: string; item: { id: string; name: string; positions: string[]; tier?: number } }>({
     items: searchItems,
     wrapAround: false, // Standard navigation for scrollable lists
     filterFn: useCallback((q, items) => {
-      const searchNormalized = normalize(q)
+      const trimmedQuery = q.trim()
+      if (trimmedQuery.length < 3) return []
+
+      const searchNormalized = normalize(trimmedQuery)
       const usedGroups = new Set(lineup.filter(Boolean).map((l) => l!.club))
 
       return items
         .filter(({ group, item }) => {
           // Rule: Cannot select multiple players from the same club/country
           if (usedGroups.has(group)) return false
+
+          const nameNormalized = normalize(item.name)
+          
           // Rule: Search matches player name only (as requested)
-          return normalize(item.name).includes(searchNormalized)
+          // Must start with query either at beginning of full name or after a space
+          const matchesSearch = 
+            nameNormalized.startsWith(searchNormalized) || 
+            nameNormalized.includes(' ' + searchNormalized)
+          
+          return matchesSearch
         })
+        .sort((a, b) => (a.item.tier || 3) - (b.item.tier || 3))
         .map(({ group, item }) => ({
           id: item.id,
           primaryText: item.name,

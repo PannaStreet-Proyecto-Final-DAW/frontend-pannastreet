@@ -34,6 +34,10 @@ const leaguePairs: Record<string, string> = {
   "serie a (f)": "serie a (m)",
 }
 
+// Helper to normalize league names (handles hyphens and spaces consistently)
+const normalizeLeague = (name: string) => name.trim().toLowerCase().replace(/-/g, ' ');
+
+
 interface GuessThePlayerGameProps {
   difficulty: string
   mode: string
@@ -64,16 +68,16 @@ export function GuessThePlayerGame({
   // Centralized state for attempts and scoring
   const { attempts: guesses, status, score, recordAttempt, isGameOver } = useGameLogic<Guess>({
     maxAttempts: SCORE_CONFIG.attempts[mode as keyof typeof SCORE_CONFIG.attempts] || 10,
-    
+
     scoringFormula: useCallback((currentGuesses, won) => {
       if (!won) return 0
       const maxAttempts = SCORE_CONFIG.attempts[mode as keyof typeof SCORE_CONFIG.attempts] || 10
       const basePoints = SCORE_CONFIG.base[difficulty as keyof typeof SCORE_CONFIG.base] || 10
       const multiplier = SCORE_CONFIG.multipliers[mode as keyof typeof SCORE_CONFIG.multipliers] || 1
-      
+
       const totalPotentialScore = basePoints * multiplier
       const pointsPerFail = totalPotentialScore / maxAttempts
-      
+
       return Math.max(0, Math.floor(totalPotentialScore - ((currentGuesses.length - 1) * pointsPerFail)))
     }, [difficulty, mode])
   })
@@ -94,14 +98,22 @@ export function GuessThePlayerGame({
     maxResults: 5,         // Short list for this game
     wrapAround: true,      // Circular navigation enabled
     filterFn: useCallback((q, items) => {
-      const searchNormalized = normalize(q)
+      const trimmedQuery = q.trim()
+      if (trimmedQuery.length < 3) return []
+
+      const searchNormalized = normalize(trimmedQuery)
       return items
         .filter((p) => {
-          const matchesSearch = normalize(p.name).includes(searchNormalized)
+          const nameNormalized = normalize(p.name)
+          const matchesSearch = 
+            nameNormalized.startsWith(searchNormalized) || 
+            nameNormalized.includes(' ' + searchNormalized)
+          
           // Filter out already guessed players to avoid duplicates
           const notGuessed = !guesses.some((g) => g.id === p.id)
           return matchesSearch && notGuessed
         })
+        .sort((a, b) => (a.tier || 3) - (b.tier || 3))
         .map(p => ({
           id: p.id,
           primaryText: p.name,
@@ -118,6 +130,13 @@ export function GuessThePlayerGame({
       onGameOver(status === "won", targetPlayer, score)
     }
   }, [status, score, targetPlayer, onGameOver])
+
+  // Watch for external game over
+  useEffect(() => {
+    if (externalIsGameOver && status === "playing" && targetPlayer) {
+      onGameOver(false, targetPlayer, 0)
+    }
+  }, [externalIsGameOver, status, targetPlayer, onGameOver])
 
   // --- INITIALIZATION ---
   // Pick target player randomly on mount
@@ -136,24 +155,27 @@ export function GuessThePlayerGame({
     if (isGameOver) return
 
     const player = allPlayers.find((p) => p.id === playerId)
-    
+
     if (!player) {
       setError("Player not found! Please check the spelling.")
-      return 
+      return
     }
 
     setError(null)
     if (!targetPlayer) return;
-    
+
     // Hint calculation logic
     const isCorrectPosition = player.generalPosition === targetPlayer.generalPosition;
     const playerLeague = (player.league || "").trim().toLowerCase();
     const targetLeague = (targetPlayer.league || "").trim().toLowerCase();
-    
+
     let leagueStatus: "correct" | "wrong" | "partial" = "wrong";
+    const pLeagueNorm = normalizeLeague(playerLeague);
+    const tLeagueNorm = normalizeLeague(targetLeague);
+
     if (playerLeague === targetLeague) {
       leagueStatus = "correct";
-    } else if (mode === "Both" && leaguePairs[playerLeague] === targetLeague) {
+    } else if (mode === "Both" && leaguePairs[pLeagueNorm] === tLeagueNorm) {
       leagueStatus = "partial";
     }
 
@@ -166,11 +188,11 @@ export function GuessThePlayerGame({
     }
 
     // Save the new attempt to the list
-    const newGuess: Guess = { id: player.id, name: player.name, hints }
     const isWin = player.id === targetPlayer.id
+    const newGuess: Guess = { id: player.id, name: player.name, hints, isCorrect: isWin }
     
     recordAttempt(newGuess, isWin)
-    
+
     // Cleanup UI
     resetSearch()
     setError(null)
@@ -214,7 +236,7 @@ export function GuessThePlayerGame({
       )}
 
       {/* List of Previous Guesses */}
-      <GuessesTable guesses={guesses} players={allPlayers} teamCrests={teamCrests} leagueLogos={leagueLogos} />
+      <GuessesTable guesses={[...guesses].reverse()} players={allPlayers} teamCrests={teamCrests} leagueLogos={leagueLogos} />
 
       {/* Legend for the colors */}
       <div className="mt-6 flex items-center justify-center gap-4 text-xs font-medium">
@@ -226,6 +248,12 @@ export function GuessThePlayerGame({
           <span className="w-4 h-4 rounded bg-[#DAE0C9] dark:bg-secondary"></span>
           Incorrect
         </div>
+        {mode === "Both" && (
+          <div className="flex items-center gap-1.5 text-white">
+            <span className="w-4 h-4 rounded bg-yellow-100"></span>
+            Partial
+          </div>
+        )}
       </div>
     </>
   )

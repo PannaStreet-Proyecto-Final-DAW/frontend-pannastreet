@@ -10,6 +10,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { FieldGroup, Field, FieldLabel } from "@/components/ui/field"
 import { ThemeToggle } from "@/components/layout/theme-toggle"
 import { Spinner } from "@/components/ui/spinner"
+import { Eye, EyeOff } from "lucide-react"
+
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true)
@@ -18,6 +20,8 @@ export default function AuthPage() {
   const [userName, setUserName] = useState("")
   const [error, setError] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+
 
   const { login, register, user, isLoading } = useAuth()
   const router = useRouter()
@@ -153,16 +157,30 @@ export default function AuthPage() {
                 </Field>
                 <Field>
                   <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="Enter your password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    autoComplete={isLogin ? "current-password" : "new-password"}
-                    className="bg-input border-border"
-                  />
+                  <div className="relative">
+                    <Input
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Enter your password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      autoComplete={isLogin ? "current-password" : "new-password"}
+                      className="bg-input border-border pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-gold transition-colors"
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
                   {!isLogin && (
                     <p className="text-[10px] text-muted-foreground mt-1">
                       Min 8 characters, with uppercase, lowercase and a number.
@@ -196,6 +214,8 @@ export default function AuthPage() {
                 onClick={() => {
                   setIsLogin(!isLogin)
                   setError("")
+                  setShowPassword(false)
+
                 }}
                 className="text-sm text-muted-foreground hover:text-primary transition-colors"
               >

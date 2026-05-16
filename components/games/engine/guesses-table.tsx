@@ -96,7 +96,12 @@ export const GuessesTable = React.memo(function GuessesTable({ guesses, players,
                     className="group last:border-0 hover:bg-primary/5 transition-colors duration-300"
                   >
                     <TableCell className="py-4 px-2 sm:px-6">
-                      <div className="flex flex-col sm:block font-bold text-[12px] sm:text-sm text-card-foreground group-hover:text-primary transition-colors leading-tight">
+                      <div className={cn(
+                        "flex flex-col sm:block font-bold text-[12px] sm:text-sm transition-all duration-300",
+                        guess.isCorrect 
+                          ? "bg-primary text-black px-3 py-2 rounded-lg shadow-sm text-center" 
+                          : "text-card-foreground group-hover:text-primary transition-colors leading-tight"
+                      )}>
                         {guess.name.split(' ').map((part, i) => (
                           <span key={i} className="block sm:inline sm:mr-1 last:mr-0">{part}</span>
                         ))}

@@ -72,8 +72,9 @@ export default function ElevenClubsPage() {
   }, [])
 
   // Helper to group players by team name for the game engine
+  // Helper to group players by team name for the game engine
   const playersByTeamMap = useMemo(() => {
-    const map: Record<string, { id: string; name: string; positions: string[] }[]> = {}
+    const map: Record<string, { id: string; name: string; positions: string[]; tier?: number }[]> = {}
     allPlayers.forEach(player => {
       // Filter by gender mode
       const genderMatch =
@@ -87,7 +88,8 @@ export default function ElevenClubsPage() {
       map[groupKey].push({
         id: player.id,
         name: player.name,
-        positions: player.position
+        positions: player.position,
+        tier: player.tier
       })
     })
     return map
@@ -95,14 +97,15 @@ export default function ElevenClubsPage() {
 
   // Helper to group all players by team name for search (unfiltered by gender)
   const allPlayersByTeamMap = useMemo(() => {
-    const map: Record<string, { id: string; name: string; positions: string[] }[]> = {}
+    const map: Record<string, { id: string; name: string; positions: string[]; tier?: number }[]> = {}
     allPlayers.forEach(player => {
       const groupKey = `${player.team} (${player.gender === "male" ? "M" : "F"})`
       if (!map[groupKey]) map[groupKey] = []
       map[groupKey].push({
         id: player.id,
         name: player.name,
-        positions: player.position
+        positions: player.position,
+        tier: player.tier
       })
     })
     return map
