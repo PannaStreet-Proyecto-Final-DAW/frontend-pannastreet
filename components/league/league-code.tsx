@@ -200,7 +200,7 @@ export function LeagueCode() {
   const hasLeagues = memberships.length > 0
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-5xl mx-auto tablet-ls-container">
       {/* 
           Main Toggle: 
           If no league is selected, show the dashboard.
@@ -209,12 +209,12 @@ export function LeagueCode() {
       {!selectedLeague ? (
         <>
           {/* Dashboard Header */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-8 mobile-leagues-header">
             <div>
-              <h1 className="text-3xl font-bold text-foreground">My Leagues</h1>
+              <h1 className="text-3xl font-bold text-foreground mobile-leagues-title">My Leagues</h1>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex gap-3 mobile-leagues-actions">
               {/* --- SECURE JOIN LEAGUE DIALOG --- */}
               <Dialog open={joinDialogOpen} onOpenChange={(open) => {
                 setJoinDialogOpen(open)
@@ -230,7 +230,7 @@ export function LeagueCode() {
                   </Button>
                 </DialogTrigger>
 
-                <DialogContent className="bg-white dark:bg-[#071a0c] border-border/30 rounded-[2rem] p-8 max-w-[450px] shadow-2xl">
+                <DialogContent className="bg-white dark:bg-[#071a0c] border-border/30 rounded-[2rem] p-8 max-w-[450px] shadow-2xl mobile-league-dialog">
                   <DialogHeader className="space-y-3">
                     <DialogTitle className="text-2xl font-bold text-center text-primary">
                       Join a League
@@ -291,7 +291,7 @@ export function LeagueCode() {
                   </Button>
                 </DialogTrigger>
 
-                <DialogContent className="bg-white dark:bg-[#071a0c] border-border/30 rounded-[2rem] p-8 max-w-[450px]">
+                <DialogContent className="bg-white dark:bg-[#071a0c] border-border/30 rounded-[2rem] p-8 max-w-[450px] mobile-league-dialog">
                   <DialogHeader>
                     <DialogTitle className="text-2xl font-bold text-primary">Create League</DialogTitle>
                     <DialogDescription className="text-black/60 dark:text-muted-foreground font-medium">

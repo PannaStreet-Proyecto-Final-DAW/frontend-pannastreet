@@ -12,9 +12,9 @@ import { Instagram } from "lucide-react"
  */
 export function Footer() {
   return (
-    <footer className="w-full border-t border-border bg-card/90 backdrop-blur-md py-4 mt-auto shadow-[0_-1px_3px_rgba(0,0,0,0.05)]">
+    <footer className="w-full border-t border-border bg-card/90 backdrop-blur-md py-4 mt-auto shadow-[0_-1px_3px_rgba(0,0,0,0.05)] mobile-footer">
       <div className="container mx-auto px-6">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-8">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-8 mobile-footer-wrapper">
           {/* --- LEFT SECTION: BRAND & COPYRIGHT --- */}
           <div className="flex flex-col items-center md:items-start gap-2">
             <div className="flex items-center gap-2">
@@ -26,7 +26,7 @@ export function Footer() {
           </div>
 
           {/* --- CENTER SECTION: LEGAL LINKS --- */}
-          <nav className="flex flex-wrap justify-center gap-x-12 gap-y-2">
+          <nav className="flex flex-wrap justify-center gap-x-12 gap-y-2 mobile-footer-nav">
             <Link 
               href="/terms" 
               className="text-sm font-bold text-muted-foreground hover:text-primary dark:text-white dark:hover:text-primary transition-all duration-200"

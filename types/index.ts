@@ -76,6 +76,7 @@ export type Hint = "correct" | "partial" | "wrong"
 
 // Represents a single guess attempt in the Guess the Player game.
 export interface Guess {
+  id: string
   name: string
   hints: {
     team: Hint
@@ -98,6 +99,7 @@ export interface Position {
 
 // Interface for a player assigned to a position in a lineup.
 export interface SelectedPlayer {
+  playerId: string
   positionId: number
   club: string
   player: string
