@@ -9,14 +9,17 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 import { Player, Guess, Hint } from "@/types"
+import { getCountryCode } from "@/lib/country-mapper"
+import * as Flags from 'country-flag-icons/react/3x2'
 
 interface GuessesTableProps {
   guesses: Guess[] // Array of all attempts made by the user
   players: Player[] // Full list of players to pull display data from
   teamCrests?: Record<string, string | null> // Map of team names to crest URLs
+  leagueLogos?: Record<string, string | null> // Map of league names to logo URLs
 }
 
-export const GuessesTable = React.memo(function GuessesTable({ guesses, players, teamCrests = {} }: GuessesTableProps) {
+export const GuessesTable = React.memo(function GuessesTable({ guesses, players, teamCrests = {}, leagueLogos = {} }: GuessesTableProps) {
   /**
    * Helper function to determine the CSS color classes based on the hint value.
    * - correct: Green (Primary)
@@ -70,7 +73,7 @@ export const GuessesTable = React.memo(function GuessesTable({ guesses, players,
                   League
                 </TableHead>
                 <TableHead className="py-4 px-2 sm:px-4 text-center text-[11px] font-black uppercase tracking-widest text-black/60 dark:text-white/60">
-                  Nationality
+                  Country
                 </TableHead>
                 <TableHead className="py-4 px-2 sm:px-4 text-center text-[11px] font-black uppercase tracking-widest text-black/60 dark:text-white/60">
                   Position
@@ -93,9 +96,11 @@ export const GuessesTable = React.memo(function GuessesTable({ guesses, players,
                     className="group last:border-0 hover:bg-primary/5 transition-colors duration-300"
                   >
                     <TableCell className="py-4 px-2 sm:px-6">
-                      <span className="font-bold text-sm text-card-foreground group-hover:text-primary transition-colors">
-                        {guess.name}
-                      </span>
+                      <div className="flex flex-col sm:block font-bold text-[12px] sm:text-sm text-card-foreground group-hover:text-primary transition-colors leading-tight">
+                        {guess.name.split(' ').map((part, i) => (
+                          <span key={i} className="block sm:inline sm:mr-1 last:mr-0">{part}</span>
+                        ))}
+                      </div>
                     </TableCell>
 
                     {/* Team Column: Highlighted Green if correct */}
@@ -125,20 +130,42 @@ export const GuessesTable = React.memo(function GuessesTable({ guesses, players,
                     {/* League Column: Highlighted Green if correct */}
                     <TableCell className="py-4 px-2 sm:px-4 text-center">
                       <span className={cn(
-                        "inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider min-w-[80px] shadow-sm transition-transform group-hover:scale-105 duration-300",
+                        "inline-flex items-center justify-center gap-2 px-1.5 sm:px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider min-w-[40px] sm:min-w-[80px] shadow-sm transition-transform group-hover:scale-105 duration-300",
                         getHintColor(guess.hints.league)
                       )}>
-                        {player.league}
+                        {(() => {
+                          const leagueName = player.league?.trim().toLowerCase();
+                          const leagueLogo = leagueLogos[leagueName];
+                          return leagueLogo ? (
+                            <>
+                              <img src={leagueLogo} alt={player.league} className="w-5 h-5 sm:w-4 sm:h-4 object-contain" />
+                              <span className="hidden sm:inline">{player.league}</span>
+                            </>
+                          ) : (
+                            <span>{player.league}</span>
+                          );
+                        })()}
                       </span>
                     </TableCell>
 
-                    {/* Nationality Column: Highlighted Green if correct */}
+                    {/* Country Column: Highlighted Green if correct */}
                     <TableCell className="py-4 px-2 sm:px-4 text-center">
                       <span className={cn(
-                        "inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider min-w-[80px] shadow-sm transition-transform group-hover:scale-105 duration-300",
+                        "inline-flex items-center justify-center gap-2 px-1.5 sm:px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider min-w-[40px] sm:min-w-[80px] shadow-sm transition-transform group-hover:scale-105 duration-300",
                         getHintColor(guess.hints.nationality)
                       )}>
-                        {player.nationality}
+                        {(() => {
+                          const isoCode = getCountryCode(player.nationality);
+                          const Flag = isoCode ? (Flags as any)[isoCode] : null;
+                          return Flag ? (
+                            <>
+                              <Flag className="w-6 h-4 sm:w-4 sm:h-3 rounded-sm shadow-sm" />
+                              <span className="hidden sm:inline">{player.nationality}</span>
+                            </>
+                          ) : (
+                            <span>{player.nationality}</span>
+                          );
+                        })()}
                       </span>
                     </TableCell>
 

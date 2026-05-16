@@ -467,6 +467,128 @@
       width: calc(100% - 2rem) !important;
       border-radius: 2rem !important;
     }
+
+    /* League Leaderboard Table Compaction */
+    .mobile-league-table {
+      min-width: 100% !important;
+      table-layout: fixed !important;
+    }
+
+    .mobile-league-table th,
+    .mobile-league-table td {
+      padding: 0.5rem 0.25rem !important;
+      font-size: 10px !important;
+      word-break: break-word !important;
+    }
+
+    .mobile-league-table th:first-child,
+    .mobile-league-table td:first-child {
+      width: 40px !important;
+      padding-left: 0.5rem !important;
+    }
+
+    .mobile-league-table th:nth-child(2),
+    .mobile-league-table td:nth-child(2) {
+      width: 35% !important;
+    }
+
+    .mobile-league-table th:nth-child(3),
+    .mobile-league-table td:nth-child(3) {
+      width: 25% !important;
+    }
+
+    .mobile-league-table th:last-child,
+    .mobile-league-table td:last-child {
+      width: 25% !important;
+      padding-right: 0.5rem !important;
+    }
+
+    .mobile-league-table span.text-base {
+      font-size: 12px !important;
+    }
+
+    .mobile-league-table span.text-xl {
+      font-size: 16px !important;
+    }
+
+    /* Rank Indicator Compaction */
+    .mobile-league-table .w-8.h-8 {
+      width: 1.5rem !important;
+      height: 1.5rem !important;
+      font-size: 10px !important;
+    }
+
+    .mobile-league-table .scale-110 {
+      transform: scale(1) !important;
+    }
+
+    /* 11 Clubs Game Layout for Mobile */
+    .eleven-game-layout {
+      grid-template-columns: 1fr !important;
+      gap: 1rem !important;
+      padding-left: 0.75rem !important;
+      padding-right: 0.75rem !important;
+      width: 100% !important;
+    }
+
+    .eleven-monitor-card,
+    .eleven-search-card,
+    .eleven-pitch-card {
+      position: relative !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      z-index: 1 !important;
+    }
+
+    .eleven-monitor-card {
+      order: 1 !important;
+    }
+
+    .eleven-search-card {
+      order: 2 !important;
+    }
+
+    .eleven-pitch-card {
+      order: 3 !important;
+    }
+
+    .eleven-monitor-content {
+      flex-direction: row !important;
+      justify-content: flex-start !important;
+      text-align: left !important;
+      gap: 1.5rem !important;
+      padding: 1rem 1.25rem !important;
+    }
+
+    .eleven-monitor-content .w-32 {
+      width: 4.5rem !important;
+      height: 4.5rem !important;
+      flex-shrink: 0 !important;
+    }
+
+    .eleven-monitor-content .w-24 {
+      width: 3.5rem !important;
+      height: 3.5rem !important;
+    }
+
+    .eleven-monitor-content h3 {
+      font-size: 1.25rem !important;
+    }
+
+    .game-result-container-v2 {
+      width: 100% !important;
+    }
+
+    .game-result-container-v2 .game-result-card-v2 {
+      margin-left: 0.75rem !important;
+      margin-right: 0.75rem !important;
+    }
+
+    .game-result-card-gtp .game-result-card-v2 {
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
   }
 }
 

@@ -217,7 +217,7 @@ export function LeagueWindow({
                   <div className="w-full max-md bg-black/5 dark:bg-black/30 backdrop-blur-md p-8 rounded-3xl flex flex-col items-center gap-6 border border-black/5 dark:border-white/5 relative z-10">
                     <div className="flex flex-col items-center gap-1">
                       <span className="text-[9px] uppercase tracking-widest text-muted-foreground/60 font-black">Your Code</span>
-                      <code className="font-mono font-black text-xl tracking-[0.3em] text-primary uppercase">
+                      <code className="font-mono font-black text-[11px] sm:text-xl tracking-[0.15em] sm:tracking-[0.3em] text-primary uppercase break-all sm:break-normal">
                         {inviteCode}
                       </code>
                     </div>
@@ -257,7 +257,7 @@ export function LeagueWindow({
                   <span className="hidden sm:inline">Edit</span>
                 </Button>
               </DialogTrigger>
-              <DialogContent className="bg-white dark:bg-[#071a0c] border-border/30 rounded-[2rem] p-8 max-w-[450px]">
+              <DialogContent className="bg-white dark:bg-[#071a0c] border-border/30 rounded-[2rem] p-8 max-w-[450px] mobile-league-dialog">
                 <DialogHeader className="space-y-3">
                   <DialogTitle className="text-primary font-black italic uppercase text-2xl tracking-tight leading-none">
                     Rename League
@@ -311,7 +311,7 @@ export function LeagueWindow({
                   <span className="hidden sm:inline">{isLeaving ? "Leaving..." : "Leave"}</span>
                 </Button>
               </AlertDialogTrigger>
-              <AlertDialogContent className="bg-white dark:bg-[#071a0c] border-border/30 rounded-[2rem] p-8 max-w-[400px]">
+              <AlertDialogContent className="bg-white dark:bg-[#071a0c] border-border/30 rounded-[2rem] p-8 max-w-[400px] mobile-league-dialog">
                 <AlertDialogHeader className="space-y-3 text-center sm:text-left">
                   <AlertDialogTitle className="text-black dark:text-foreground font-black italic uppercase text-2xl tracking-tight leading-none">
                     Leave League?
@@ -346,7 +346,7 @@ export function LeagueWindow({
             <Spinner className="h-8 w-8 text-primary" />
           </div>
         ) : (
-          <Table>
+          <Table className="mobile-league-table">
             <TableHeader className="bg-muted/10 border-b border-border/50">
               <TableRow className="hover:bg-transparent border-none">
                 <TableHead className="w-20 text-primary font-bold py-5 pl-8 text-center uppercase tracking-tighter italic">Rank</TableHead>
@@ -392,9 +392,6 @@ export function LeagueWindow({
                             isCurrentUser ? "text-primary" : "text-black dark:text-foreground"
                           )}>
                             {isCurrentUser ? "You" : (member.user?.userName || `User ${(member.user?.id || member.userId || member.id).substring(0, 8)}`)}
-                          </span>
-                          <span className="text-[10px] uppercase tracking-widest text-black/40 dark:text-muted-foreground font-medium">
-                            {isCurrentUser ? "Active Member" : "Challenger"}
                           </span>
                         </div>
                       </TableCell>

@@ -122,7 +122,7 @@ export function Navbar() {
                   <span className="sr-only">Toggle menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[280px] bg-card/95 backdrop-blur-xl border-border/50 p-0 flex flex-col">
+              <SheetContent side="right" className="w-1/2 bg-card/95 backdrop-blur-xl border-border/50 p-0 flex flex-col">
                 <SheetHeader className="p-6 border-b border-border/50 flex flex-row items-center gap-4">
                   <Image src="/icon.webp" alt="PannaStreet Logo" width={32} height={32} className="rounded-full" />
                   <SheetTitle className="text-primary font-black italic tracking-tighter uppercase">Options</SheetTitle>

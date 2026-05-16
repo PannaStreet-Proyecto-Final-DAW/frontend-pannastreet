@@ -8,13 +8,14 @@ import { useState, useEffect, useMemo, useCallback } from "react"
 import { GameEngine } from "@/components/games/engine/game-engine"
 import { GuessThePlayerGame } from "@/components/games/cartridges/guess-the-player-game"
 import { useScoreSync } from "@/hooks/use-score-sync"
-import { getAllPlayers, getAllTeams } from "@/lib/api"
-import { Player, Team } from "@/types"
+import { getAllPlayers, getAllTeams, getAllLeagues } from "@/lib/api"
+import { Player, Team, League } from "@/types"
 
 
 export default function GuessThePlayerPage() {
   const [players, setPlayers] = useState<Player[]>([])
   const [teams, setTeams] = useState<Team[]>([])
+  const [leagues, setLeagues] = useState<League[]>([])
   const [loading, setLoading] = useState(true)
 
   // 1. Settings state (Difficulty and Mode)
@@ -33,16 +34,18 @@ export default function GuessThePlayerPage() {
   // 3. Score Synchronization Hook (Syncs points with the server/Supabase)
   const { syncPoints, resetSync } = useScoreSync()
 
-  // 4. Fetch players from API
+  // 4. Fetch players, teams and leagues from API
   useEffect(() => {
     async function loadPlayers() {
       try {
-        const [playerData, teamData] = await Promise.all([
+        const [playerData, teamData, leagueData] = await Promise.all([
           getAllPlayers(),
-          getAllTeams()
+          getAllTeams(),
+          getAllLeagues()
         ])
         setPlayers(playerData)
         setTeams(teamData)
+        setLeagues(leagueData)
       } catch (error) {
         console.error("Failed to fetch game data:", error)
       } finally {
@@ -69,20 +72,30 @@ export default function GuessThePlayerPage() {
       return difficultyMatch && modeMatch;
     });
   }, [players, difficulty, mode]);
-  
+
   // Create a map of team names to their crest URLs
   const teamCrests = useMemo(() => {
     const map: Record<string, string | null> = {}
     teams.forEach(t => {
       const nameClean = t.name.trim().toLowerCase()
       map[nameClean] = t.pictureUrl
-      
+
       // Also map with common gender suffixes just in case
       const suffix = t.gender === "male" ? " (m)" : " (f)"
       map[nameClean + suffix] = t.pictureUrl
     })
     return map
   }, [teams])
+
+  // Create a map of league names to their logo URLs
+  const leagueLogos = useMemo(() => {
+    const map: Record<string, string | null> = {}
+    leagues.forEach(l => {
+      const nameClean = l.name.trim().toLowerCase()
+      map[nameClean] = l.pictureUrl
+    })
+    return map
+  }, [leagues])
 
   // Callback triggered when the user surrenders
   const handleSurrender = () => {
@@ -185,6 +198,7 @@ export default function GuessThePlayerPage() {
         players={filteredPlayers}
         allPlayers={players}
         teamCrests={teamCrests}
+        leagueLogos={leagueLogos}
         onGameOver={handleGameOver}
         isGameOver={gameState.gameOver}
       />

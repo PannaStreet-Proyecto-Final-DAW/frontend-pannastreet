@@ -40,6 +40,7 @@ interface GuessThePlayerGameProps {
   players: Player[]
   allPlayers: Player[]
   teamCrests: Record<string, string | null>
+  leagueLogos: Record<string, string | null>
   onGameOver: (won: boolean, targetPlayer: any, score: number) => void
   isGameOver: boolean
 }
@@ -50,6 +51,7 @@ export function GuessThePlayerGame({
   players,
   allPlayers,
   teamCrests,
+  leagueLogos,
   onGameOver,
   isGameOver: externalIsGameOver
 }: GuessThePlayerGameProps) {
@@ -212,7 +214,7 @@ export function GuessThePlayerGame({
       )}
 
       {/* List of Previous Guesses */}
-      <GuessesTable guesses={guesses} players={allPlayers} teamCrests={teamCrests} />
+      <GuessesTable guesses={guesses} players={allPlayers} teamCrests={teamCrests} leagueLogos={leagueLogos} />
 
       {/* Legend for the colors */}
       <div className="mt-6 flex items-center justify-center gap-4 text-xs font-medium">
