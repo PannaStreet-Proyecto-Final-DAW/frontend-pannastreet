@@ -36,6 +36,7 @@ export const GuessesTable = React.memo(function GuessesTable({ guesses, players,
 
   // Helper to abbreviate positions for space optimization
   const abbreviatePosition = (pos: string) => {
+    if (!pos) return "??";
     const p = pos.toUpperCase();
     if (p === "GOALKEEPER") return "GK";
     if (p === "DEFENDER") return "DF";
@@ -82,8 +83,8 @@ export const GuessesTable = React.memo(function GuessesTable({ guesses, players,
             <TableBody>
               {/* Map through each guess and render a row */}
               {guesses.map((guess, index) => {
-                // Find the full player details to display team, league, etc.
-                const player = players.find((p) => p.name === guess.name)
+                // Find the full player details using unique ID to distinguish homonyms
+                const player = players.find((p) => p.id === guess.id)
                 if (!player) return null
 
                 return (

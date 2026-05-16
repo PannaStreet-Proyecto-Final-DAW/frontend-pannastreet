@@ -95,19 +95,18 @@ export function GuessThePlayerGame({
       const searchNormalized = normalize(q)
       return items
         .filter((p) => {
-          const nameNormalized = normalize(p.name)
-          const matchesSearch = nameNormalized.includes(searchNormalized)
+          const matchesSearch = normalize(p.name).includes(searchNormalized)
           // Filter out already guessed players to avoid duplicates
-          const notGuessed = !guesses.some((g) => normalize(g.name) === nameNormalized)
+          const notGuessed = !guesses.some((g) => g.id === p.id)
           return matchesSearch && notGuessed
         })
         .map(p => ({
-          id: p.name,
+          id: p.id,
           primaryText: p.name,
           originalData: p
         }))
     }, [guesses, normalize]),
-    onSelect: (result) => makeGuess(result.primaryText)
+    onSelect: (result) => makeGuess(result.id)
   })
 
   // --- PROGRESS MONITORING ---
@@ -131,10 +130,10 @@ export function GuessThePlayerGame({
    * Processes a guess attempt.
    * Compares the selected player attributes against the target.
    */
-  const makeGuess = (playerName: string) => {
+  const makeGuess = (playerId: string) => {
     if (isGameOver) return
 
-    const player = allPlayers.find((p) => p.name.toLowerCase() === playerName.toLowerCase())
+    const player = allPlayers.find((p) => p.id === playerId)
     
     if (!player) {
       setError("Player not found! Please check the spelling.")
@@ -165,8 +164,8 @@ export function GuessThePlayerGame({
     }
 
     // Save the new attempt to the list
-    const newGuess: Guess = { name: player.name, hints }
-    const isWin = player.name === targetPlayer.name
+    const newGuess: Guess = { id: player.id, name: player.name, hints }
+    const isWin = player.id === targetPlayer.id
     
     recordAttempt(newGuess, isWin)
     
@@ -176,7 +175,10 @@ export function GuessThePlayerGame({
   }
 
   const handleSubmit = () => {
-    makeGuess(query)
+    // If there's a selected result or a query matching a player, use it
+    if (results.length > 0) {
+      makeGuess(results[0].id)
+    }
   }
 
   return (

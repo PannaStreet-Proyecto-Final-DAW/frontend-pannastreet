@@ -21,7 +21,7 @@ interface ElevenLineupGameProps {
   // The specific 11 groups (clubs/countries) allowed for the current game session
   availableGroups: string[]
   // Data mapping: category name -> list of player names
-  itemsByGroup: Record<string, { name: string; positions: string[] }[]>
+  itemsByGroup: Record<string, { id: string; name: string; positions: string[] }[]>
   // Data mapping: category name -> crest URL
   availableCrests?: Record<string, string | null>
   // Difficulty setting (Easy, Intermediate, Hard)
@@ -59,6 +59,7 @@ export function ElevenLineupGame({
 
   // Temporary state when a player can fit in multiple pitch positions
   const [pendingPlayer, setPendingPlayer] = useState<{
+    id: string
     group: string
     name: string
     availableSlots: number[] // IDs of available slots on the pitch
@@ -98,7 +99,7 @@ export function ElevenLineupGame({
     resultsContainerRef,
     resetSearch,
     selectResult
-  } = usePlayerSearch<{ group: string; item: { name: string; positions: string[] } }>({
+  } = usePlayerSearch<{ group: string; item: { id: string; name: string; positions: string[] } }>({
     items: searchItems,
     wrapAround: false, // Standard navigation for scrollable lists
     filterFn: useCallback((q, items) => {
@@ -113,7 +114,7 @@ export function ElevenLineupGame({
           return normalize(item.name).includes(searchNormalized)
         })
         .map(({ group, item }) => ({
-          id: `${group}-${item.name}`,
+          id: item.id,
           primaryText: item.name,
           // Only show the club name if difficulty allows it
           secondaryText: (difficulty === "Intermediate" || difficulty === "Hard") ? undefined : group,
@@ -155,7 +156,7 @@ export function ElevenLineupGame({
    * Selection Logic:
    * Validates the selected player against game constraints (current club and empty slots).
    */
-  const handlePlayerSelect = (group: string, playerItem: { name: string; positions: string[] }) => {
+  const handlePlayerSelect = (group: string, playerItem: { id: string; name: string; positions: string[] }) => {
     // 1. Enforce sequential club constraint
     if (group !== currentClub) {
       setSearchError(`You must select a player from ${currentClub}`)
@@ -181,10 +182,11 @@ export function ElevenLineupGame({
 
     if (availablePositionLabels.length === 1) {
       // Auto-insert if only one position type is valid/available
-      insertPlayer(group, playerItem.name, emptySlots[0].id)
+      insertPlayer(playerItem.id, group, playerItem.name, emptySlots[0].id)
     } else {
       // Prompt user to pick which position they want the player to occupy
       setPendingPlayer({
+        id: playerItem.id,
         group,
         name: playerItem.name,
         availableSlots: emptySlots.map((s) => s.id),
@@ -198,9 +200,9 @@ export function ElevenLineupGame({
    * Final Insertion Logic:
    * Updates state and notifies the game engine.
    */
-  const insertPlayer = (group: string, playerName: string, slotId: number) => {
+  const insertPlayer = (playerId: string, group: string, playerName: string, slotId: number) => {
     const crestUrl = availableCrests[group] || null
-    const playerAdded: SelectedPlayer = { positionId: slotId, club: group, player: playerName, crestUrl }
+    const playerAdded: SelectedPlayer = { playerId, positionId: slotId, club: group, player: playerName, crestUrl }
 
     const newLineup = [...lineup]
     newLineup[slotId] = playerAdded
@@ -257,7 +259,7 @@ export function ElevenLineupGame({
           currentPosition={null}
           onPositionClick={(id) => {
             if (pendingPlayer && pendingPlayer.availableSlots.includes(id)) {
-              insertPlayer(pendingPlayer.group, pendingPlayer.name, id)
+              insertPlayer(pendingPlayer.id, pendingPlayer.group, pendingPlayer.name, id)
             }
           }}
           positions={formation}
