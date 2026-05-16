@@ -78,6 +78,7 @@ export type Hint = "correct" | "partial" | "wrong"
 export interface Guess {
   id: string
   name: string
+  isCorrect?: boolean
   hints: {
     team: Hint
     league: Hint
