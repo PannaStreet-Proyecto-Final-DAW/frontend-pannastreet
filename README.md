@@ -91,6 +91,18 @@ frontend-pannastreet/
    npm run dev
    ```
 
+## Testing
+The project includes a suite of unit tests powered by **Vitest** and **React Testing Library**. The testing strategy follows the **Colocation** pattern, where test files reside next to their corresponding source files to improve maintainability and visibility.
+
+- **Hook Testing**: Business logic validation for game mechanics (`useGameLogic`), name normalization (`useNormalization`), and player search results.
+- **Component Testing**: Verification of interactive UI elements like the difficulty selector.
+- **Utility Testing**: Validation of helper functions such as the country-to-ISO mapper.
+
+To run the tests:
+```bash
+npm run test
+```
+
 ## License
 This project is for educational use within the framework of a Final Degree Project.
 
@@ -184,6 +196,18 @@ frontend-pannastreet/
    ```bash
    npm run dev
    ```
+
+## Testing
+El proyecto incluye una suite de pruebas unitarias utilizando **Vitest** y **React Testing Library**. La estrategia de pruebas sigue el patrón **Colocation**, donde los archivos de prueba residen junto a sus archivos de origen correspondientes para mejorar el mantenimiento y la visibilidad.
+
+- **Pruebas de Hooks**: Validación de la lógica de negocio para las mecánicas del juego (`useGameLogic`), normalización de nombres (`useNormalization`) y resultados de búsqueda de jugadores.
+- **Pruebas de Componentes**: Verificación de elementos interactivos de la interfaz de usuario como el selector de dificultad.
+- **Pruebas de Utilidades**: Validación de funciones auxiliares como el mapeador de países a códigos ISO.
+
+Para ejecutar las pruebas:
+```bash
+npm run test
+```
 
 ## Licencia
 Este proyecto es de uso educativo en el marco de un Trabajo de Fin de Grado.
