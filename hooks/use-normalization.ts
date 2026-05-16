@@ -21,12 +21,12 @@ export function useNormalization() {
     return str
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "") // Cubre á, é, í, ó, ú, ñ, à, ă, å, ä, ã, ć, č, ç, è, ê, ě, ë, ę, ğ, î, ï, ò, ô, ö, ő, ō, ś, š, ş, ș
-      .replace(/æ/g, "ae")             // Ligadura nórdica
-      .replace(/[đð]/g, "d")           // Islandesas/Croatas
-      .replace(/[ł]/g, "l")           // L polaca
-      .replace(/[ß]/g, "ss")          // Eszett alemana
-      .replace(/[ø]/g, "o")           // Nórdica
-      .replace(/[þÞ]/g, "th")         // Thorn islandesa
+      .replace(/æ/gi, "ae")             // Ligadura nórdica
+      .replace(/[đð]/gi, "d")           // Islandesas/Croatas
+      .replace(/[ł]/gi, "l")           // L polaca
+      .replace(/[ß]/gi, "ss")          // Eszett alemana
+      .replace(/[ø]/gi, "o")           // Nórdica
+      .replace(/[þ]/gi, "th")         // Thorn islandesa
       .toLowerCase()
       .trim()
   }, [])
