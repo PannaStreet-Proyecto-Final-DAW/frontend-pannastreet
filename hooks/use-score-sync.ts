@@ -17,7 +17,7 @@ export function useScoreSync() {
   const syncPoints = useCallback(async (score: number) => {
     if (!user?.id || score <= 0) {
       // Diagnostic log to track skipped sync attempts
-      console.log("ℹ️ [useScoreSync] Skipping sync: no user or zero score");
+      console.log("[useScoreSync] Skipping sync: no user or zero score");
       return;
     }
 
@@ -25,31 +25,31 @@ export function useScoreSync() {
     try {
       // These logs are used for real-time troubleshooting in the browser console (F12)
       // to identify potential synchronization issues with the backend.
-      console.log(`🌐 [useScoreSync] Syncing ${score} points for user ${user.id}...`);
-      
+      console.log(`[useScoreSync] Syncing ${score} points for user ${user.id}...`);
+
       const memberships = await getUserMemberships(user.id)
-      
+
       if (!Array.isArray(memberships) || memberships.length === 0) {
         // Diagnostic log for cases with no active league memberships
-        console.log("ℹ️ [useScoreSync] User has no active league memberships.");
+        console.log("[useScoreSync] User has no active league memberships.");
         setSyncStatus("success")
         return
       }
 
       // Filter out memberships without a valid ID
       const validMemberships = memberships.filter(m => m && m.id);
-      
-      console.log(`🌐 [useScoreSync] Found ${validMemberships.length} memberships. Updating scores...`);
-      
+
+      console.log(`[useScoreSync] Found ${validMemberships.length} memberships. Updating scores...`);
+
       const promises = validMemberships.map(m => incrementScore(m.id, score))
       await Promise.all(promises)
-      
+
       // Success confirmation log for monitoring backend sync completions
-      console.log("✅ [useScoreSync] Points synced successfully!");
+      console.log("[useScoreSync] Points synced successfully!");
       setSyncStatus("success")
     } catch (error) {
       // Error log with diagnostic details for debugging failed API calls
-      console.error("❌ [useScoreSync] Sync failed:", error)
+      console.error("[useScoreSync] Sync failed:", error)
       setSyncStatus("error")
     }
   }, [user?.id])

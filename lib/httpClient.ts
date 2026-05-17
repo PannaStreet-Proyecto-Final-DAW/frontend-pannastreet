@@ -31,14 +31,18 @@ export const fetchApi = async (endpoint: string, options: RequestInit = {}) => {
     
     if (!response.ok) {
       const error = await response.json().catch(() => ({ error: response.statusText }));
-      console.error(`❌ API Error (${response.status}):`, error);
+      if (!(options as any).ignoreErrors) {
+        console.error(`❌ API Error (${response.status}):`, error);
+      }
       throw new Error(error.error || error.message || `Error ${response.status}: ${response.statusText}`);
     }
     
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error("❌ Fetch failed:", error);
+    if (!(options as any).ignoreErrors) {
+      console.error("❌ Fetch failed:", error);
+    }
     throw error;
   }
 };

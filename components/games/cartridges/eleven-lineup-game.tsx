@@ -36,6 +36,9 @@ interface ElevenLineupGameProps {
   onProgressUpdate?: (score: number) => void
   // Flag to disable all interactions once the game has ended
   isGameOver?: boolean
+  initialState?: any
+  initialLineup?: (SelectedPlayer | null)[]
+  onStateChange?: (state: { lineup: (SelectedPlayer | null)[]; clubQueue: string[]; refereeState: any }) => void
 }
 
 /**
@@ -52,9 +55,12 @@ export function ElevenLineupGame({
   onGameOver,
   onProgressUpdate,
   isGameOver = false,
+  initialState,
+  initialLineup,
+  onStateChange
 }: ElevenLineupGameProps) {
   // --- STATE ---
-  const [lineup, setLineup] = useState<(SelectedPlayer | null)[]>(Array(11).fill(null))
+  const [lineup, setLineup] = useState<(SelectedPlayer | null)[]>(() => initialLineup || Array(11).fill(null))
   const [searchError, setSearchError] = useState<string | null>(null)
 
   // Temporary state when a player can fit in multiple pitch positions
@@ -69,7 +75,7 @@ export function ElevenLineupGame({
   const { normalize } = useNormalization()
 
   // --- REFEREE LOGIC (State & Progress) ---
-  const { status, score, recordAttempt, isGameOver: hookIsGameOver } = useGameLogic<SelectedPlayer>({
+  const gameLogicState = useGameLogic<SelectedPlayer>({
     maxAttempts: 11,
 
     scoringFormula: useCallback((currentAttempts, won) => {
@@ -78,8 +84,12 @@ export function ElevenLineupGame({
       const basePoints = difficultyPoints[difficulty] || 1
       const multiplier = modeMultipliers[mode] || 1
       return Math.floor(currentAttempts.length * basePoints * multiplier)
-    }, [difficulty, mode])
+    }, [difficulty, mode]),
+    initialState: initialState?.refereeState || initialState
   })
+
+  const { status, score, recordAttempt, isGameOver: hookIsGameOver } = gameLogicState
+
 
   // --- SEARCH ENGINE ---
   // Pre-process items into a flat searchable array
@@ -150,11 +160,26 @@ export function ElevenLineupGame({
   // Shuffled sequence of clubs to challenge the user sequentially
   const [clubQueue, setClubQueue] = useState<string[]>([])
   useEffect(() => {
-    if (availableGroups.length > 0) {
+    if (initialState?.clubQueue && initialState.clubQueue.length > 0) {
+      setClubQueue(initialState.clubQueue)
+    } else if (availableGroups.length > 0) {
       const shuffled = [...availableGroups].sort(() => Math.random() - 0.5)
       setClubQueue(shuffled)
     }
-  }, [availableGroups])
+  }, [availableGroups, initialState])
+
+  // --- STATE CHANGE NOTIFICATION (for daily progress persistence) ---
+  useEffect(() => {
+    onStateChange?.({
+      lineup,
+      clubQueue,
+      refereeState: {
+        attempts: gameLogicState.attempts,
+        status: gameLogicState.status,
+        score: gameLogicState.score
+      }
+    })
+  }, [lineup, clubQueue, gameLogicState.attempts, gameLogicState.status, gameLogicState.score, onStateChange])
 
   // Dynamic count of how many players have been assigned to the pitch
   const completedCount = lineup.filter(Boolean).length
@@ -169,6 +194,8 @@ export function ElevenLineupGame({
    * Validates the selected player against game constraints (current club and empty slots).
    */
   const handlePlayerSelect = (group: string, playerItem: { id: string; name: string; positions: string[] }) => {
+    if (effectiveIsGameOver) return
+
     // 1. Enforce sequential club constraint
     if (group !== currentClub) {
       setSearchError(`You must select a player from ${currentClub}`)
@@ -293,7 +320,15 @@ export function ElevenLineupGame({
           </div>
         </CardHeader>
         <CardContent className="p-4 pt-0">
-          {pendingPlayer ? (
+          {effectiveIsGameOver ? (
+            <div className="flex flex-col items-center justify-center p-6 border border-neutral-200 dark:border-neutral-800 rounded-xl bg-neutral-50 dark:bg-neutral-900/30 text-center py-12">
+              <div className="w-10 h-10 rounded-full bg-neutral-200 dark:bg-neutral-800 flex items-center justify-center mb-4">
+                <svg className="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+              </div>
+              <p className="text-sm font-black uppercase italic tracking-tighter text-muted-foreground mb-1">Lineup Locked</p>
+              <p className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest leading-normal max-w-[200px]">The game has ended. Start a new round to play again.</p>
+            </div>
+          ) : pendingPlayer ? (
             <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-primary/30 rounded-xl bg-primary/5 text-center">
               <p className="text-sm font-bold mb-2">Where should <span className="text-primary text-base">{pendingPlayer.name}</span> play?</p>
               <button onClick={() => setPendingPlayer(null)} className="inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider shadow-sm transition-colors hover:bg-primary/90 duration-300 bg-primary text-primary-foreground mt-4">Cancel Selection</button>

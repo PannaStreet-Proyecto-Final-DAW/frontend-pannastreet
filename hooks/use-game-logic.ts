@@ -14,6 +14,11 @@ interface GameLogicConfig<T> {
    * This is "injected" by each specific game to implement its own scoring rules.
    */
   scoringFormula: (attempts: T[], won: boolean) => number;
+  initialState?: {
+    attempts: T[];
+    status: GameStatus;
+    score: number;
+  };
 }
 
 // Internal state structure for the game logic.
@@ -32,12 +37,17 @@ interface InternalGameState<T> {
  * 
  * @template T - The data structure used for a single move/attempt in the game.
  */
-export function useGameLogic<T>({ maxAttempts, scoringFormula }: GameLogicConfig<T>) {
+export function useGameLogic<T>({ maxAttempts, scoringFormula, initialState }: GameLogicConfig<T>) {
   // --- STATE ---
-  const [state, setState] = useState<InternalGameState<T>>({
-    attempts: [],
-    status: "playing",
-    score: 0,
+  const [state, setState] = useState<InternalGameState<T>>(() => {
+    if (initialState) {
+      return initialState;
+    }
+    return {
+      attempts: [],
+      status: "playing",
+      score: 0,
+    };
   });
 
   /**

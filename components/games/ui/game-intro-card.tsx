@@ -9,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 import { DifficultySelector } from "../shared/difficulty-selector"
 import { ModeSelector } from "../shared/mode-selector"
+import { PlayModeSelector } from "../shared/play-mode-selector"
 
 interface GameIntroCardProps {
   title: React.ReactNode      // Title of the game (can include HTML tags)
@@ -18,8 +19,12 @@ interface GameIntroCardProps {
   setDifficulty?: (d: string) => void // Function to update difficulty
   mode?: string               // Current game mode
   setMode?: (m: string) => void // Function to update mode
+  playMode?: "practice" | "daily"
+  setPlayMode?: (v: "practice" | "daily") => void
+  dailyCompleted?: boolean
   onStart: () => void         // Function triggered to begin the game
   gameId?: string             // Identifier for specific game styling
+  isSettingsLocked?: boolean  // Lock settings if a daily challenge has started
 }
 
 /**
@@ -34,8 +39,12 @@ export function GameIntroCard({
   setDifficulty,
   mode,
   setMode,
+  playMode,
+  setPlayMode,
+  dailyCompleted = false,
   onStart,
-  gameId
+  gameId,
+  isSettingsLocked = false
 }: GameIntroCardProps) {
   return (
     <Card className="border-border bg-card overflow-hidden">
@@ -65,41 +74,59 @@ export function GameIntroCard({
             </div>
 
             {/* Settings Panel */}
-            <div className="flex flex-col md:flex-row gap-8 items-center p-4 rounded-2xl game-intro-footer-v2">
-                <div className="flex flex-col gap-4 flex-1 w-full game-intro-selectors-grid-v2">
-                  {setDifficulty && difficulty && (
-                    <DifficultySelector
-                      value={difficulty}
-                      onChange={setDifficulty}
+            <div className="flex flex-col gap-6 p-4 rounded-2xl bg-neutral-50 dark:bg-neutral-900/30 border border-neutral-100 dark:border-neutral-800 game-intro-footer-v2">
+                {setPlayMode && playMode && (
+                  <div className="w-full">
+                    <PlayModeSelector
+                      value={playMode}
+                      onChange={setPlayMode}
+                      dailyCompleted={dailyCompleted}
                     />
-                  )}
+                  </div>
+                )}
 
-                  {setMode && mode && (
-                    <ModeSelector
-                      value={mode}
-                      onChange={setMode}
-                    />
-                  )}
-                </div>
+                <div className="flex flex-col md:flex-row gap-6 items-center w-full">
+                  <div className="flex flex-col sm:flex-row gap-4 flex-1 w-full game-intro-selectors-grid-v2">
+                    {setDifficulty && difficulty && (
+                      <DifficultySelector
+                        value={difficulty}
+                        onChange={setDifficulty}
+                        disabled={isSettingsLocked}
+                      />
+                    )}
 
-                {/* Start Game Button */}
-                <div className="w-full md:w-auto flex items-center justify-center md:pr-4 game-intro-btn-v2">
-                  <Button
-                    onClick={onStart}
-                    className="w-full md:w-[180px] bg-primary text-primary-foreground font-black py-4 rounded-xl text-xs hover:scale-[1.05] transition-transform shadow-lg h-auto uppercase tracking-[0.2em]"
-                  >
-                    Start Game
-                  </Button>
+                    {setMode && mode && (
+                      <ModeSelector
+                        value={mode}
+                        onChange={setMode}
+                        disabled={isSettingsLocked}
+                      />
+                    )}
+                  </div>
+
+                  {/* Start Game Button */}
+                  <div className="w-full md:w-auto flex items-center justify-center game-intro-btn-v2">
+                    <Button
+                      onClick={onStart}
+                      disabled={playMode === "daily" && dailyCompleted}
+                      className={cn(
+                        "w-full md:w-[180px] text-primary-foreground font-black py-4 rounded-xl text-xs transition-all duration-300 shadow-lg h-auto uppercase tracking-[0.2em]",
+                        playMode === "daily" && dailyCompleted
+                          ? "bg-neutral-300 dark:bg-neutral-800 text-neutral-500 cursor-not-allowed shadow-none"
+                          : "bg-primary hover:scale-[1.05]"
+                      )}
+                    >
+                      {playMode === "daily" && dailyCompleted 
+                        ? "Completed" 
+                        : (playMode === "daily" && isSettingsLocked 
+                          ? "Continue Game" 
+                          : "Start Game")}
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-
-
-
-
-
-
       </CardContent>
     </Card>
   )

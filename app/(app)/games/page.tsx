@@ -1,6 +1,10 @@
-import { GameCard, type Game } from "@/components/games/ui/game-card"
+"use client"
 
-const games: Game[] = [
+import { useState, useEffect } from "react"
+import { GameCard, type Game } from "@/components/games/ui/game-card"
+import { getUserTodayAttempt } from "@/lib/api"
+
+const initialGames: Omit<Game, "completed">[] = [
   {
     id: "guess-the-player",
     title: "Guess the Player",
@@ -32,6 +36,29 @@ const games: Game[] = [
 ]
 
 export default function GamesPage() {
+  const [completedGames, setCompletedGames] = useState<Record<string, boolean>>({
+    "guess-the-player": false,
+    "11clubs": false
+  })
+
+  useEffect(() => {
+    async function fetchCompletedAttempts() {
+      try {
+        const [gtpAttempt, clubsAttempt] = await Promise.all([
+          getUserTodayAttempt("guess-the-player"),
+          getUserTodayAttempt("11clubs")
+        ])
+        setCompletedGames({
+          "guess-the-player": !!gtpAttempt,
+          "11clubs": !!clubsAttempt
+        })
+      } catch (err) {
+        console.error("Failed to fetch today's game attempts:", err)
+      }
+    }
+    fetchCompletedAttempts()
+  }, [])
+
   return (
     <div className="max-w-4xl mx-auto tablet-v-container">
       <div className="text-center mb-6 md:mb-10 px-4">
@@ -42,8 +69,14 @@ export default function GamesPage() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 px-2 md:px-0">
-        {games.map((game) => (
-          <GameCard key={game.id} game={game} />
+        {initialGames.map((game) => (
+          <GameCard 
+            key={game.id} 
+            game={{
+              ...game,
+              completed: completedGames[game.id] || false
+            } as Game} 
+          />
         ))}
       </div>
 
@@ -55,4 +88,5 @@ export default function GamesPage() {
     </div>
   )
 }
+
 

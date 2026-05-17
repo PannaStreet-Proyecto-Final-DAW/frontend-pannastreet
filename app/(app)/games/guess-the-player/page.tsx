@@ -7,10 +7,30 @@
 import { useState, useEffect, useMemo, useCallback } from "react"
 import { GameEngine } from "@/components/games/engine/game-engine"
 import { GuessThePlayerGame } from "@/components/games/cartridges/guess-the-player-game"
+import { 
+  getAllPlayers, 
+  getAllTeams, 
+  getAllLeagues, 
+  getUserTodayAttempt, 
+  getDailyChallenge, 
+  saveUserAttempt,
+  UserGameAttempt
+} from "@/lib/api"
 import { useScoreSync } from "@/hooks/use-score-sync"
-import { getAllPlayers, getAllTeams, getAllLeagues } from "@/lib/api"
 import { Player, Team, League } from "@/types"
+import { DailyLockedCard } from "@/components/games/shared/daily-locked-card"
+import { PlayModeSelector } from "@/components/games/shared/play-mode-selector"
 
+function getDailyKeys(gameId: string, madridDate: string) {
+  if (typeof window === "undefined") return { progressKey: "", configKey: "" }
+  const userJson = localStorage.getItem("user")
+  const user = userJson ? JSON.parse(userJson) : null
+  const userId = user?.id ? `${user.id}_` : ""
+  return {
+    progressKey: `pannastreet_daily_progress_${gameId}_${userId}${madridDate}`,
+    configKey: `pannastreet_daily_config_${gameId}_${userId}${madridDate}`
+  }
+}
 
 export default function GuessThePlayerPage() {
   const [players, setPlayers] = useState<Player[]>([])
@@ -18,9 +38,24 @@ export default function GuessThePlayerPage() {
   const [leagues, setLeagues] = useState<League[]>([])
   const [loading, setLoading] = useState(true)
 
-  // 1. Settings state (Difficulty and Mode)
+  // 1. Settings state (Difficulty, Mode and Play Mode)
   const [difficulty, setDifficulty] = useState("Easy")
   const [mode, setMode] = useState("Both")
+  const [playMode, setPlayMode] = useState<"practice" | "daily">("practice")
+  
+  // Daily attempt state
+  const [dailyAttempt, setDailyAttempt] = useState<UserGameAttempt | null>(null)
+  const [dailyCompleted, setDailyCompleted] = useState(false)
+  const [dailyTargetPlayer, setDailyTargetPlayer] = useState<Player | null>(null)
+  const [checkingAttempt, setCheckingAttempt] = useState(true)
+
+  // Settings lock and temporary progress state
+  const [isStarted, setIsStarted] = useState(false)
+  const [dailyState, setDailyState] = useState<any>(null)
+  const [isSettingsLocked, setIsSettingsLocked] = useState(false)
+
+  // --- Score Synchronization Hook (Syncs points with Supabase) ---
+  const { syncPoints } = useScoreSync()
 
   // 2. High-level game status (Controlled by the GameEngine "Console")
   const [gameState, setGameState] = useState({
@@ -31,8 +66,107 @@ export default function GuessThePlayerPage() {
     key: 0 // Key to force re-mounting the game logic component on reset
   })
 
-  // 3. Score Synchronization Hook (Syncs points with the server/Supabase)
-  const { syncPoints, resetSync } = useScoreSync()
+  // Spain timezone date YYYY-MM-DD
+  const madridDate = useMemo(() => {
+    try {
+      const formatter = new Intl.DateTimeFormat("en-US", {
+        timeZone: "Europe/Madrid",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      })
+      const parts = formatter.formatToParts(new Date())
+      const year = parts.find(p => p.type === "year")!.value
+      const month = parts.find(p => p.type === "month")!.value
+      const day = parts.find(p => p.type === "day")!.value
+      return `${year}-${month}-${day}`
+    } catch (e) {
+      const now = new Date()
+      return now.toISOString().split("T")[0]
+    }
+  }, [])
+
+  // 3. Check today's attempt on mount
+  useEffect(() => {
+    async function checkAttempt() {
+      try {
+        const attempt = await getUserTodayAttempt("guess-the-player")
+        if (attempt) {
+          setDailyAttempt(attempt)
+          setDailyCompleted(true)
+          // Default to daily mode so they see the completed screen
+          setPlayMode("daily")
+          setGameState(prev => ({
+            ...prev,
+            gameOver: true,
+            won: attempt.won,
+            score: attempt.points
+          }))
+        }
+      } catch (err) {
+        console.error("Failed to load today's attempt:", err)
+      } finally {
+        setCheckingAttempt(false)
+      }
+    }
+    checkAttempt()
+  }, [])
+
+  // 3b. Load saved daily progress/config if exists on mount or playMode change
+  useEffect(() => {
+    if (typeof window === "undefined") return
+
+    if (playMode === "daily") {
+      const { progressKey, configKey } = getDailyKeys("guess-the-player", madridDate)
+      const savedConfig = localStorage.getItem(configKey)
+      const savedProgress = localStorage.getItem(progressKey)
+
+      if (savedConfig && savedProgress) {
+        const { difficulty: savedDiff, mode: savedMode } = JSON.parse(savedConfig)
+        setDifficulty(savedDiff)
+        setMode(savedMode)
+        setIsSettingsLocked(true)
+      } else {
+        setIsSettingsLocked(false)
+      }
+
+      if (savedProgress) {
+        const parsed = JSON.parse(savedProgress)
+        setDailyState(parsed)
+        if (parsed.targetPlayer) {
+          setDailyTargetPlayer(parsed.targetPlayer)
+        }
+        setGameState(prev => ({
+          ...prev,
+          gameOver: parsed.status !== "playing",
+          won: parsed.status === "won",
+          score: parsed.score,
+          key: Date.now() // Force remount to load daily progress state cleanly
+        }))
+      } else {
+        setDailyState(null)
+        setIsStarted(false)
+        setGameState(prev => ({
+          ...prev,
+          gameOver: false,
+          won: false,
+          score: 0,
+          key: Date.now() // Force remount to clear practice session state
+        }))
+      }
+    } else {
+      // Practice mode: settings never locked, starts at intro
+      setIsSettingsLocked(false)
+      setIsStarted(false)
+      setGameState(prev => ({
+        ...prev,
+        gameOver: false,
+        won: false,
+        score: 0,
+        key: Date.now()
+      }))
+    }
+  }, [playMode, madridDate])
 
   // 4. Fetch players, teams and leagues from API
   useEffect(() => {
@@ -54,6 +188,32 @@ export default function GuessThePlayerPage() {
     }
     loadPlayers()
   }, [])
+
+  // Fetch daily challenge target player when playMode is "daily"
+  useEffect(() => {
+    if (playMode !== "daily" || loading || dailyCompleted) return
+
+    async function loadDailyChallenge() {
+      try {
+        const formattedMode = mode.toLowerCase() // 'male', 'female', 'both'
+        const formattedDiff = difficulty.toLowerCase() // 'easy', 'intermediate', 'hard'
+        const modeId = `${formattedMode}-${formattedDiff}`
+        
+        const challenge = await getDailyChallenge(madridDate, "guess-the-player", modeId)
+        if (challenge && challenge.challengeData) {
+          const rawPlayer = challenge.challengeData
+          const playerId = rawPlayer.id || rawPlayer.playerId
+          
+          // Match with our fully detailed players list or fallback
+          const matchedPlayer = players.find(p => p.id === playerId) || rawPlayer
+          setDailyTargetPlayer(matchedPlayer)
+        }
+      } catch (err) {
+        console.error("Failed to load daily challenge target:", err)
+      }
+    }
+    loadDailyChallenge()
+  }, [playMode, mode, difficulty, madridDate, players, loading, dailyCompleted])
 
   // Filter players based on difficulty tier and gender mode requirements
   const filteredPlayers = useMemo(() => {
@@ -100,25 +260,50 @@ export default function GuessThePlayerPage() {
   // Callback triggered when the user surrenders
   const handleSurrender = () => {
     // If they surrender, they lose by default
-    setGameState(prev => ({ ...prev, gameOver: true, won: false, score: 0 }))
+    handleGameOver(false, playMode === "daily" ? dailyTargetPlayer : gameState.target, 0)
   }
 
   /**
    * Callback triggered by the Game Cartridge when the match ends.
-   * This bridges the internal Game Logic (hook) with the UI Console (Engine).
    */
   const handleGameOver = useCallback(async (won: boolean, target: any, score: number) => {
     setGameState(prev => ({ ...prev, gameOver: true, won, target, score }))
 
-    // If the user won points, sync with backend (Supabase)
-    if (won && score > 0) {
-      await syncPoints(score)
+    // If we are in Daily Challenge mode, sync with new API endpoint
+    if (playMode === "daily") {
+      try {
+        const formattedMode = mode.toLowerCase() // 'male', 'female', 'both'
+        const formattedDiff = difficulty.toLowerCase() // 'easy', 'intermediate', 'hard'
+        const modeId = `${formattedMode}-${formattedDiff}`
+
+        await saveUserAttempt("guess-the-player", modeId, score, won ? "won" : "lost")
+        await syncPoints(score)
+        setDailyCompleted(true)
+        setDailyAttempt({
+          id: "temp",
+          userId: "temp",
+          date: madridDate,
+          gameId: "guess-the-player",
+          modeId: modeId,
+          score: score,
+          points: score,
+          status: won ? "won" : "lost",
+          won: won
+        } as any)
+        
+        if (typeof window !== "undefined") {
+          const { progressKey, configKey } = getDailyKeys("guess-the-player", madridDate)
+          localStorage.removeItem(progressKey)
+          localStorage.removeItem(configKey)
+        }
+      } catch (error) {
+        console.error("Failed to save today's game attempt:", error)
+      }
     }
-  }, [syncPoints])
+  }, [playMode, madridDate, mode, difficulty, syncPoints])
 
   // Resets the game state to start a new round
   const resetGame = () => {
-    resetSync()
     setGameState({
       gameOver: false,
       won: false,
@@ -126,15 +311,98 @@ export default function GuessThePlayerPage() {
       score: 0,
       key: Date.now() // Changing the key forces the Cartridge to reset its internal state
     })
+    setIsStarted(false)
   }
 
-  //Loading messagge
-  if (loading) {
+  // Handle click on "Start Game" inside GameIntroCard
+  const handleStartGame = () => {
+    setIsStarted(true)
+    if (playMode === "daily") {
+      const { progressKey, configKey } = getDailyKeys("guess-the-player", madridDate)
+      // Lock difficulty and mode
+      localStorage.setItem(
+        configKey,
+        JSON.stringify({ difficulty, mode })
+      )
+      setIsSettingsLocked(true)
+
+      // Only save initial progress if there is no existing dailyState/savedProgress
+      const existingProgress = localStorage.getItem(progressKey)
+      if (!existingProgress) {
+        const initialProg = {
+          attempts: [],
+          status: "playing",
+          score: 0,
+          targetPlayer: dailyTargetPlayer
+        }
+        localStorage.setItem(
+          progressKey,
+          JSON.stringify(initialProg)
+        )
+        setDailyState(initialProg)
+      }
+    }
+  }
+
+  // Handle internal gameplay updates to save progress
+  const handleStateChange = useCallback((newState: any) => {
+    if (playMode !== "daily" || dailyCompleted) return
+
+    const { progressKey } = getDailyKeys("guess-the-player", madridDate)
+    const progToSave = {
+      ...newState,
+      targetPlayer: dailyTargetPlayer
+    }
+    localStorage.setItem(
+      progressKey,
+      JSON.stringify(progToSave)
+    )
+
+    setGameState(prev => {
+      const newGameOver = newState.status !== "playing"
+      const newWon = newState.status === "won"
+      const newScore = newState.score
+      if (prev.gameOver === newGameOver && prev.won === newWon && prev.score === newScore) {
+        return prev
+      }
+      return {
+        ...prev,
+        gameOver: newGameOver,
+        won: newWon,
+        score: newScore
+      }
+    })
+  }, [playMode, dailyCompleted, dailyTargetPlayer, madridDate])
+
+  //Loading message
+  if (loading || checkingAttempt) {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="text-xl font-bold animate-pulse text-primary">
           Loading players from the tunnel...
         </div>
+      </div>
+    )
+  }
+
+  // Render Locked Card if user already completed the challenge today
+  if (playMode === "daily" && dailyCompleted) {
+    return (
+      <div className="pt-12 animate-in fade-in duration-500 flex flex-col gap-6">
+        {/* Play Mode Selector so they can switch back to practice mode */}
+        <div className="max-w-2xl mx-auto w-full px-4">
+          <PlayModeSelector
+            value={playMode}
+            onChange={setPlayMode}
+            dailyCompleted={dailyCompleted}
+          />
+        </div>
+        <DailyLockedCard
+          gameId="guess-the-player"
+          gameTitle="Guess the Player"
+          score={dailyAttempt?.score !== undefined ? dailyAttempt.score : gameState.score}
+          won={dailyAttempt?.won !== undefined ? dailyAttempt.won : gameState.won}
+        />
       </div>
     )
   }
@@ -165,6 +433,12 @@ export default function GuessThePlayerPage() {
       setDifficulty={setDifficulty}
       mode={mode}
       setMode={setMode}
+      playMode={playMode}
+      setPlayMode={setPlayMode}
+      dailyCompleted={dailyCompleted}
+      isSettingsLocked={isSettingsLocked}
+      isStarted={isStarted}
+      onStart={handleStartGame}
       gameOver={gameState.gameOver}
       won={gameState.won}
       score={gameState.score}
@@ -173,17 +447,16 @@ export default function GuessThePlayerPage() {
       backHref="/games"
       backText="Back to Games"
       resultClassName="game-result-card-gtp"
-      // Content to show inside the result card
       resultContent={
-        gameState.target && (
+        (gameState.target || dailyTargetPlayer) && (
           <p className="text-foreground/80 font-medium">
             {gameState.won ? (
               <>
-                You have guessed <span className="font-bold">{gameState.target.name}</span>!
+                You have guessed <span className="font-bold">{(gameState.target || dailyTargetPlayer).name}</span>!
               </>
             ) : (
               <>
-                The player was <span className="font-bold">{gameState.target.name}</span>.
+                The player was <span className="font-bold">{(gameState.target || dailyTargetPlayer).name}</span>.
               </>
             )}
           </p>
@@ -201,6 +474,9 @@ export default function GuessThePlayerPage() {
         leagueLogos={leagueLogos}
         onGameOver={handleGameOver}
         isGameOver={gameState.gameOver}
+        targetPlayerOverride={playMode === "daily" ? dailyTargetPlayer : null}
+        initialState={playMode === "daily" ? dailyState : undefined}
+        onStateChange={handleStateChange}
       />
     </GameEngine>
   )
