@@ -120,6 +120,8 @@ export const GuessesTable = React.memo(function GuessesTable({ guesses, players,
                             src={teamCrests[player.team.trim().toLowerCase()]!}
                             alt={player.team}
                             className="w-8 h-8 object-contain"
+                            referrerPolicy="no-referrer"
+                            crossOrigin="anonymous"
                             onError={(e) => {
                               console.log("Error loading crest for:", player.team);
                               (e.target as any).style.display = 'none';
@@ -143,7 +145,13 @@ export const GuessesTable = React.memo(function GuessesTable({ guesses, players,
                           const leagueLogo = leagueLogos[leagueName];
                           return leagueLogo ? (
                             <>
-                              <img src={leagueLogo} alt={player.league} className="w-5 h-5 sm:w-4 sm:h-4 object-contain" />
+                              <img 
+                                src={leagueLogo} 
+                                alt={player.league} 
+                                className="w-5 h-5 sm:w-4 sm:h-4 object-contain" 
+                                referrerPolicy="no-referrer"
+                                crossOrigin="anonymous"
+                              />
                               <span className="hidden sm:inline">{player.league}</span>
                             </>
                           ) : (
