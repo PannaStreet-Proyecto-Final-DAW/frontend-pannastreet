@@ -18,7 +18,7 @@ export function DifficultySelector({
 }: DifficultySelectorProps) {
   return (
     <div>
-      <p className="text-black dark:text-white text-[11px] font-bold mb-2 uppercase tracking-wider">Select difficulty:</p>
+      <p className="text-white text-[11px] font-bold mb-2 uppercase tracking-wider">Select difficulty:</p>
       <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
         {options.map((opt) => (
           <Button

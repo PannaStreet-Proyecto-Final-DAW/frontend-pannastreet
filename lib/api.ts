@@ -1,12 +1,12 @@
 import { fetchApi } from "./httpClient"
 
-import { 
-  UserLeague, 
-  UserLeagueMembership, 
-  Player, 
-  Team, 
-  League, 
-  Formation 
+import {
+  UserLeague,
+  UserLeagueMembership,
+  Player,
+  Team,
+  League,
+  Formation
 } from "@/types"
 
 // Re-export everything from centralized types to maintain backward compatibility
@@ -91,9 +91,9 @@ export async function getLeagueMembers(leagueId: string): Promise<UserLeagueMemb
 export async function incrementScore(membershipId: string, points: number): Promise<UserLeagueMembership> {
   return fetchApi(`/user-league-membership/increment-score/${membershipId}`, {
     method: "PATCH",
-    body: JSON.stringify({ 
+    body: JSON.stringify({
       pointsToAdd: points,
-      amount: points 
+      amount: points
     })
   })
 }
@@ -240,16 +240,22 @@ export async function getUserTodayAttempt(gameId: string): Promise<UserGameAttem
     if (!userJson) return null
     const user = JSON.parse(userJson)
     if (!user || !user.id) return null
-    
+
     const today = getMadridDate()
     const attempt = await fetchApi(`/user-game-attempt/${user.id}/${today}/${gameId}`, {
       ignoreErrors: true
     } as any)
-    
+
     if (attempt) {
       // Map properties for backwards compatibility
       attempt.points = attempt.score !== undefined ? attempt.score : attempt.points
       attempt.won = attempt.status === "won" ? true : attempt.status === "lost" ? false : attempt.won
+
+      // Client-side verification: double-check that this attempt belongs to the logged in user
+      if (attempt.userId !== user.id) {
+        console.warn("[getUserTodayAttempt] API returned attempt for a different user ID! Filtering out.");
+        return null;
+      }
     }
     return attempt || null
   } catch (error) {
@@ -281,7 +287,7 @@ export async function saveUserAttempt(
   }
 
   const today = getMadridDate()
-  
+
   const attempt = await fetchApi("/user-game-attempt", {
     method: "POST",
     body: JSON.stringify({

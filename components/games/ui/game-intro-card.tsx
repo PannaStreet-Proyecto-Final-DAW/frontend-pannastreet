@@ -116,7 +116,11 @@ export function GameIntroCard({
                           : "bg-primary hover:scale-[1.05]"
                       )}
                     >
-                      {playMode === "daily" && dailyCompleted ? "Completed" : "Start Game"}
+                      {playMode === "daily" && dailyCompleted 
+                        ? "Completed" 
+                        : (playMode === "daily" && isSettingsLocked 
+                          ? "Continue Game" 
+                          : "Start Game")}
                     </Button>
                   </div>
                 </div>

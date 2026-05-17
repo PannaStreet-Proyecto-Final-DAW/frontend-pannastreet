@@ -81,11 +81,11 @@ export function GameCard({ game }: { game: Game }) {
             <div className="absolute top-2 right-2 z-20 flex gap-1">
               {game.completed ? (
                 <span className="bg-emerald-500/90 text-white text-[9px] px-2 py-0.5 rounded-full font-black uppercase tracking-wider shadow-md backdrop-blur-md border border-emerald-400/30">
-                  Done ✅
+                  Done
                 </span>
               ) : (
                 <span className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white text-[9px] px-2 py-0.5 rounded-full font-black uppercase tracking-wider shadow-md backdrop-blur-md border border-yellow-400/30 animate-pulse">
-                  Daily Challenge 🏆
+                  Daily Challenge
                 </span>
               )}
             </div>

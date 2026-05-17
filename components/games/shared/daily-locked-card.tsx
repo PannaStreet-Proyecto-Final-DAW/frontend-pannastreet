@@ -87,11 +87,7 @@ export function DailyLockedCard({
   // Handle results sharing (Wordle-style)
   const handleShare = () => {
     const todayStr = new Date().toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit" })
-    const emojis = won 
-      ? "🏆 🟩🟩🟩🟩🟩" 
-      : "🟥 ⬛⬛⬛⬛⬛"
-    
-    const shareText = `PannaStreet - ${gameTitle} (${todayStr}) ⚽\nResult: ${won ? "WON" : "PLAYED"} ${emojis}\nScore: ${score} pts\nPlay now: ${window.location.origin}/games`
+    const shareText = `PannaStreet - ${gameTitle} (${todayStr})\nResult: ${won ? "WON" : "PLAYED"}\nScore: ${score} pts\nPlay now: ${window.location.origin}/games`
     
     navigator.clipboard.writeText(shareText).then(() => {
       setCopied(true)
@@ -127,7 +123,7 @@ export function DailyLockedCard({
           </div>
 
           {/* Heading */}
-          <h2 className="text-3xl font-black italic tracking-tight uppercase mb-6">
+          <h2 className="text-xl font-black italic tracking-tight uppercase mb-6">
             {won ? "Daily Challenge Completed!" : "Better Luck Tomorrow!"}
           </h2>
 
@@ -143,7 +139,7 @@ export function DailyLockedCard({
               Score Registered:
             </p>
             <div className={cn(
-              "text-5xl font-black italic tracking-tighter mb-1",
+              "text-3xl font-black italic tracking-tighter mb-1",
               won ? "text-amber-500" : "text-red-500"
             )}>
               +{score} PTS
@@ -156,7 +152,7 @@ export function DailyLockedCard({
               Next Daily Challenge In:
             </p>
             <div className="flex items-center gap-1 bg-neutral-200/50 dark:bg-neutral-800/50 px-6 py-3 rounded-2xl border border-neutral-300/30 dark:border-neutral-700/30 backdrop-blur-md">
-              <span className="text-2xl font-black font-mono tracking-wider tabular-nums text-neutral-800 dark:text-white">
+              <span className="text-xl font-black font-mono tracking-wider tabular-nums text-neutral-800 dark:text-white">
                 {formatTime(timeLeft)}
               </span>
               <span className="relative flex h-3 w-3 ml-2">

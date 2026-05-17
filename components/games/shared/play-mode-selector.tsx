@@ -16,7 +16,7 @@ export function PlayModeSelector({
 }: PlayModeSelectorProps) {
   return (
     <div className="w-full">
-      <p className="text-black dark:text-white text-[11px] font-black mb-2 uppercase tracking-wider text-center md:text-left">
+      <p className="text-white text-[11px] font-black mb-2 uppercase tracking-wider text-center md:text-left">
         Select Game Mode:
       </p>
       

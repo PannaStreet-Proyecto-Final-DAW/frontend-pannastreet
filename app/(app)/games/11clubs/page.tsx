@@ -18,6 +18,17 @@ import { Player, Team, Formation } from "@/types"
 import { DailyLockedCard } from "@/components/games/shared/daily-locked-card"
 import { PlayModeSelector } from "@/components/games/shared/play-mode-selector"
 
+function getDailyKeys(gameId: string, madridDate: string) {
+  if (typeof window === "undefined") return { progressKey: "", configKey: "" }
+  const userJson = localStorage.getItem("user")
+  const user = userJson ? JSON.parse(userJson) : null
+  const userId = user?.id ? `${user.id}_` : ""
+  return {
+    progressKey: `pannastreet_daily_progress_${gameId}_${userId}${madridDate}`,
+    configKey: `pannastreet_daily_config_${gameId}_${userId}${madridDate}`
+  }
+}
+
 export default function ElevenClubsPage() {
   // --- Game State (Required by GameEngine "Console") ---
   const [difficulty, setDifficulty] = useState("Easy")
@@ -109,8 +120,11 @@ export default function ElevenClubsPage() {
     if (typeof window === "undefined") return
 
     if (playMode === "daily") {
-      const savedConfig = localStorage.getItem(`pannastreet_daily_config_11clubs_${madridDate}`)
-      if (savedConfig) {
+      const { progressKey, configKey } = getDailyKeys("11clubs", madridDate)
+      const savedConfig = localStorage.getItem(configKey)
+      const savedProgress = localStorage.getItem(progressKey)
+
+      if (savedConfig && savedProgress) {
         const { difficulty: savedDiff, mode: savedMode } = JSON.parse(savedConfig)
         setDifficulty(savedDiff)
         setMode(savedMode)
@@ -119,11 +133,9 @@ export default function ElevenClubsPage() {
         setIsSettingsLocked(false)
       }
 
-      const savedProgress = localStorage.getItem(`pannastreet_daily_progress_11clubs_${madridDate}`)
       if (savedProgress) {
         const parsed = JSON.parse(savedProgress)
         setDailyState(parsed)
-        setIsStarted(true)
         if (parsed.refereeState) {
           setGameOver(parsed.refereeState.status !== "playing")
           setWon(parsed.refereeState.status === "won")
@@ -377,7 +389,9 @@ export default function ElevenClubsPage() {
         } as any)
 
         if (typeof window !== "undefined") {
-          localStorage.removeItem(`pannastreet_daily_progress_11clubs_${madridDate}`)
+          const { progressKey, configKey } = getDailyKeys("11clubs", madridDate)
+          localStorage.removeItem(progressKey)
+          localStorage.removeItem(configKey)
         }
       } catch (error) {
         console.error("Failed to save today's game attempt:", error)
@@ -414,7 +428,9 @@ export default function ElevenClubsPage() {
         } as any)
 
         if (typeof window !== "undefined") {
-          localStorage.removeItem(`pannastreet_daily_progress_11clubs_${madridDate}`)
+          const { progressKey, configKey } = getDailyKeys("11clubs", madridDate)
+          localStorage.removeItem(progressKey)
+          localStorage.removeItem(configKey)
         }
       } catch (error) {
         console.error("Failed to save today's game attempt:", error)
@@ -426,28 +442,32 @@ export default function ElevenClubsPage() {
   const handleStartGame = () => {
     setIsStarted(true)
     if (playMode === "daily") {
+      const { progressKey, configKey } = getDailyKeys("11clubs", madridDate)
       // Lock difficulty and mode
       localStorage.setItem(
-        `pannastreet_daily_config_11clubs_${madridDate}`,
+        configKey,
         JSON.stringify({ difficulty, mode })
       )
       setIsSettingsLocked(true)
 
-      // Save initial progress
-      const initialProg = {
-        lineup: Array(11).fill(null),
-        clubQueue: selectedClubs,
-        refereeState: {
-          attempts: [],
-          status: "playing",
-          score: 0
+      // Only save initial progress if there is no existing dailyState/savedProgress
+      const existingProgress = localStorage.getItem(progressKey)
+      if (!existingProgress) {
+        const initialProg = {
+          lineup: Array(11).fill(null),
+          clubQueue: selectedClubs,
+          refereeState: {
+            attempts: [],
+            status: "playing",
+            score: 0
+          }
         }
+        localStorage.setItem(
+          progressKey,
+          JSON.stringify(initialProg)
+        )
+        setDailyState(initialProg)
       }
-      localStorage.setItem(
-        `pannastreet_daily_progress_11clubs_${madridDate}`,
-        JSON.stringify(initialProg)
-      )
-      setDailyState(initialProg)
     }
   }
 
@@ -455,13 +475,14 @@ export default function ElevenClubsPage() {
   const handleStateChange = useCallback((newState: any) => {
     if (playMode !== "daily" || dailyCompleted) return
 
+    const { progressKey } = getDailyKeys("11clubs", madridDate)
     const progToSave = {
       lineup: newState.lineup,
       clubQueue: newState.clubQueue,
       refereeState: newState.refereeState
     }
     localStorage.setItem(
-      `pannastreet_daily_progress_11clubs_${madridDate}`,
+      progressKey,
       JSON.stringify(progToSave)
     )
 

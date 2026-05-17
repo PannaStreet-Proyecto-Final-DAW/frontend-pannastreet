@@ -20,7 +20,7 @@ export function ModeSelector({
 }: ModeSelectorProps) {
   return (
     <div className={className}>
-      <p className="text-black dark:text-white text-[11px] font-bold mb-2 uppercase tracking-wider">Select mode:</p>
+      <p className="text-white text-[11px] font-bold mb-2 uppercase tracking-wider">Select mode:</p>
       <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
         {options.map((opt) => (
           <Button
