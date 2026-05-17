@@ -270,7 +270,13 @@ export function ElevenLineupGame({
             <>
               <div className="w-32 h-32 rounded-full bg-primary/5 border-4 border-dashed border-primary/20 flex items-center justify-center overflow-hidden">
                 {availableCrests[currentClub] ? (
-                  <img src={availableCrests[currentClub]!} alt={currentClub} className="w-24 h-24 object-contain animate-in zoom-in-50 duration-500" />
+                  <img 
+                    src={availableCrests[currentClub]!} 
+                    alt={currentClub} 
+                    className="w-24 h-24 object-contain animate-in zoom-in-50 duration-500" 
+                    referrerPolicy="no-referrer"
+                    crossOrigin="anonymous"
+                  />
                 ) : (
                   <div className="w-16 h-16 rounded-full bg-primary/10 border-2 border-primary/20 animate-pulse" />
                 )}
