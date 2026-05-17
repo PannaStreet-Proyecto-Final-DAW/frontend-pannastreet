@@ -22,6 +22,10 @@ interface GameEngineProps {
   setDifficulty: (d: string) => void
   mode: string
   setMode: (m: string) => void
+  playMode?: "practice" | "daily"
+  setPlayMode?: (v: "practice" | "daily") => void
+  dailyCompleted?: boolean
+  isSettingsLocked?: boolean
 
   // Game status (received from the specific game logic)
   gameOver: boolean
@@ -39,6 +43,9 @@ interface GameEngineProps {
   backHref: string     // URL to navigate back to (e.g. "/games")
   backText: string     // Text accompanying the arrow (e.g. "Back")
   
+  isStarted?: boolean
+  onStart?: () => void
+  
   // The "Cartridge": This is where the specific game component is injected
   children: ReactNode
 }
@@ -52,6 +59,10 @@ export function GameEngine({
   setDifficulty,
   mode,
   setMode,
+  playMode = "practice",
+  setPlayMode,
+  dailyCompleted = false,
+  isSettingsLocked = false,
   gameOver,
   won,
   score,
@@ -62,14 +73,21 @@ export function GameEngine({
   resultClassName,
   backHref,
   backText,
+  isStarted: isStartedProp,
+  onStart: onStartProp,
   children
 }: GameEngineProps) {
   // Internal state: controls whether we are in the Intro (false) or the Game (true)
-  const [isStarted, setIsStarted] = useState(false)
+  const [internalStarted, setInternalStarted] = useState(false)
+  const isStarted = isStartedProp !== undefined ? isStartedProp : internalStarted
 
   // Executed when clicking "Start Game" in the Intro
   const handleStart = () => {
-    setIsStarted(true)
+    if (onStartProp) {
+      onStartProp()
+    } else {
+      setInternalStarted(true)
+    }
   }
 
   // Executed when clicking "Play Again" in the result screen
@@ -78,7 +96,7 @@ export function GameEngine({
     onReset()
     
     // 2. Reset isStarted to show the intro card again
-    setIsStarted(false)
+    setInternalStarted(false)
   }
 
   return (
@@ -99,7 +117,11 @@ export function GameEngine({
           setDifficulty={setDifficulty}
           mode={mode}
           setMode={setMode}
+          playMode={playMode}
+          setPlayMode={setPlayMode}
+          dailyCompleted={dailyCompleted}
           onStart={handleStart}
+          isSettingsLocked={isSettingsLocked}
         />
       ) : (
         /* --- PHASE 2: ACTIVE GAME --- */
@@ -113,8 +135,8 @@ export function GameEngine({
             <div className={cn("mt-8 animate-in fade-in slide-in-from-bottom-4 duration-500", resultClassName || "game-result-container-v2")}>
               <GameResultCard
                 className={cn(won ? "bg-primary/10" : "bg-destructive/10", "game-result-card-v2")}
-                title={resultTitle || (won ? "¡Congratulations!" : "Game Over")}
-                thanksMessage="¡Thanks for playing! See you tomorrow"
+                title={resultTitle || (won ? "Congratulations!" : "Game Over")}
+                thanksMessage={playMode === "daily" ? "Daily Challenge registered!" : "Thanks for playing!"}
               >
                 {/* Score display */}
                 {score !== undefined && (
@@ -125,20 +147,31 @@ export function GameEngine({
                     )}>
                       {score}
                     </span>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Points earned</p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                      {playMode === "daily" ? "Points earned" : "Final Score"}
+                    </p>
                   </div>
                 )}
 
                 {resultContent}
 
-                {/* Standardized Replay Button */}
-                <div className="mt-8 flex justify-center">
-                  <button
-                    onClick={handleReset}
-                    className="px-8 py-3 bg-primary text-primary-foreground rounded-xl font-black uppercase tracking-widest text-xs hover:scale-105 transition-transform shadow-lg"
-                  >
-                    Play Again
-                  </button>
+                {/* Standardized Replay Button or Daily Challenge options */}
+                <div className="mt-8 flex flex-col items-center gap-3">
+                  {playMode === "practice" ? (
+                    <button
+                      onClick={handleReset}
+                      className="px-8 py-3 bg-primary text-primary-foreground rounded-xl font-black uppercase tracking-widest text-xs hover:scale-105 transition-transform shadow-lg"
+                    >
+                      Play Again
+                    </button>
+                  ) : (
+                    <a
+                      href="/games"
+                      className="px-8 py-3 bg-neutral-200 dark:bg-neutral-800 text-neutral-800 dark:text-white rounded-xl font-black uppercase tracking-widest text-xs hover:scale-105 transition-all duration-300 shadow-md flex items-center justify-center gap-2 text-center"
+                    >
+                      Go back to Games
+                    </a>
+                  )}
                 </div>
               </GameResultCard>
             </div>

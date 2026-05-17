@@ -13,6 +13,7 @@ export interface Game {
   color: string
   href: string
   isComingSoon?: boolean
+  completed?: boolean
 }
 
 const icons = {
@@ -74,6 +75,21 @@ export function GameCard({ game }: { game: Game }) {
             "absolute inset-0 opacity-20 bg-gradient-to-br",
             game.color
           )} />
+
+          {/* Floating Premium Badges */}
+          {!game.isComingSoon && (
+            <div className="absolute top-2 right-2 z-20 flex gap-1">
+              {game.completed ? (
+                <span className="bg-emerald-500/90 text-white text-[9px] px-2 py-0.5 rounded-full font-black uppercase tracking-wider shadow-md backdrop-blur-md border border-emerald-400/30">
+                  Done ✅
+                </span>
+              ) : (
+                <span className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white text-[9px] px-2 py-0.5 rounded-full font-black uppercase tracking-wider shadow-md backdrop-blur-md border border-yellow-400/30 animate-pulse">
+                  Daily Challenge 🏆
+                </span>
+              )}
+            </div>
+          )}
 
           <img
             src={game.image}

@@ -8,13 +8,15 @@ interface ModeSelectorProps {
   onChange: (value: string) => void
   options?: string[]
   className?: string
+  disabled?: boolean
 }
 
 export function ModeSelector({ 
   value, 
   onChange, 
   options = ["Both", "Male", "Female"],
-  className
+  className,
+  disabled = false
 }: ModeSelectorProps) {
   return (
     <div className={className}>
@@ -25,11 +27,13 @@ export function ModeSelector({
             key={opt}
             variant={value === opt ? "default" : "secondary"}
             onClick={() => onChange(opt)}
+            disabled={disabled}
             className={cn(
               "rounded-full px-4 h-7 text-[11px] transition-all duration-300",
               value === opt 
                 ? "bg-primary text-primary-foreground shadow-sm" 
-                : "bg-primary/10 hover:bg-primary/20 text-black/70 dark:text-white/70"
+                : "bg-primary/10 hover:bg-primary/20 text-black/70 dark:text-white/70",
+              disabled && "opacity-50 cursor-not-allowed"
             )}
             size="sm"
           >

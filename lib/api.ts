@@ -168,3 +168,138 @@ export async function getAllFormations(): Promise<Formation[]> {
   apiCache.formations = formations;
   return formations;
 }
+
+// --- DAILY CHALLENGES & ATTEMPTS API ---
+
+export interface UserGameAttempt {
+  id: string;
+  userId: string;
+  date: string;
+  gameId: string;
+  modeId: string;
+  score: number;
+  points: number;
+  status: "pending" | "won" | "lost";
+  won: boolean;
+  history?: any;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface DailyChallenge {
+  date: string;
+  gameId: string;
+  modeId: string;
+  challengeData: any;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+/**
+ * getMadridDate: Helper to format the current date in Europe/Madrid timezone as YYYY-MM-DD.
+ */
+export function getMadridDate(): string {
+  try {
+    const formatter = new Intl.DateTimeFormat("en-US", {
+      timeZone: "Europe/Madrid",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit"
+    })
+    const parts = formatter.formatToParts(new Date())
+    const year = parts.find(p => p.type === "year")!.value
+    const month = parts.find(p => p.type === "month")!.value
+    const day = parts.find(p => p.type === "day")!.value
+    return `${year}-${month}-${day}`
+  } catch (e) {
+    const now = new Date()
+    return now.toISOString().split("T")[0]
+  }
+}
+
+/**
+ * getDailyChallenge: Fetches the daily challenge of today for a specific game and mode.
+ * Route: GET /api/daily-challenge/:date/:gameId/:modeId
+ */
+export async function getDailyChallenge(
+  date: string,
+  gameId: string,
+  modeId: string
+): Promise<DailyChallenge> {
+  return fetchApi(`/daily-challenge/${date}/${gameId}/${modeId}`)
+}
+
+/**
+ * getUserTodayAttempt: Checks if the user already played this game today.
+ * Route: GET /api/user-game-attempt/:userId/:date/:gameId
+ */
+export async function getUserTodayAttempt(gameId: string): Promise<UserGameAttempt | null> {
+  try {
+    if (typeof window === "undefined") return null
+    const userJson = localStorage.getItem("user")
+    if (!userJson) return null
+    const user = JSON.parse(userJson)
+    if (!user || !user.id) return null
+    
+    const today = getMadridDate()
+    const attempt = await fetchApi(`/user-game-attempt/${user.id}/${today}/${gameId}`, {
+      ignoreErrors: true
+    } as any)
+    
+    if (attempt) {
+      // Map properties for backwards compatibility
+      attempt.points = attempt.score !== undefined ? attempt.score : attempt.points
+      attempt.won = attempt.status === "won" ? true : attempt.status === "lost" ? false : attempt.won
+    }
+    return attempt || null
+  } catch (error) {
+    return null
+  }
+}
+
+/**
+ * saveUserAttempt: Registers the daily game attempt score and status.
+ * Route: POST /api/user-game-attempt
+ */
+export async function saveUserAttempt(
+  gameId: string,
+  modeId: string,
+  score: number,
+  status: "pending" | "won" | "lost",
+  history?: any
+): Promise<UserGameAttempt> {
+  if (typeof window === "undefined") {
+    throw new Error("Cannot save attempt outside of browser context")
+  }
+  const userJson = localStorage.getItem("user")
+  if (!userJson) {
+    throw new Error("User not authenticated")
+  }
+  const user = JSON.parse(userJson)
+  if (!user || !user.id) {
+    throw new Error("Invalid user data in authentication context")
+  }
+
+  const today = getMadridDate()
+  
+  const attempt = await fetchApi("/user-game-attempt", {
+    method: "POST",
+    body: JSON.stringify({
+      userId: user.id,
+      date: today,
+      gameId,
+      modeId,
+      score,
+      status,
+      history
+    })
+  })
+
+  if (attempt) {
+    // Map properties for backwards compatibility
+    attempt.points = attempt.score !== undefined ? attempt.score : attempt.points
+    attempt.won = attempt.status === "won" ? true : attempt.status === "lost" ? false : attempt.won
+  }
+  return attempt
+}
+

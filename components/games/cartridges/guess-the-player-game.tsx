@@ -47,6 +47,9 @@ interface GuessThePlayerGameProps {
   leagueLogos: Record<string, string | null>
   onGameOver: (won: boolean, targetPlayer: any, score: number) => void
   isGameOver: boolean
+  targetPlayerOverride?: Player | null
+  initialState?: any
+  onStateChange?: (state: any) => void
 }
 
 export function GuessThePlayerGame({
@@ -57,7 +60,10 @@ export function GuessThePlayerGame({
   teamCrests,
   leagueLogos,
   onGameOver,
-  isGameOver: externalIsGameOver
+  isGameOver: externalIsGameOver,
+  targetPlayerOverride = null,
+  initialState,
+  onStateChange
 }: GuessThePlayerGameProps) {
   // --- STATE ---
   const [targetPlayer, setTargetPlayer] = useState<Player | null>(null) // The player to guess
@@ -66,7 +72,7 @@ export function GuessThePlayerGame({
 
   // --- REFEREE LOGIC ---
   // Centralized state for attempts and scoring
-  const { attempts: guesses, status, score, recordAttempt, isGameOver } = useGameLogic<Guess>({
+  const gameLogicState = useGameLogic<Guess>({
     maxAttempts: SCORE_CONFIG.attempts[mode as keyof typeof SCORE_CONFIG.attempts] || 10,
 
     scoringFormula: useCallback((currentGuesses, won) => {
@@ -79,8 +85,19 @@ export function GuessThePlayerGame({
       const pointsPerFail = totalPotentialScore / maxAttempts
 
       return Math.max(0, Math.floor(totalPotentialScore - ((currentGuesses.length - 1) * pointsPerFail)))
-    }, [difficulty, mode])
+    }, [difficulty, mode]),
+    initialState
   })
+
+  const { attempts: guesses, status, score, recordAttempt, isGameOver } = gameLogicState
+
+  useEffect(() => {
+    onStateChange?.({
+      attempts: guesses,
+      status,
+      score
+    })
+  }, [guesses, status, score, onStateChange])
 
   // --- SEARCH ENGINE (Custom Hook) ---
   const {
@@ -139,13 +156,15 @@ export function GuessThePlayerGame({
   }, [externalIsGameOver, status, targetPlayer, onGameOver])
 
   // --- INITIALIZATION ---
-  // Pick target player randomly on mount
+  // Pick target player randomly on mount (or use override if provided)
   useEffect(() => {
-    if (players && players.length > 0 && !targetPlayer) {
+    if (targetPlayerOverride) {
+      setTargetPlayer(targetPlayerOverride)
+    } else if (players && players.length > 0 && !targetPlayer) {
       const randomIndex = Math.floor(Math.random() * players.length)
       setTargetPlayer(players[randomIndex])
     }
-  }, [players, targetPlayer])
+  }, [players, targetPlayer, targetPlayerOverride])
 
   /**
    * Processes a guess attempt.
