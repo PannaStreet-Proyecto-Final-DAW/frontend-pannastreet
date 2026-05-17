@@ -122,6 +122,8 @@ export const FootballPitch = React.memo(function FootballPitch({
                     src={player.crestUrl}
                     alt={player.club}
                     className="w-9 h-9 object-contain drop-shadow-sm"
+                    referrerPolicy="no-referrer"
+                    crossOrigin="anonymous"
                   />
                 ) : (
                   <div className="w-8 h-8 rounded-full bg-primary/10" />
