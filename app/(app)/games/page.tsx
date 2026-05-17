@@ -1,6 +1,10 @@
-import { GameCard, type Game } from "@/components/game-card"
+"use client"
 
-const games: Game[] = [
+import { useState, useEffect } from "react"
+import { GameCard, type Game } from "@/components/games/ui/game-card"
+import { getUserTodayAttempt } from "@/lib/api"
+
+const initialGames: Omit<Game, "completed">[] = [
   {
     id: "guess-the-player",
     title: "Guess the Player",
@@ -32,27 +36,57 @@ const games: Game[] = [
 ]
 
 export default function GamesPage() {
+  const [completedGames, setCompletedGames] = useState<Record<string, boolean>>({
+    "guess-the-player": false,
+    "11clubs": false
+  })
+
+  useEffect(() => {
+    async function fetchCompletedAttempts() {
+      try {
+        const [gtpAttempt, clubsAttempt] = await Promise.all([
+          getUserTodayAttempt("guess-the-player"),
+          getUserTodayAttempt("11clubs")
+        ])
+        setCompletedGames({
+          "guess-the-player": !!gtpAttempt,
+          "11clubs": !!clubsAttempt
+        })
+      } catch (err) {
+        console.error("Failed to fetch today's game attempts:", err)
+      }
+    }
+    fetchCompletedAttempts()
+  }, [])
+
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="text-center mb-10">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Daily Football Games</h1>
-        <p className="text-white font-medium tracking-wide">
+    <div className="max-w-4xl mx-auto tablet-v-container">
+      <div className="text-center mb-6 md:mb-10 px-4">
+        <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2 tablet-v-title mobile-games-title">Daily Football Games</h1>
+        <p className="text-xs md:text-base text-white/80 font-medium tracking-wide mobile-games-subtitle">
           Select a game to play and test your football knowledge
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {games.map((game) => (
-          <GameCard key={game.id} game={game} />
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 px-2 md:px-0">
+        {initialGames.map((game) => (
+          <GameCard 
+            key={game.id} 
+            game={{
+              ...game,
+              completed: completedGames[game.id] || false
+            } as Game} 
+          />
         ))}
       </div>
 
       <div className="mt-12 text-center">
-        <p className="text-sm text-white font-medium">
+        <p className="text-sm text-white font-medium mobile-games-footer-text">
           New challenges every day at midnight
         </p>
       </div>
     </div>
   )
 }
+
 

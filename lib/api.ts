@@ -1,95 +1,18 @@
 import { fetchApi } from "./httpClient"
 
-/**
- * --- LEAGUE DATA MODELS ---
- */
+import {
+  UserLeague,
+  UserLeagueMembership,
+  Player,
+  Team,
+  League,
+  Formation
+} from "@/types"
 
-/**
- * UserLeague: Represents a competitive league created by a user.
- * Each league has a unique name and a private invite code used for secure joining.
- */
-export interface UserLeague {
-  id: string
-  name: string
-  inviteCode: string
-  createdAt: string
-}
+// Re-export everything from centralized types to maintain backward compatibility
+export * from "@/types"
 
-/**
- * UserLeagueMembership: Represents the link between a user and a league.
- * It tracks the user's performance (score) and when they joined the competition.
- * Note: Includes optional league and user objects for enriched leaderboard displays.
- */
-export interface UserLeagueMembership {
-  id: string
-  userId?: string
-  leagueId?: string
-  score: number
-  joinedAt: string
-  league?: UserLeague
-  user?: {
-    id: string
-    userName: string
-    email: string
-  }
-}
-
-/**
- * Player: Represents a professional player in the system database (Standardized DTO).
- */
-export interface Player {
-  id: string
-  name: string
-  age: number
-  tier: number
-  team: string
-  nationality: string
-  position: string[]
-  generalPosition: "GOALKEEPER" | "DEFENDER" | "MIDFIELDER" | "FORWARD"
-  pictureUrl: string | null
-  gender: "male" | "female"
-  league: string
-}
-
-/**
- * Team: Represents a professional club/team (Standardized DTO).
- */
-export interface Team {
-  id: string
-  name: string
-  tier: number
-  pictureUrl: string | null
-  league: string
-  gender: "male" | "female"
-  country: string
-}
-
-/**
- * League: Represents a professional league (Standardized DTO).
- */
-export interface League {
-  id: string
-  name: string
-  category: "male" | "female"
-  country: string
-  pictureUrl: string | null
-}
-
-/**
- * Formation: Represents a tactical formation (Standardized DTO).
- */
-export interface Formation {
-  id: string
-  name: string
-  goalkeeper: string
-  defenders: string[]
-  midfielders: string[]
-  forwards: string[]
-}
-
-/**
- * --- LEAGUE MANAGEMENT API ---
- */
+// --- LEAGUE MANAGEMENT API ---
 
 /**
  * createUserLeague: Creates a new competitive arena in the system.
@@ -124,16 +47,12 @@ export async function updateUserLeague(id: string, name: string): Promise<UserLe
   })
 }
 
-/**
- * getUserLeagueById: Retrieves full details of a specific league.
- */
+// getUserLeagueById: Retrieves full details of a specific league.
 export async function getUserLeagueById(id: string): Promise<UserLeague> {
   return fetchApi(`/user-league/id/${id}`)
 }
 
-/**
- * --- MEMBERSHIP & LEADERBOARD API ---
- */
+// --- MEMBERSHIP & LEADERBOARD API ---
 
 /**
  * joinLeague: Grants a user access to a specific league.
@@ -172,9 +91,9 @@ export async function getLeagueMembers(leagueId: string): Promise<UserLeagueMemb
 export async function incrementScore(membershipId: string, points: number): Promise<UserLeagueMembership> {
   return fetchApi(`/user-league-membership/increment-score/${membershipId}`, {
     method: "PATCH",
-    body: JSON.stringify({ 
+    body: JSON.stringify({
       pointsToAdd: points,
-      amount: points 
+      amount: points
     })
   })
 }
@@ -190,9 +109,7 @@ export async function deleteMembership(id: string): Promise<{ message: string }>
   })
 }
 
-/**
- * --- CORE ENTITIES API (WITH MEMORY CACHE) ---
- */
+// --- CORE ENTITIES API (WITH MEMORY CACHE) ---
 
 // Simple singleton cache to avoid redundant network requests across different game pages
 const apiCache: {
@@ -218,16 +135,12 @@ export async function getAllPlayers(): Promise<Player[]> {
   return players;
 }
 
-/**
- * getPlayerById: Retrieves detailed information for a single player.
- */
+// getPlayerById: Retrieves detailed information for a single player.
 export async function getPlayerById(id: string): Promise<Player> {
   return fetchApi(`/player/id/${id}`)
 }
 
-/**
- * getAllTeams: Fetches the complete list of teams/clubs.
- */
+// getAllTeams: Fetches the complete list of teams/clubs.
 export async function getAllTeams(): Promise<Team[]> {
   if (apiCache.teams) return apiCache.teams;
   const teams = await fetchApi("/team");
@@ -235,16 +148,12 @@ export async function getAllTeams(): Promise<Team[]> {
   return teams;
 }
 
-/**
- * getTeamById: Retrieves detailed information for a specific team.
- */
+// getTeamById: Retrieves detailed information for a specific team.
 export async function getTeamById(id: string): Promise<Team> {
   return fetchApi(`/team/id/${id}`)
 }
 
-/**
- * getAllLeagues: Fetches all professional leagues.
- */
+// getAllLeagues: Fetches all professional leagues.
 export async function getAllLeagues(): Promise<League[]> {
   if (apiCache.leagues) return apiCache.leagues;
   const leagues = await fetchApi("/league");
@@ -252,12 +161,151 @@ export async function getAllLeagues(): Promise<League[]> {
   return leagues;
 }
 
-/**
- * getAllFormations: Fetches all tactical formations.
- */
+// getAllFormations: Fetches all tactical formations.
 export async function getAllFormations(): Promise<Formation[]> {
   if (apiCache.formations) return apiCache.formations;
   const formations = await fetchApi("/formation");
   apiCache.formations = formations;
   return formations;
 }
+
+// --- DAILY CHALLENGES & ATTEMPTS API ---
+
+export interface UserGameAttempt {
+  id: string;
+  userId: string;
+  date: string;
+  gameId: string;
+  modeId: string;
+  score: number;
+  points: number;
+  status: "pending" | "won" | "lost";
+  won: boolean;
+  history?: any;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface DailyChallenge {
+  date: string;
+  gameId: string;
+  modeId: string;
+  challengeData: any;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+/**
+ * getMadridDate: Helper to format the current date in Europe/Madrid timezone as YYYY-MM-DD.
+ */
+export function getMadridDate(): string {
+  try {
+    const formatter = new Intl.DateTimeFormat("en-US", {
+      timeZone: "Europe/Madrid",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit"
+    })
+    const parts = formatter.formatToParts(new Date())
+    const year = parts.find(p => p.type === "year")!.value
+    const month = parts.find(p => p.type === "month")!.value
+    const day = parts.find(p => p.type === "day")!.value
+    return `${year}-${month}-${day}`
+  } catch (e) {
+    const now = new Date()
+    return now.toISOString().split("T")[0]
+  }
+}
+
+/**
+ * getDailyChallenge: Fetches the daily challenge of today for a specific game and mode.
+ * Route: GET /api/daily-challenge/:date/:gameId/:modeId
+ */
+export async function getDailyChallenge(
+  date: string,
+  gameId: string,
+  modeId: string
+): Promise<DailyChallenge> {
+  return fetchApi(`/daily-challenge/${date}/${gameId}/${modeId}`)
+}
+
+/**
+ * getUserTodayAttempt: Checks if the user already played this game today.
+ * Route: GET /api/user-game-attempt/:userId/:date/:gameId
+ */
+export async function getUserTodayAttempt(gameId: string): Promise<UserGameAttempt | null> {
+  try {
+    if (typeof window === "undefined") return null
+    const userJson = localStorage.getItem("user")
+    if (!userJson) return null
+    const user = JSON.parse(userJson)
+    if (!user || !user.id) return null
+
+    const today = getMadridDate()
+    const attempt = await fetchApi(`/user-game-attempt/${user.id}/${today}/${gameId}`, {
+      ignoreErrors: true
+    } as any)
+
+    if (attempt) {
+      // Map properties for backwards compatibility
+      attempt.points = attempt.score !== undefined ? attempt.score : attempt.points
+      attempt.won = attempt.status === "won" ? true : attempt.status === "lost" ? false : attempt.won
+
+      // Client-side verification: double-check that this attempt belongs to the logged in user
+      if (attempt.userId !== user.id) {
+        console.warn("[getUserTodayAttempt] API returned attempt for a different user ID! Filtering out.");
+        return null;
+      }
+    }
+    return attempt || null
+  } catch (error) {
+    return null
+  }
+}
+
+/**
+ * saveUserAttempt: Registers the daily game attempt score and status.
+ * Route: POST /api/user-game-attempt
+ */
+export async function saveUserAttempt(
+  gameId: string,
+  modeId: string,
+  score: number,
+  status: "pending" | "won" | "lost",
+  history?: any
+): Promise<UserGameAttempt> {
+  if (typeof window === "undefined") {
+    throw new Error("Cannot save attempt outside of browser context")
+  }
+  const userJson = localStorage.getItem("user")
+  if (!userJson) {
+    throw new Error("User not authenticated")
+  }
+  const user = JSON.parse(userJson)
+  if (!user || !user.id) {
+    throw new Error("Invalid user data in authentication context")
+  }
+
+  const today = getMadridDate()
+
+  const attempt = await fetchApi("/user-game-attempt", {
+    method: "POST",
+    body: JSON.stringify({
+      userId: user.id,
+      date: today,
+      gameId,
+      modeId,
+      score,
+      status,
+      history
+    })
+  })
+
+  if (attempt) {
+    // Map properties for backwards compatibility
+    attempt.points = attempt.score !== undefined ? attempt.score : attempt.points
+    attempt.won = attempt.status === "won" ? true : attempt.status === "lost" ? false : attempt.won
+  }
+  return attempt
+}
+

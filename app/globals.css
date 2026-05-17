@@ -130,3 +130,476 @@
       radial-gradient(circle at center, transparent 0, transparent 120px, oklch(1 0 0 / 0.1) 120px, oklch(1 0 0 / 0.1) 122px, transparent 122px);
   }
 }
+
+/* --- NAVIGATION VISIBILITY --- 
+   Forced overrides to ensure Hamburger is GONE on Tablet/Desktop (600px+)
+   and Links are ONLY visible from 600px.
+*/
+.nav-desktop-links {
+  display: none !important;
+}
+
+.nav-mobile-trigger {
+  display: flex !important;
+}
+
+@layer utilities {
+
+  /* Tablet Landscape Specific Overrides (iPad Mini, iPad Air, etc.) */
+  @media (min-width: 768px) and (max-width: 1180px) and (orientation: landscape) {
+    .tablet-ls-container {
+      max-width: 1024px !important;
+      margin-left: auto !important;
+      margin-right: auto !important;
+      padding-left: 2rem !important;
+      padding-right: 2rem !important;
+    }
+
+    .tablet-ls-nav-gap {
+      gap: 2.5rem !important;
+    }
+
+    .tablet-ls-game-controls {
+      padding-left: 1.5rem !important;
+      padding-right: 1.5rem !important;
+      margin-bottom: 2rem !important;
+    }
+
+    .tablet-ls-card-padding {
+      padding: 1.5rem !important;
+    }
+  }
+
+  /* Tablet Vertical Specific Overrides (iPad Mini Portrait, 600px-1180px) */
+  @media (min-width: 600px) and (max-width: 1180px) and (orientation: portrait) {
+    .tablet-v-title {
+      font-size: 1.5rem !important;
+      margin-bottom: 0.5rem !important;
+    }
+
+    .tablet-v-card-header {
+      padding-top: 0.5rem !important;
+      padding-bottom: 0 !important;
+      padding-left: 1rem !important;
+      padding-right: 1rem !important;
+    }
+
+    .tablet-v-card-title {
+      font-size: 1rem !important;
+    }
+
+    .tablet-v-card-content {
+      padding-top: 0 !important;
+      padding-bottom: 1rem !important;
+      padding-left: 1rem !important;
+      padding-right: 1rem !important;
+    }
+
+    .tablet-v-card-description {
+      font-size: 0.75rem !important;
+      line-height: 1.1 !important;
+      -webkit-line-clamp: 2 !important;
+      display: -webkit-box !important;
+      -webkit-box-orient: vertical !important;
+      overflow: hidden !important;
+    }
+
+    .tablet-v-container {
+      padding-left: 4rem !important;
+      padding-right: 4rem !important;
+    }
+
+    .tablet-v-image-container {
+      aspect-ratio: 2 / 1 !important;
+      padding: 1rem !important;
+    }
+
+    .tablet-v-image {
+      max-height: 140px !important;
+    }
+
+    .tablet-v-legal-container {
+      padding-left: 3.5rem !important;
+      padding-right: 3.5rem !important;
+      padding-top: 2rem !important;
+    }
+
+    .tablet-v-legal-card {
+      padding: 2.5rem !important;
+    }
+
+    .tablet-v-legal-text {
+      font-size: 12px !important;
+      line-height: 1.6 !important;
+    }
+
+    .tablet-v-legal-h2 {
+      font-size: 14px !important;
+    }
+
+    .tablet-v-play-btn {
+      font-size: 0.7rem !important;
+      margin-top: 0.25rem !important;
+    }
+
+    /* Game Intro adjustments for Tablet Portrait */
+    /* Game Intro adjustments for Tablet Portrait (Final Layout from Sketch) */
+    .game-intro-main-layout {
+      display: grid !important;
+      grid-template-columns: 240px 1fr !important;
+      /* Image width + text space */
+      gap: 0 !important;
+      align-items: stretch !important;
+    }
+
+    .game-intro-image-container-v2 {
+      grid-column: 1 !important;
+      grid-row: 1 !important;
+      width: 100% !important;
+      height: 100% !important;
+      min-height: 240px !important;
+      aspect-ratio: auto !important;
+      padding: 1.5rem !important;
+      background: transparent !important;
+    }
+
+    .game-intro-info-block {
+      display: contents !important;
+      /* Pulls children into the parent grid */
+    }
+
+    .game-intro-text-header {
+      grid-column: 2 !important;
+      grid-row: 1 !important;
+      padding: 2rem 1.5rem 1rem 1.5rem !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+      text-align: left !important;
+    }
+
+    .game-intro-footer-v2 {
+      grid-column: 1 / span 2 !important;
+      grid-row: 2 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 1.5rem !important;
+      align-items: center !important;
+      padding: 2rem !important;
+      margin: 1rem !important;
+      border: none !important;
+      background: transparent !important;
+    }
+
+    .game-intro-selectors-grid-v2 {
+      display: grid !important;
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 2rem !important;
+      width: 100% !important;
+      align-items: start !important;
+    }
+
+    .game-intro-btn-v2 {
+      grid-row: 3 !important;
+      /* Logical separation */
+      justify-content: center !important;
+      width: 100% !important;
+      padding-top: 1rem !important;
+    }
+
+    /* 11 Clubs Game Layout for Tablet Portrait - Proportional padding for all iPads */
+    .eleven-game-layout {
+      grid-template-columns: 1fr !important;
+      gap: 1.5rem !important;
+      padding-left: 7% !important;
+      padding-right: 7% !important;
+      max-width: none !important;
+      width: 100% !important;
+    }
+
+    .eleven-monitor-card {
+      order: 1 !important;
+      position: relative !important;
+      top: 0 !important;
+    }
+
+    .eleven-search-card {
+      order: 2 !important;
+    }
+
+    .eleven-pitch-card {
+      order: 3 !important;
+    }
+
+    .eleven-monitor-content {
+      flex-direction: row !important;
+      justify-content: flex-start !important;
+      text-align: left !important;
+      gap: 2.5rem !important;
+      padding: 1.5rem 2rem !important;
+    }
+
+    .eleven-monitor-content .w-32 {
+      width: 5rem !important;
+      height: 5rem !important;
+      flex-shrink: 0 !important;
+    }
+
+    .eleven-monitor-content .w-24 {
+      width: 4rem !important;
+      height: 4rem !important;
+    }
+
+    .game-result-container-v2 {
+      width: 100% !important;
+    }
+
+    .game-result-container-v2 .game-result-card-v2 {
+      margin-left: 7% !important;
+      margin-right: 7% !important;
+    }
+
+    .game-result-card-gtp .game-result-card-v2 {
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
+
+    /* Compact Guess Table for Tablet Portrait */
+    .guesses-table-v2 {
+      padding-left: 0.15rem !important;
+      padding-right: 0.15rem !important;
+    }
+
+    .guesses-table-v2 td,
+    .guesses-table-v2 th {
+      padding-left: 0.2rem !important;
+      padding-right: 0.2rem !important;
+    }
+
+    /* Dar aire a la primera columna (Player) */
+    .guesses-table-v2 tr>th:first-child,
+    .guesses-table-v2 tr>td:first-child {
+      padding-left: 2rem !important;
+    }
+  }
+
+  /* Mobile Specific Overrides (Phones < 600px) */
+  @media (max-width: 599px) {
+    .mobile-games-title {
+      font-size: 1.25rem !important;
+      margin-bottom: 0.25rem !important;
+      letter-spacing: -0.02em !important;
+    }
+
+    .mobile-games-subtitle {
+      font-size: 11px !important;
+      opacity: 0.8 !important;
+      letter-spacing: 0.02em !important;
+    }
+
+    .mobile-games-footer-text {
+      font-size: 10px !important;
+      opacity: 0.7 !important;
+    }
+
+    .mobile-footer {
+      padding-top: 0.5rem !important;
+      padding-bottom: 0.5rem !important;
+    }
+
+    .mobile-footer-wrapper {
+      gap: 0.75rem !important;
+    }
+
+    footer nav.mobile-footer-nav {
+      gap: 12px !important;
+      flex-wrap: nowrap !important;
+    }
+
+    .mobile-footer-nav a {
+      font-size: 13px !important;
+      white-space: nowrap !important;
+    }
+
+    .mobile-footer-wrapper .font-bold.text-lg {
+      font-size: 1.125rem !important;
+    }
+
+    .mobile-footer-wrapper .text-xs {
+      font-size: 12px !important;
+    }
+
+    .mobile-footer-wrapper .w-9.h-9 {
+      width: 2rem !important;
+      height: 2rem !important;
+    }
+
+    div.mobile-leagues-header {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      text-align: center !important;
+      gap: 1rem !important;
+      margin-bottom: 2rem !important;
+    }
+
+    h1.mobile-leagues-title {
+      font-size: 1.25rem !important;
+      font-weight: 700 !important;
+      font-style: normal !important;
+      text-transform: none !important;
+      letter-spacing: normal !important;
+      color: white !important;
+      margin-bottom: 0 !important;
+      text-align: center !important;
+      display: block !important;
+    }
+
+    div.mobile-leagues-actions {
+      display: flex !important;
+      justify-content: center !important;
+      width: 100% !important;
+      gap: 0.75rem !important;
+    }
+
+    .mobile-league-dialog {
+      max-width: calc(100% - 2rem) !important;
+      width: calc(100% - 2rem) !important;
+      border-radius: 2rem !important;
+    }
+
+    /* League Leaderboard Table Compaction */
+    .mobile-league-table {
+      min-width: 100% !important;
+      table-layout: fixed !important;
+    }
+
+    .mobile-league-table th,
+    .mobile-league-table td {
+      padding: 0.5rem 0.25rem !important;
+      font-size: 10px !important;
+      word-break: break-word !important;
+    }
+
+    .mobile-league-table th:first-child,
+    .mobile-league-table td:first-child {
+      width: 40px !important;
+      padding-left: 0.5rem !important;
+    }
+
+    .mobile-league-table th:nth-child(2),
+    .mobile-league-table td:nth-child(2) {
+      width: 35% !important;
+    }
+
+    .mobile-league-table th:nth-child(3),
+    .mobile-league-table td:nth-child(3) {
+      width: 25% !important;
+    }
+
+    .mobile-league-table th:last-child,
+    .mobile-league-table td:last-child {
+      width: 25% !important;
+      padding-right: 0.5rem !important;
+    }
+
+    .mobile-league-table span.text-base {
+      font-size: 12px !important;
+    }
+
+    .mobile-league-table span.text-xl {
+      font-size: 16px !important;
+    }
+
+    /* Rank Indicator Compaction */
+    .mobile-league-table .w-8.h-8 {
+      width: 1.5rem !important;
+      height: 1.5rem !important;
+      font-size: 10px !important;
+    }
+
+    .mobile-league-table .scale-110 {
+      transform: scale(1) !important;
+    }
+
+    /* 11 Clubs Game Layout for Mobile */
+    .eleven-game-layout {
+      grid-template-columns: 1fr !important;
+      gap: 1rem !important;
+      padding-left: 0.75rem !important;
+      padding-right: 0.75rem !important;
+      width: 100% !important;
+    }
+
+    .eleven-monitor-card,
+    .eleven-search-card,
+    .eleven-pitch-card {
+      position: relative !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      z-index: 1 !important;
+    }
+
+    .eleven-monitor-card {
+      order: 1 !important;
+    }
+
+    .eleven-search-card {
+      order: 2 !important;
+    }
+
+    .eleven-pitch-card {
+      order: 3 !important;
+    }
+
+    .eleven-monitor-content {
+      flex-direction: row !important;
+      justify-content: flex-start !important;
+      text-align: left !important;
+      gap: 1.5rem !important;
+      padding: 1rem 1.25rem !important;
+    }
+
+    .eleven-monitor-content .w-32 {
+      width: 4.5rem !important;
+      height: 4.5rem !important;
+      flex-shrink: 0 !important;
+    }
+
+    .eleven-monitor-content .w-24 {
+      width: 3.5rem !important;
+      height: 3.5rem !important;
+    }
+
+    .eleven-monitor-content h3 {
+      font-size: 1.25rem !important;
+    }
+
+    .game-result-container-v2 {
+      width: 100% !important;
+    }
+
+    .game-result-container-v2 .game-result-card-v2 {
+      margin-left: 0.75rem !important;
+      margin-right: 0.75rem !important;
+    }
+
+    .game-result-card-gtp .game-result-card-v2 {
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
+  }
+}
+
+
+/* Phone */
+@media (min-width: 600px) {
+  .nav-desktop-links {
+    display: flex !important;
+  }
+
+  .nav-mobile-trigger {
+    display: none !important;
+  }
+}
