@@ -7,12 +7,12 @@
 import { useState, useEffect, useMemo, useCallback } from "react"
 import { GameEngine } from "@/components/games/engine/game-engine"
 import { GuessThePlayerGame } from "@/components/games/cartridges/guess-the-player-game"
-import { 
-  getAllPlayers, 
-  getAllTeams, 
-  getAllLeagues, 
-  getUserTodayAttempt, 
-  getDailyChallenge, 
+import {
+  getAllPlayers,
+  getAllTeams,
+  getAllLeagues,
+  getUserTodayAttempt,
+  getDailyChallenge,
   saveUserAttempt,
   UserGameAttempt
 } from "@/lib/api"
@@ -42,7 +42,7 @@ export default function GuessThePlayerPage() {
   const [difficulty, setDifficulty] = useState("Easy")
   const [mode, setMode] = useState("Both")
   const [playMode, setPlayMode] = useState<"practice" | "daily">("practice")
-  
+
   // Daily attempt state
   const [dailyAttempt, setDailyAttempt] = useState<UserGameAttempt | null>(null)
   const [dailyCompleted, setDailyCompleted] = useState(false)
@@ -198,12 +198,12 @@ export default function GuessThePlayerPage() {
         const formattedMode = mode.toLowerCase() // 'male', 'female', 'both'
         const formattedDiff = difficulty.toLowerCase() // 'easy', 'intermediate', 'hard'
         const modeId = `${formattedMode}-${formattedDiff}`
-        
+
         const challenge = await getDailyChallenge(madridDate, "guess-the-player", modeId)
         if (challenge && challenge.challengeData) {
           const rawPlayer = challenge.challengeData
           const playerId = rawPlayer.id || rawPlayer.playerId
-          
+
           // Match with our fully detailed players list or fallback
           const matchedPlayer = players.find(p => p.id === playerId) || rawPlayer
           setDailyTargetPlayer(matchedPlayer)
@@ -290,7 +290,7 @@ export default function GuessThePlayerPage() {
           status: won ? "won" : "lost",
           won: won
         } as any)
-        
+
         if (typeof window !== "undefined") {
           const { progressKey, configKey } = getDailyKeys("guess-the-player", madridDate)
           localStorage.removeItem(progressKey)
@@ -426,6 +426,8 @@ export default function GuessThePlayerPage() {
             <li>Choose between 3 difficulty levels that get progressively harder.</li>
             <li>Choose your mode to multiply your points: Male (x1), Female (x1.5) or Both (x2).</li>
             <li>You can give up by clicking the Red Card icon.</li>
+            <li>Practice Mode: Play continuously for practice without earning points.</li>
+            <li>Daily Challenge: Play once a day. Points earned count towards the leagues.</li>
           </ul>
         </>
       }

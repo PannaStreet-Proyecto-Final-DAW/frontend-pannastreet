@@ -8,7 +8,7 @@ const initialGames: Omit<Game, "completed">[] = [
   {
     id: "guess-the-player",
     title: "Guess the Player",
-    description: "Test your football intuition by identifying the mystery player from daily clues. You have 6 attempts to solve the puzzle.",
+    description: "Test your football intuition by identifying the mystery player from daily clues. You have 10/15 attempts to solve the puzzle, depending on the mode.",
     icon: "guess-the-player",
     image: "/images/games/guess-the-player.webp",
     color: "from-game-1 to-transparent",
