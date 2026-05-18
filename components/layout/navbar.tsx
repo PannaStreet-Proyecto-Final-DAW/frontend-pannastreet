@@ -125,7 +125,7 @@ export function Navbar() {
               <SheetContent side="right" className="w-1/2 bg-card/95 backdrop-blur-xl border-border/50 p-0 flex flex-col">
                 <SheetHeader className="p-6 border-b border-border/50 flex flex-row items-center gap-4">
                   <Image src="/icon.webp" alt="PannaStreet Logo" width={32} height={32} className="rounded-full" />
-                  <SheetTitle className="text-primary font-black italic tracking-tighter uppercase">Options</SheetTitle>
+                  <SheetTitle className="text-primary font-black italic tracking-tighter uppercase">{user?.userName || "Options"}</SheetTitle>
                 </SheetHeader>
 
                 <div className="flex-1 flex flex-col p-4 gap-2">
