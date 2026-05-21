@@ -61,9 +61,9 @@ export function GameCard({ game }: { game: Game }) {
   const wrapperProps = game.isComingSoon ? {} : { href: game.href };
 
   return (
-    <CardWrapper {...(wrapperProps as any)} className={cn("block group", game.isComingSoon && "cursor-default")}>
+    <CardWrapper {...(wrapperProps as any)} className={cn("block group h-full", game.isComingSoon && "cursor-default")}>
       <Card className={cn(
-        "relative overflow-hidden border-border bg-card transition-all duration-500",
+        "relative overflow-hidden border-border bg-card transition-all duration-500 h-full flex flex-col",
         "hover:border-primary hover:shadow-[0_20px_50px_rgba(0,0,0,0.15)] hover:shadow-primary/40 hover:-translate-y-3"
       )}>
         <div className={cn(
@@ -124,7 +124,7 @@ export function GameCard({ game }: { game: Game }) {
             {game.title}
           </CardTitle>
         </CardHeader>
-        <CardContent className="relative pt-0 md:pt-0 pb-3 md:pb-6 px-3 md:px-6 tablet-v-card-content">
+        <CardContent className="relative pt-0 md:pt-0 pb-3 md:pb-6 px-3 md:px-6 tablet-v-card-content flex-1 flex flex-col justify-between">
           <CardDescription className={cn(
             "text-xs md:text-sm text-neutral-600 dark:text-neutral-300 line-clamp-2 md:line-clamp-none transition-colors text-center md:text-left tablet-v-card-description",
             game.isComingSoon && "opacity-40 blur-sm"
