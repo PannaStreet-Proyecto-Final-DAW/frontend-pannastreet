@@ -47,6 +47,10 @@ frontend-pannastreet/
 │   │   ├── games/        # Game cartridges entry points
 │   │   ├── leagues/      # Community and competitive systems
 │   │   └── profile/      # User management
+│   ├── (footer)/         # Static and informational pages
+│   │   ├── about/        # About page
+│   │   ├── privacy/      # Privacy policy
+│   │   └── terms/        # Terms of service
 ├── components/           # UI Component library
 │   ├── games/            # Modular game system
 │   │   ├── engine/       # Generic game orchestrator (The Console)
@@ -63,7 +67,7 @@ frontend-pannastreet/
 
 ### Folder Breakdown
 
-- **`app/`**: Contains the routing logic and page definitions. The `(app)` group handles authenticated routes.
+- **`app/`**: Contains the routing logic and page definitions. The `(app)` group handles authenticated routes, while the `(footer)` group contains static and informational pages (About, Privacy Policy, Terms of Service).
 - **`components/`**: Organized by domain. The `games` folder follows the "Console/Cartridge" pattern for decoupled game logic.
 - **`hooks/`**: Custom hooks that encapsulate stateful business logic (e.g., scoring, searching).
 - **`lib/`**: Core utilities, API clients, and the authentication context.
@@ -155,6 +159,10 @@ frontend-pannastreet/
 │   │   ├── games/        # Puntos de entrada de los juegos
 │   │   ├── leagues/      # Sistemas competitivos y clasificaciones
 │   │   └── profile/      # Gestión de perfil
+│   ├── (footer)/         # Páginas estáticas e informativas
+│   │   ├── about/        # Página "Acerca de"
+│   │   ├── privacy/      # Política de privacidad
+│   │   └── terms/        # Términos de servicio
 ├── components/           # Biblioteca de componentes UI
 │   ├── games/            # Arquitectura modular de juegos
 │   │   ├── engine/       # Orquestador genérico (La Consola)
@@ -169,7 +177,7 @@ frontend-pannastreet/
 
 ### Desglose de Carpetas
 
-- **`app/`**: Contiene la lógica de enrutamiento. El grupo `(app)` maneja las rutas protegidas.
+- **`app/`**: Contiene la lógica de enrutamiento. El grupo `(app)` maneja las rutas protegidas, mientras que el grupo `(footer)` contiene páginas estáticas e informativas (Acerca de, Privacidad, Términos).
 - **`components/`**: Organizado por dominio. La carpeta `games` sigue el patrón "Consola/Cartucho".
 - **`hooks/`**: Hooks personalizados que encapsulan la lógica de negocio (puntuación, búsqueda).
 - **`lib/`**: Utilidades core, clientes de API y el contexto de autenticación.

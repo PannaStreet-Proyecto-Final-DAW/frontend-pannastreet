@@ -4,12 +4,12 @@ import { useState, useEffect, useCallback, useMemo } from "react"
 import { GameEngine } from "@/components/games/engine/game-engine"
 import { ElevenLineupGame } from "@/components/games/cartridges/eleven-lineup-game"
 import { FORMATIONS as FORMATION_COORDS } from "@/lib/formations"
-import { 
-  getAllTeams, 
-  getAllPlayers, 
-  getAllFormations, 
-  getUserTodayAttempt, 
-  getDailyChallenge, 
+import {
+  getAllTeams,
+  getAllPlayers,
+  getAllFormations,
+  getUserTodayAttempt,
+  getDailyChallenge,
   saveUserAttempt,
   UserGameAttempt
 } from "@/lib/api"
@@ -188,7 +188,7 @@ export default function ElevenClubsPage() {
         const formattedMode = mode.toLowerCase() // 'male', 'female', 'both'
         const formattedDiff = difficulty.toLowerCase() // 'easy', 'intermediate', 'hard'
         const modeId = `${formattedMode}-${formattedDiff}`
-        
+
         const challenge = await getDailyChallenge(madridDate, "11clubs", modeId)
         if (challenge && challenge.challengeData) {
           setDailyChallengeData(challenge.challengeData)
@@ -254,10 +254,10 @@ export default function ElevenClubsPage() {
       const selected: Team[] = []
       clubsPicked.forEach((club: any) => {
         const clubName = typeof club === "string" ? club : club.name
-        const clubGender = typeof club === "string" 
-          ? (mode === "Male" ? "male" : mode === "Female" ? "female" : "male") 
+        const clubGender = typeof club === "string"
+          ? (mode === "Male" ? "male" : mode === "Female" ? "female" : "male")
           : club.gender
-        
+
         const teamObj = allTeams.find(t => t.name.trim().toLowerCase() === clubName.trim().toLowerCase() && t.gender === clubGender)
         if (teamObj) {
           selected.push(teamObj)
@@ -366,7 +366,7 @@ export default function ElevenClubsPage() {
     setWon(true)
     setScore(finalScore)
     setGameOver(true)
-    
+
     if (playMode === "daily") {
       try {
         const formattedMode = mode.toLowerCase() // 'male', 'female', 'both'
@@ -405,7 +405,7 @@ export default function ElevenClubsPage() {
     setWon(false)
     setScore(finalScore)
     setGameOver(true)
-    
+
     if (playMode === "daily") {
       try {
         const formattedMode = mode.toLowerCase()
@@ -547,6 +547,8 @@ export default function ElevenClubsPage() {
             <li>Choose between 3 difficulty levels that get progressively harder.</li>
             <li>Choose your mode to multiply your points: Male (x1), Female (x1.5) or Both (x2).</li>
             <li>You can give up by clicking the Red Card icon.</li>
+            <li>Practice Mode: Play continuously for practice without earning points.</li>
+            <li>Daily Challenge: Play once a day. Points earned count towards the leagues.</li>
           </ul>
         </>
       }
